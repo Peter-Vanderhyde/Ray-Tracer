@@ -1,0 +1,23 @@
+#materials
+material plain diffuse false
+material glass glass false 1.5
+material light diffuse true
+
+#textures
+texture white solid (1 1 1)
+texture dragon solid (1 1 0.5)
+texture fox image fox.png
+texture purple solid (0.69 0.61 0.85)
+texture light solid (2 2 2)
+
+mesh (0 0 0) tile.txt (200 200 0) (0 0 0) plain white
+#box (0 0 5) (10 5 10) (0 0 0) glass purple
+sphere (-1000 600 600) 1000 light light
+obj (0 0 0) dragon25.obj -1 1 (0 90 0) glass purple
+#obj (0 0 0) fox.obj -1 1 (-90 180 90) plain fox
+
+camera (20 -40 15) (0 0 2) (0 0 1) 50
+rays 10 20
+threads 7
+pixels 640 360
+output test.png
