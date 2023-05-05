@@ -1,0 +1,9 @@
+camera (10 0 0) (0 0 0) (0 1 0) 70
+
+# the spheres
+sphere (0 -102 0) 100
+sphere (0 -1 -4) 1
+sphere (0 0 0) 2
+
+pixels 1920 1080
+output test.png
