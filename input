@@ -1,0 +1,22 @@
+# materials
+material mirror specular (0.9 0.9 0.9) false
+material red diffuse (0.8 0.2 0.2) false
+material green diffuse (0.2 0.8 0.2) false
+material blue diffuse (0.2 0.2 0.8) false
+material gold metal (1 0.75 0) false 0.1
+material floor diffuse (0.7 0.7 0.7) false
+material light diffuse (1 1 1) true# objects
+#sphere (-3 0 1) 1 red
+#sphere (-1.5 -3 1) 1 green
+#sphere (1.5 -3 1) 1 blue
+sphere (0 1 1) 1 mirror
+#sphere (3 0 1) 1 gold
+# floor
+sphere (0 0 -1000) 1000 floor
+# sky
+sphere (-50 0 100) 100 light
+# rendering
+rays 100 50
+camera (0 -15 10) (0 0 0) (0 0 1) 25
+pixels 1280 720
+output test.png
