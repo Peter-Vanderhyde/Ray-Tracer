@@ -1,0 +1,140 @@
+#materials
+material plain diffuse
+material glass glass 1.5
+material light light
+material gloss gloss 0.75 0.0
+material pillar_gloss diffuse
+material p_light point_light
+material d_light directional_light 35
+material spot light 15
+material fog fog
+material metal metal 0.5
+material metal2 metal 1
+material specular specular
+
+#textures
+texture white solid (1 1 1)
+texture black solid (0 0 0)
+texture blue solid (0 0 1)
+texture bright solid (5 5 5)
+texture ceiling solid (2 2 2)
+texture spot solid (2 2 2)
+texture red solid (0.3 0.1 0.1)
+texture green solid (0.4 0.8 0.4)
+texture gray solid (0.2 0.2 0.2)
+texture purple solid (0.69 0.61 0.85)
+texture light solid (2 2 2)
+texture pillar image pillar.png
+texture floor image cavefloor.png
+texture nebula image nebula.png
+texture earth image earth.png
+texture green_swirl swirl (1 1 1) (1 0 0) 20 0.3
+texture checkered checkered (0.18 0.23 0.5) (0.98 0.91 0.92)
+texture carpet image carpet.png
+texture gradient gradient
+texture gb_marble image gold_black_marble.png
+texture wb_marble image white_black_marble.png
+
+mesh (-2 5 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (-2 5 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (-2 5 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (-2 5 0.7) 0.5 gloss gradient
+mesh (-2 5 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (-2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+mesh (2 5 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (2 5 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (2 5 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (2 5 0.7) 0.5 glass white
+mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (0 0 0) light red
+mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (90 0 0) light red
+mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (0 90 0) light red
+mesh (2 5 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+mesh (-2 15 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (-2 15 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (-2 15 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (-2 15 0.7) 0.5 gloss earth
+mesh (-2 15 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (-2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+mesh (2 15 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (2 15 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (2 15 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (2 15 0.7) 0.5 specular green
+mesh (2 15 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+mesh (-2 25 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (-2 25 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (-2 25 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (-2 25 0.7) 0.5 metal checkered
+mesh (-2 25 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (-2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+mesh (2 25 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
+mesh (2 25 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
+mesh (2 25 2) tile.txt (1 1 1) (0 0 0) spot spot
+sphere (2 25 0.7) 0.5 plain green_swirl
+mesh (2 25 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
+textured_box (2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+
+fog_box (0 25 7) (15 54 14) (0 0 0) 0.01 fog white
+
+# Floor
+textured_plane (-15 54 0.001) (-15 -4 0.001) (15 -4 0.001) (4.9999 4.9999) plain floor
+textured_plane (-1 50 0.002) (-1 -4 0.002) (1 -4 0.002) (1 27) plain carpet
+#plane (-1 50 0.002) (-1 -4 0.002) (1 -4 0.002) plain red
+
+# Ceiling
+mesh (0 23 14) tile.txt (30 54 1) (0 0 0) plain white
+mesh (0 23 14) tile.txt (8 52 1) (0 0 0) d_light ceiling
+#mesh (0 23 14) rim.txt (8 52 8) (0 0 0) plain black
+
+# Walls
+mesh (-8 50 7) tile.txt (14 15 1) (90 0 0) plain white
+mesh (8 50 7) tile.txt (14 15 1) (90 0 0) plain white
+mesh (0 50 9) tile.txt (2 12 1) (90 0 0) plain white
+box (0 25 7) (30 54 14) (0 0 0) plain white
+
+# Stairs
+mesh (0 50.1 0) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 50.3 0.2) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 50.5 0.4) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 50.7 0.6) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 50.9 0.8) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 51.1 1) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 51.3 1.2) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 51.5 1.4) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 51.7 1.6) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 51.9 1.8) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 52.1 2) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 52.3 2.2) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 52.5 2.4) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 52.7 2.6) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 52.9 2.8) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 53.1 3) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 53.3 3.2) stair.txt (2 0.2 0.2) (0 0 0) plain white
+mesh (0 53.5 3.4) stair.txt (2 0.2 0.2) (0 0 0) plain white
+
+mesh (-1 50.85 1.7) tile.txt (3.4 1.7 1) (0 90 0) plain white
+mesh (1 50.85 1.7) tile.txt (3.4 1.7 1) (0 90 0) plain white
+
+mesh (0 51.8 4.9) tile.txt (2 3 1) (90 0 0) light bright
+
+
+# Pillars
+obj (-5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
+obj (5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
+obj (-5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
+obj (5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
+obj (-5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
+obj (5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
+
+camera (0 0 0.5) (0 50 0.5) (0 0 1) 50
+#camera (0 -10 2) (0 0 2) (0 0 1) 50
+rays 10 50
+threads 7
+pixels 1280 720
+output test.png

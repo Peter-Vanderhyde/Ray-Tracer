@@ -1,0 +1,13 @@
+material diffuse diffuse
+material light light
+
+texture white solid (255 255 255)
+
+sphere (0 0 1) 1 light white
+mesh (0 0 0) tile.txt (100 100 1) (0 0 0) diffuse white
+
+rays 10 1
+threads 1
+camera (0 -10 2) (0 0 1) (0 0 1) 60
+pixels 1280 720
+output test.png

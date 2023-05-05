@@ -1,0 +1,307 @@
+# textures
+texture plain solid (1 1 1)
+texture tan_checkered checkered (1 0.75 0.5) (1 1 1)
+texture red_swirl swirl (0.8 0.2 0.2) (1 1 1) 60 0.75
+texture gradient gradient (0.2 0.2 0.8)
+texture blue_squares squares (0.2 0.2 0.8) (0 1 0.5)
+texture nebula image nebula.png
+texture world image  world.png
+texture space image space.png
+texture blue solid (0.8 0.8 1)
+texture red solid (1 0.3 0.3)
+texture brown solid (0.7 0.4 0.1)
+texture black solid (0 0 0)
+texture floor solid (0.3 0.3 0.3)
+texture light solid (1.5 1.5 1.5)
+
+# materials
+material glass glass 1.5
+material light diffuse
+material mirror specular
+material plain diffuse
+material metal metal 0.15
+material metal2 metal 0.05
+material p_light point_light
+material d_light directional_light 1
+material gloss gloss 0.75
+
+# objects
+#sphere (0 0 1.5) 1.5 gloss plain
+mesh (4 0 4) tile.txt (10 10 1) (0 0 0) p_light plain
+
+mesh (0 3 1) tile.txt (2 1.5 1) (90 0 0) light red
+
+mesh (-0.84 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 1.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 1.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 1.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 1.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 1.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 1.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 1.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 1.05) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 0.95) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 0.85) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 0.75) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 0.65) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 0.55) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 0.45) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 0.35) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.78 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.66 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.54 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.42 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.3 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.18 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.06 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0.06 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.18 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.78 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.66 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.54 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.42 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.3 3 0.25) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+mesh (-0.84 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.72 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.6 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (-0.48 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.36 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.24 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (-0.12 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light  red
+mesh (0 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.84 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.72 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.6 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.48 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.36 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.24 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+mesh (0.12 3 0.15) ball.txt (0.1 0.1 0.1) (0 0 0) light red
+
+#mesh (-10 0 5) tile.txt (10 15 1) (0 90 0) light plain
+#mesh (-10 12.5 5) tile.txt (10 10 1) (0 90 0) plain plain
+
+#mesh (0 0 0) tile.txt (200 200 1) (0 0 0) plain plain
+
+rays 10 1000
+threads 7
+camera (0 0 1) (0 3 1) (0 0 1) 30
+pixels 1280 720
+output test.png
