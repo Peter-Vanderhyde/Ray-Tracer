@@ -1,16 +1,16 @@
-cmake_minimum_required(VERSION 3.20)
-project(factorial)
+cmake_minimum_required(VERSION 3.16)
+project(raytracer)
 
-# adjust your compiler settings
-add_compile_options(-g -Wall -Wextra -std=c++17)
-
-# create a library that will be used in other parts of our program
-add_library(factorial factorial.cpp)
-
-# main program executable to create
-add_executable(main main.cpp)
-target_link_libraries(main PUBLIC factorial)
-
-# test program
-add_executable(test test-factorial.cpp)
-target_link_libraries(test PUBLIC factorial)
+add_executable(main
+  test_ray3.cpp
+  color.cpp
+  constants.cpp
+  lodepng.cpp
+  pixels.cpp
+  ray.cpp
+  sphere.cpp
+  vector3d.cpp
+  hit.cpp
+)
+target_compile_options(main PUBLIC -Wall -Wextra -pedantic -ggdb -std=c++17)
+target_link_libraries(main ${SOURCES})
