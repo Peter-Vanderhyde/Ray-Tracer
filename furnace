@@ -1,0 +1,9 @@
+camera (0 -10 0) (0 0 0) (0 0 1) 30
+rays 10 10 # 
+
+# the spheres
+sphere (0 0 0) 100 (1 1 1) true
+sphere (0 0 0) 1 (0.1 0.1 0.1) false
+
+pixels 1280 720
+output test.png
