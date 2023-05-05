@@ -1,7 +1,7 @@
-#include "factorial.h"
-
-#include <iostream>
+#include "ray.h"
 
 int main() {
-    std::cout << factorial(3) << '\n';
+    Ray ray{{0, 0, 0}, {0, 1, 0}};
+    std::cout << ray << '\n';
+    std::cout << ray.at(1) << '\n';
 }
