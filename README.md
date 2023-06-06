@@ -2,25 +2,29 @@
 A C++ ray tracer created as a school project.
 
 ## Setting Up a Scene Text File
+*Keep in Mind*
+- Positive x is right, positive y is forward, and positive z is up
+- Color values are from 0.0 - 1.0
 ### Parameter Guide
 A guide on what types are used for the various parameters within the scene txt file.
 ```
-<emitting> -> true/false
 <fuzziness> -> float
 <index_ratio> -> float
-<color> -> RGB tuple no commas (r g b)
+<color> -> RGB tuple no commas (r g b) 0-1.0
 <coords> -> XYZ tuple no commas (x y z)
 <material name> -> The name set in your material under <name>
 <texture name> -> The name set in your texture under <name>
 <file name> -> string
+<u v> -> the tiling for textures on the horizontal and vertical axes of spheres
 <looking at>/<up direction> -> Vector tuple no commas (x y z)
 ```
 ### Creating a Material
 ```
-material <name> diffuse <emitting bool>
-material <name> specular <emitting bool>
-material <name> metal <emitting bool> <fuzziness 0.0=clear>
-material <name> glass <emitting bool> <index_ratio i.e. how much the light bends 1.0=none>  
+material <name> diffuse
+material <name> specular
+material <name> metal <fuzziness 0.0=clear>
+material <name> glass <index_ratio i.e. how much the light bends 1.0=none>  
+material <name> light
 ```
 ### Creating a Texture
 ```
@@ -30,26 +34,32 @@ texture <name> squares <primary color> <secondary color>
 texture <name> checkered <primary color> <secondary color>
 texture <name> image <file name>
 ```
-### Creating a Objects
+### Creating basic Objects
 ```
-sphere <center coords> <radius> <material name> <texture name>
+sphere <center coords> <radius> <u v> <material name> <texture name>
 triangle <coord 1> <coord 2> <coord 3> <material name> <texture name>
-plane <coord 1> <coord 2> <center coord> <material name> <texture name>
+plane <coord 1> <coord 2> <coord 3> <material name> <texture name>
 ```
+
 ### Creating a Mesh
 ```
 mesh <place coord> <file name> <scale> <rotation> <material name> <texture name>
 ```
-### Creating an Obj
+### Creating an Object From a .obj
 ```
 obj <place coord> <file name> <sections to render -1=all> <material name> <texture name>
+```
+### Creating a Basic Environment
+```
+sun <direction vector>
+sky <boolean>
 ```
 ### Setting Up Scene
 ```
 rays <bounces> <num of rays>
 threads <num of threads>
 camera <position coord> <looking at> <up direction> <fov>
-pixels <width> <height>
+pixels <result width> <result height>
 output <file name>
 ```
 
