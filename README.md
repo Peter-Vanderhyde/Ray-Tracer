@@ -75,3 +75,4 @@ output <file name>
 ![36](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/b3d5ac58-7ba2-4504-8712-add6ac29828b)
 ![40](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/541916bd-f4a8-4f49-bcbf-776d578a672c)
 ![normal_scene_field](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/dad689d5-743e-4257-b5e0-21314c9281ff)
+![portals](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/95acaf29-de28-47ba-a8b1-52c9732b035e)
