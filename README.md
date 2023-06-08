@@ -12,8 +12,7 @@ A guide on what types are used for the various parameters within the scene txt f
 <index_ratio> -> float
 <color> -> RGB tuple no commas (r g b) 0-1.0
 <coords> -> XYZ tuple no commas (x y z)
-<material name> -> The name set in your material under <name>
-<texture name> -> The name set in your texture under <name>
+<name> -> string
 <file name> -> string
 <u v> -> the tiling for textures on the horizontal and vertical axes of spheres
 <looking at>/<up direction> -> Vector tuple no commas (x y z)
