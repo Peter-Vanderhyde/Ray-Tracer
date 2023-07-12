@@ -1,0 +1,55 @@
+# textures
+texture white solid (1 1 1)
+texture background image bg.png
+texture fantasy image fantasy_background.png
+texture ocean image ocean_background.png
+texture bedroom image bedroom_2.png
+texture cg image cg.png
+texture holographic image holographic_town.png
+texture mountain image mountain_background.png
+texture cyberpunk image cyberpunk.png
+texture european image european_city.png
+texture meteor image meteor.png
+texture northern image northern_lights.png
+texture scifi image scifi.png
+texture spaceship image spaceship.png
+texture farm image farm.png
+texture dream image dream.png
+texture anime image anime.png
+
+# materials
+material light light
+material diffuse diffuse
+material metal metal 0.2
+material specular specular
+material glass glass 1.5
+
+# objects
+#plane (-20 -20 0) (20 -20 0) (20 20 0) diffuse white
+#box (0 0 5) (10 10 10) (0 0 0) glass white
+sphere (0 0 0) 5 (1 1) light fantasy
+sphere (-10.1 0 0) 5 (1 1) light ocean
+sphere (10.1 0 0) 5 (1 1) light bedroom
+sphere (20.2 0 0) 5 (1 1) light cg
+sphere (-20.2 0 0) 5 (1 1) light holographic
+sphere (0 0 10.1) 5 (1 1) light mountain
+sphere (10.1 0 10.1) 5 (1 1) light cyberpunk
+sphere (-10.1 0 10.1) 5 (1 1) light european
+sphere (-20.2 0 10.1) 5 (1 1) light spaceship
+sphere (20.2 0 10.1) 5 (1 1) light farm
+sphere (0 0 -10.1) 5 (1 1) light meteor
+sphere (10.1 0 -10.1) 5 (1 1) light northern
+sphere (-10.1 0 -10.1) 5 (1 1) light scifi
+sphere (20.2 0 -10.1) 5 (1 1) light dream
+sphere (-20.2 0 -10.1) 5 (1 1) light anime
+#sphere (0 0 0) 1000 (1 1) light background
+
+#sun (0.3 -1 -0.8)
+#sky true
+
+# details
+rays 10 50
+threads 7
+camera (0 100 0) (0 0 0) (0 0 1) 30
+pixels 1280 720
+output portal.png

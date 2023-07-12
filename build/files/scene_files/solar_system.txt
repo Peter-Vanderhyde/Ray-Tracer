@@ -1,0 +1,35 @@
+# textures
+texture sun image sun.png
+texture mercury image mercury.png
+texture venus image venus.png
+texture earth image earth.png
+texture moon image moon.png
+texture mars image mars.png
+texture jupiter image jupiter.png
+texture saturn image saturn.png
+texture uranus image uranus.png
+texture neptune image neptune.png
+
+# materials
+material light light
+material plain diffuse
+
+# objects
+sphere (12 15 0) 10 light sun
+sphere (10 0 0) 0.05 light mercury
+sphere (10.5 0 0) 0.08 light venus
+sphere (11 0 0) 0.1 light earth
+#sphere (11.5 0.1 0) 0.03 light moon
+sphere (11.5 0 0) 0.07 light mars
+sphere (12 0 0) 0.16 light jupiter
+sphere (12.5 0 0) 0.12 light saturn
+sphere (13 0 0) 0.1 light uranus
+sphere (13.5 0 0) 0.12 light neptune
+
+#sun (1 0 -1)
+
+rays 10 100
+threads 7
+camera (12 -1 0) (12 0 0) (0 0 1) 50
+pixels 1280 720
+output test.png
