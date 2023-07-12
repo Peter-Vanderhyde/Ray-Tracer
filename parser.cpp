@@ -889,7 +889,7 @@ void Parser::parse_threads(std::stringstream& ss) {
 
 void Parser::parse_sun(std::stringstream& ss) {
     if (!(ss >> sun_direction >> sun_color >> sun_intensity)) {
-        throw std::runtime_error(input_filename + " the sun needs a specified direction.");
+        throw std::runtime_error(input_filename + " the sun needs a specified direction, color, and intensity.");
     }
     else {
         found_sun = true;
