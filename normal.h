@@ -3,26 +3,27 @@
 #include <vector>
 #include "vector3d.h"
 #include "point2d.h"
+#include <optional>
 
 class Normal {
 public:
-    Normal(const Vector3D& inverted);
+    Normal(const Vector3D inverted);
     virtual ~Normal(){};
-    virtual Vector3D get_vector(const Point2D &uv) const = 0;
+    virtual std::optional<Vector3D> get_vector(const Point2D &uv) const = 0;
 
-    const Vector3D& inverted;
+    const Vector3D inverted;
 };
 
 class FlatNormal : public Normal {
 public:
-    FlatNormal(const Vector3D& inverted);
-    Vector3D get_vector(const Point2D &uv) const override;
+    FlatNormal(const Vector3D inverted);
+    std::optional<Vector3D> get_vector(const Point2D &uv) const override;
 };
 
 class NormalMap : public Normal {
 public:
-    NormalMap(const Vector3D& inverted, std::vector<int> image, unsigned width, unsigned height);
-    Vector3D get_vector(const Point2D& uv) const override;
+    NormalMap(const Vector3D inverted, std::vector<int> image, unsigned width, unsigned height);
+    std::optional<Vector3D> get_vector(const Point2D& uv) const override;
 
     std::vector<int> image;
     unsigned width, height;
@@ -30,6 +31,6 @@ public:
 
 class Golfball : public Normal {
 public:
-    Golfball(const Vector3D& inverted);
-    Vector3D get_vector(const Point2D &uv) const override;
+    Golfball(const Vector3D inverted);
+    std::optional<Vector3D> get_vector(const Point2D &uv) const override;
 };

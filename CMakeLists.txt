@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(raytracer)
 
 add_executable(main
-  final.cpp
+  main.cpp
   color.cpp
   constants.cpp
   lodepng.cpp
@@ -25,6 +25,7 @@ add_executable(main
   fogsphere.cpp
   triangleobj.cpp
   normal.cpp
+  sun.cpp
 )
 target_compile_options(main PUBLIC -Wall -Wextra -Ofast -pedantic -ggdb -fno-omit-frame-pointer -std=c++17)
 target_link_libraries(main ${SOURCES})

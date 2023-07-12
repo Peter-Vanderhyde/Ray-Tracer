@@ -8,6 +8,8 @@
 #include "camera.h"
 #include "pixels.h"
 #include "world.h"
+#include "color.h"
+#include "sun.h"
 
 class Material;
 class Texture;
@@ -24,7 +26,7 @@ public:
     World get_world();
     Pixels get_pixels();
     std::string get_output_filename();
-    std::optional<Vector3D> get_sun_direction();
+    std::optional<Sun> get_sun();
     bool has_sky();
 
     int bounces, samples;
@@ -36,7 +38,8 @@ private:
     bool found_sun = false, found_sky = false;
     Point3D camera_position, camera_target;
     Vector3D camera_up, sun_direction;
-    double camera_fov, aspect;
+    double camera_fov, aspect, sun_intensity;
+    Color sun_color;
     int columns, rows;
     World world;
     std::string output_filename;

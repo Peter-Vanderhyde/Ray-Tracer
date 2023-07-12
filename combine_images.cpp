@@ -56,10 +56,10 @@ vector<unsigned char> averageRGBValues(const vector<vector<unsigned char>>& imag
 }
 
 //Function to save the new image as a PNG
-void saveAsPNGImage(const vector<unsigned char>& averageRGB, const string& directoryName, const string& fileName, int width, int height) {
+void saveAsPNGImage(const vector<unsigned char>& averageRGB, const string& fileName, int width, int height) {
 	
 	//Encode and save the image as a PNG
-	unsigned error = lodepng::encode(directoryName + "/" + fileName, averageRGB, width, height);
+	unsigned error = lodepng::encode(fileName, averageRGB, width, height);
 	
 	//Error checking
 	if(error) cout << "Encoder error " << error << ": " << lodepng_error_text(error) << endl;
@@ -99,7 +99,7 @@ void createAverageImage(const string& directoryName, const string& fileName) {
 		vector<unsigned char> averageRGB = averageRGBValues(imageVec);
 		
 		//Save the image as a PNG
-		saveAsPNGImage(averageRGB, directoryName, fileName, width, height);
+		saveAsPNGImage(averageRGB, fileName, width, height);
 	}
 	else {
 		//Error: Could not open the directory
@@ -108,8 +108,8 @@ void createAverageImage(const string& directoryName, const string& fileName) {
 }
 
 int main() {
-	string directoryName = "images";
-	string fileName = "combined.png";
+	string directoryName = "files/combining_images";
+	string fileName = "files/renders/combined.png";
 	createAverageImage(directoryName, fileName);
 	
 	return 0;

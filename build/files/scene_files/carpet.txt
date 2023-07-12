@@ -1,0 +1,44 @@
+# textures
+texture plain solid (1 1 1)
+texture light solid (2 2 2)
+texture nebula image nebula.png
+texture world image  world.png
+texture blue solid (0.8 0.8 1)
+texture red solid (1 0.3 0.3)
+texture brown solid (0.7 0.4 0.1)
+texture floor solid (0.5 0.5 0.5)
+texture crate image Crate_Base_Color.png
+texture rock image rock.png
+texture carpet image carpet.png
+texture log image WoodenLog.png
+
+# materials
+material glass glass false 1.5
+material light diffuse true
+material mirror specular false
+material plain diffuse false
+
+# objects
+#mesh (0 0 0) floor.txt 1000 (0 0 0) plain floor
+#mesh (-20 0 0) light.txt 100 (0 90 0) light light
+
+#mesh (-1 -0.2 0.8) floor.txt 0.8 (0 0 -20) plain brown
+#mesh (0.2 0 1) floor.txt 1 (0 0 -40) plain brown
+
+#obj (0 0 0) crate.obj -1 0.01 (90 0 0) plain crate
+#obj (0 0 1) rock.obj -1 0.015 (90 0 0) plain rock
+#obj (0 0 0) carpet.obj -1 0.01 (0 0 0) plain carpet
+#obj (0 0 0) WoodenLog.obj -1 1 (90 0 0) plain log
+#mesh (0 0 -0.01) tile.txt (100 100 0) (0 0 0) plain plain
+#triangle (-0.3 0.3 0) (-0.3 -0.3 0) (0.3 0.3 0) (0 0) (0 1) (1 0) light world
+mesh (0 0 10) tile.txt (20 20 1) (0 0 0) light light
+#triangleobj (-1 0.5 0) (1 0.5 0) (-1 -0.5 0) (0 0) (0.9999 0) (0 0.9999) plain world
+#triangleobj (1 -0.5 0) (-1 -0.5 0) (1 0.5 0) (0.9999 0.9999) (0 0.9999) (0.9999 0) plain world
+
+rays 10 100
+threads 7
+#camera (0 -1.2 1.1) (0 0 1) (0 0 1) 20 # Crates camera
+#camera (0 -2 3) (0 0 0.5) (0 0 1) 30
+camera (0 0 3) (0 0 0) (0 1 0) 50
+pixels 1280 720
+output test.png

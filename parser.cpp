@@ -46,9 +46,9 @@ std::string Parser::get_output_filename() {
     return output_filename;
 }
 
-std::optional<Vector3D> Parser::get_sun_direction() {
+std::optional<Sun> Parser::get_sun() {
     if (found_sun) {
-        return sun_direction;
+        return Sun(sun_direction, sun_color, sun_intensity);
     }
     else {
         return {};
@@ -146,7 +146,7 @@ void Parser::parse(std::ifstream& input) {
             parse_sky(ss);
         }
         else {
-            std::string msg{"Unrecognized type in line: " + line};
+            std::string msg{"Unrecognized type keyword in line: " + line};
             throw std::runtime_error(msg);
         }
     }
@@ -154,22 +154,25 @@ void Parser::parse(std::ifstream& input) {
 
 void Parser::verify() {
     if (!found_camera) {
-        throw std::runtime_error(input_filename + " is missing camera");
+        throw std::runtime_error(input_filename + " is missing camera.");
     }
     if (!found_pixels) {
-        throw std::runtime_error(input_filename + " is missing pixels");
+        throw std::runtime_error(input_filename + " is missing pixels.");
     }
     if (output_filename.empty()) {
-        throw std::runtime_error(input_filename + " is missing output");
+        throw std::runtime_error(input_filename + " is missing output.");
     }
     if (world.objects.empty()) {
-        throw std::runtime_error(input_filename + " is missing a shape");
+        throw std::runtime_error(input_filename + " is missing a shape.");
     }
     if (!found_rays) {
-        throw std::runtime_error(input_filename + " is missing rays");
+        throw std::runtime_error(input_filename + " is missing rays.");
     }
     if (threads < 1) {
-        throw std::runtime_error(input_filename + " must be at least 1 core");
+        throw std::runtime_error(input_filename + " must be at least 1 core.");
+    }
+    if (threads > samples) {
+        throw std::runtime_error(input_filename + " cannot use more threads than the number of ray samples.");
     }
 }
 
@@ -178,7 +181,7 @@ void Parser::parse_camera(std::stringstream& ss) {
         found_camera = true;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed camera");
+        throw std::runtime_error(input_filename + " has malformed camera.");
     }
 }
 
@@ -188,7 +191,7 @@ void Parser::parse_pixels(std::stringstream& ss) {
         aspect = static_cast<double>(columns) / rows;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed pixels");
+        throw std::runtime_error(input_filename + " has malformed pixels.");
     }
 }
 
@@ -211,7 +214,7 @@ void Parser::parse_normal_sphere(std::stringstream& ss) {
     Point2D tile;
     std::string material_name, texture_name, normal_name;
     if (!(ss >> center >> radius >> tile >> material_name >> texture_name >> normal_name)) {
-        throw std::runtime_error("Missing arg for normal sphere. center radius tile material texture normal");
+        throw std::runtime_error("Missing arg for normal sphere (center radius tilingXY material texture normal).");
     }
 
     Material* material{get_material(material_name)};
@@ -239,7 +242,7 @@ void Parser::parse_textured_triangle(std::stringstream& ss) {
         parse_textured_triangle(v0, v1, v2, t0, t1, t2, material_name, texture_name, "generic");
     }
     else {
-        throw std::runtime_error("Malformed textured triangle. v1 v2 v3 t1 t2 t3 material texture");
+        throw std::runtime_error("Malformed textured triangle (v1 v2 v3 t1 t2 t3 material texture).");
     }
 }
 
@@ -262,7 +265,7 @@ void Parser::parse_normal_triangle(std::stringstream& ss) {
         parse_textured_triangle(v0, v1, v2, n0, n1, n2, material_name, texture_name, normal_name);
     }
     else {
-        throw std::runtime_error("Malformed normal triangle. v1 v2 v3 n1 n2 n3 material texture normal");
+        throw std::runtime_error("Malformed normal triangle (v1 v2 v3 n1 n2 n3 material texture normal)");
     }
 }
 
@@ -311,7 +314,7 @@ void Parser::parse_textured_plane(std::stringstream& ss) {
                                                 Point2D{tile.x, tile.y}, material, texture, normal));
     }
     else {
-        throw std::runtime_error("Malformed textured plane. v1 v2 v3 tile material texture");
+        throw std::runtime_error("Malformed textured plane (v1 v2 v3 tile material texture).");
     }
 }
 
@@ -349,7 +352,7 @@ void Parser::parse_normal_plane(std::stringstream& ss) {
                                                 Point2D{tile.x, tile.y}, material, texture, normal));
     }
     else {
-        throw std::runtime_error("Malformed textured plane. v1 v2 v3 tile material texture");
+        throw std::runtime_error("Malformed textured plane (v1 v2 v3 tile material texture).");
     }
 }
 
@@ -376,14 +379,15 @@ void Parser::parse_box(std::stringstream& ss) {
     ss >> center >> extents >> rotations >> material_name >> texture_name;
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
-        throw std::runtime_error("Box must have length in all directions");
+        throw std::runtime_error("Box must have length in all directions.");
     }
     double half_x = extents.x / 2;
     double half_y = extents.y / 2;
     double half_z = extents.z / 2;
-    std::vector<int> x_signs{-1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1};
-    std::vector<int> y_signs{-1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1};
-    std::vector<int> z_signs{-1, -1, -1, 1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1};
+    // front, left, back, right, top, bot
+    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
+    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
+    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
     Point3D c1, c2, c3;
     for (size_t i = 0; i < x_signs.size() / 3; ++i) {
         c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
@@ -406,14 +410,15 @@ void Parser::parse_textured_box(std::stringstream& ss) {
     ss >> center >> extents >> rotations >> tile >> material_name >> texture_name;
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
-        throw std::runtime_error("Box must have length in all directions");
+        throw std::runtime_error("Box must have length in all directions.");
     }
     double half_x = extents.x / 2;
     double half_y = extents.y / 2;
     double half_z = extents.z / 2;
-    std::vector<int> x_signs{-1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1};
-    std::vector<int> y_signs{-1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1};
-    std::vector<int> z_signs{-1, -1, -1, 1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1};
+    // front, left, back, right, top, bot
+    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
+    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
+    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
     Point3D c1, c2, c3;
     for (size_t i = 0; i < x_signs.size() / 3; ++i) {
         c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
@@ -436,14 +441,15 @@ void Parser::parse_normal_box(std::stringstream& ss) {
     ss >> center >> extents >> rotations >> tile >> material_name >> texture_name >> normal_name;
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
-        throw std::runtime_error("Box must have length in all directions");
+        throw std::runtime_error("Box must have length in all directions.");
     }
     double half_x = extents.x / 2;
     double half_y = extents.y / 2;
     double half_z = extents.z / 2;
-    std::vector<int> x_signs{-1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1};
-    std::vector<int> y_signs{-1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1};
-    std::vector<int> z_signs{-1, -1, -1, 1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1};
+    // front, left, back, right, top, bot
+    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
+    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
+    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
     Point3D c1, c2, c3;
     for (size_t i = 0; i < x_signs.size() / 3; ++i) {
         c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
@@ -487,7 +493,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     Vector3D position, rotations, scales;
     std::string filename, material_name, texture_name;
     if (!(ss >> position >> filename >> scales >> rotations >> material_name >> texture_name)) {
-        throw std::runtime_error("Malformed mesh line. position filename scaling rotations material texture");
+        throw std::runtime_error("Malformed mesh line (position filename scaling rotations material texture).");
     }
 
     Material* material = get_material(material_name);
@@ -501,7 +507,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     std::string temp;
     input >> temp;
     if (temp != "vertices") {
-        throw std::runtime_error("Mesh file must start with string 'vertices'");
+        throw std::runtime_error("Mesh file must start with string 'vertices'.");
     }
 
     std::vector<Vector3D> vertices;
@@ -531,7 +537,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
         vertices.push_back(vertex + position);
     }
     if (vertices.size() < 3) {
-        throw std::runtime_error("Mesh file must contain at least 3 vertices");
+        throw std::runtime_error("Mesh file must contain at least 3 vertices.");
     }
     std::cout << filename << " Scale: " << max_coord - min_coord << '\n';
 
@@ -551,7 +557,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     int sections;
     if (!(ss >> position >> filename >> sections >> scale >> rotations >> material_name >> texture_name))
     {
-        throw std::runtime_error("Malformed obj line. Should be:\nPosition, filename, sections, scale, rotations, material, texture");
+        throw std::runtime_error("Malformed obj line. Should be:\nPosition, filename, sections, scale, rotations, material, texture.");
     }
     Material* material = get_material(material_name);
     Texture* texture = get_texture(texture_name);
@@ -633,7 +639,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     }
 
     if (vertices.size() < 3) {
-        throw std::runtime_error("Obj file must contain at least 3 vertices");
+        throw std::runtime_error("Obj file must contain at least 3 vertices.");
     }
     std::cout << filename << " Scale: " << max_coord - min_coord << '\n';
 
@@ -673,7 +679,7 @@ void Parser::parse_output(std::stringstream& ss) {
         found_output = true;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed output");
+        throw std::runtime_error(input_filename + " has malformed output.");
     }
 }
 
@@ -682,7 +688,7 @@ void Parser::parse_rays(std::stringstream& ss) {
         found_rays = true;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed rays");
+        throw std::runtime_error(input_filename + " has malformed rays.");
     }
 }
 
@@ -704,7 +710,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<Metal>(fuzz);
         }
         else {
-            throw std::runtime_error("Missing fuzz parameter for metal");
+            throw std::runtime_error("Missing fuzz parameter for metal.");
         }
     }
     else if (material_name == "glass") {
@@ -713,7 +719,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<Glass>(index_ratio);
         }
         else {
-            throw std::runtime_error("Missing index ratio parameter for glass");
+            throw std::runtime_error("Missing index ratio parameter for glass.");
         }
     }
     else if (material_name == "flat_glass") {
@@ -722,7 +728,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<FlatGlass>(index_ratio, thickness);
         }
         else {
-            throw std::runtime_error("Missing index ratio parameter for glass");
+            throw std::runtime_error("Missing index ratio parameter for glass.");
         }
     }
     else if (material_name == "gloss") {
@@ -746,7 +752,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<DirectionalLight>(spread_angle);
         }
         else {
-            throw std::runtime_error("Missing the spread angle for directional light");
+            throw std::runtime_error("Missing the spread angle for directional light.");
         }
     }
     else {
@@ -763,18 +769,25 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_shared<Solid>(texture_name, color);
         }
         else {
-            throw std::runtime_error("Missing solid color");
+            throw std::runtime_error("Missing solid color.");
         }
     }
     else if (texture_name == "gradient") {
-        textures[name] = std::make_shared<Gradient>(texture_name, Color{1, 1, 1});
+        Color secondary;
+        if (ss >> color >> secondary)
+        {
+            textures[name] = std::make_shared<Gradient>(texture_name, color, secondary);
+        }
+        else {
+            throw std::runtime_error("Malformed gradient. Need primaryColor, secondaryColor.");
+        }
     }
     else if (texture_name == "dots") {
         if (ss >> color) {
             textures[name] = std::make_shared<Dots>(texture_name, color);
         }
         else {
-            throw std::runtime_error("Missing dots color");
+            throw std::runtime_error("Missing dots color.");
         }
     }
     else if (texture_name == "swirl") {
@@ -785,7 +798,7 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_shared<Swirl>(texture_name, color, secondary, num_of_stripes, width_percent);
         }
         else {
-            throw std::runtime_error("Malformed swirl. Need color, secondary, num stripes, width percent");
+            throw std::runtime_error("Malformed swirl. Need color, secondary, num stripes, width percent.");
         }
     }
     else if (texture_name == "squares") {
@@ -794,7 +807,7 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_shared<Squares>(texture_name, color, secondary);
         }
         else {
-            throw std::runtime_error("Missing primary or secondary color for squares");
+            throw std::runtime_error("Missing primary or secondary color for squares.");
         }
     }
     else if (texture_name == "checkered") {
@@ -803,13 +816,13 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_shared<Checkered>(texture_name, color, secondary);
         }
         else {
-            throw std::runtime_error("Missing primary or secondary color for checkered");
+            throw std::runtime_error("Missing primary or secondary color for checkered.");
         }
     }
     else if (texture_name == "image") {
         std::string image_file;
         if (ss >> image_file) {
-            std::cout << "Parsing " + image_file + " texture.\n";
+            std::cout << "Parsing " + image_file + " texture...\n";
             std::ifstream input("files/images/" + image_file);
             if(!input) {
                 throw std::runtime_error("Cannot open image file: " + image_file);
@@ -830,7 +843,7 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_shared<Image>(texture_name, values, width, height);
         }
         else {
-            throw std::runtime_error("Malformed image texture");
+            throw std::runtime_error("Malformed image texture.");
         }
     }
     else {
@@ -843,7 +856,7 @@ void Parser::parse_normal(std::stringstream& ss) {
     Vector3D inverted;
     if (ss >> name >> image_file >> inverted)
     {
-        std::cout << "Parsing " + image_file + " normal.\n";
+        std::cout << "Parsing " + image_file + " normal...\n";
         std::ifstream input("files/normals/" + image_file);
         if(!input) {
             throw std::runtime_error("Cannot open image file: " + image_file);
@@ -864,19 +877,19 @@ void Parser::parse_normal(std::stringstream& ss) {
         normals[name] = std::make_shared<NormalMap>(inverted, values, width, height);
     }
     else {
-        throw std::runtime_error("Normal missing name or image file");
+        throw std::runtime_error("Normal missing name or image file.");
     }
 }
 
 void Parser::parse_threads(std::stringstream& ss) {
     if (!(ss >> threads)) {
-        throw std::runtime_error(input_filename + " has malformed threads");
+        throw std::runtime_error(input_filename + " has malformed threads.");
     }
 }
 
 void Parser::parse_sun(std::stringstream& ss) {
-    if (!(ss >> sun_direction)) {
-        throw std::runtime_error(input_filename + " the sun needs a specified direction");
+    if (!(ss >> sun_direction >> sun_color >> sun_intensity)) {
+        throw std::runtime_error(input_filename + " the sun needs a specified direction.");
     }
     else {
         found_sun = true;
@@ -889,7 +902,7 @@ void Parser::parse_sun(std::stringstream& ss) {
 
 void Parser::parse_sky(std::stringstream& ss) {
     if (!(ss >> std::boolalpha >> found_sky)) {
-        throw std::runtime_error(input_filename + " the sky needs a specified boolean");
+        throw std::runtime_error(input_filename + " the sky needs a specified boolean.");
     }
 }
 
@@ -900,7 +913,7 @@ Material* Parser::get_material(std::string name) {
         return material.get();
     }
     else {
-        throw std::runtime_error("Material " + name + " not defined");
+        throw std::runtime_error("Material " + name + " not defined.");
     }
 }
 
@@ -911,7 +924,7 @@ Texture* Parser::get_texture(std::string name) {
         return texture.get();
     }
     else {
-        throw std::runtime_error("Texture " + name + " not defined");
+        throw std::runtime_error("Texture " + name + " not defined.");
     }
 }
 
@@ -922,7 +935,7 @@ Normal* Parser::get_normal(std::string name) {
         return normal.get();
     }
     else {
-        throw std::runtime_error("Normal " + name + " not defined");
+        throw std::runtime_error("Normal " + name + " not defined.");
     }
 }
 

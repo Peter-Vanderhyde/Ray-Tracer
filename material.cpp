@@ -43,7 +43,7 @@ Metal::Metal(double fuzz)
     :Material("metal"), fuzz{fuzz} {}
 
 Ray Metal::scatter(const Ray& ray, const Hit& hit) const {
-    return Ray(hit.position, reflect(ray.direction, hit.normal) + fuzz * random_unit_vector());
+    return Ray(hit.position, reflect(ray.direction, hit.normal) + fuzz * random_in_hemisphere(hit.normal));
 }
 
 Glass::Glass(double index_ratio)

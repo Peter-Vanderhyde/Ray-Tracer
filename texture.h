@@ -23,8 +23,10 @@ public:
 
 class Gradient : public Texture {
 public:
-    Gradient(std::string name, Color color);
+    Gradient(std::string name, Color color, Color secondary);
     Color uv(double u, double v) const override;
+
+    Color secondary;
 };
 
 class Dots : public Texture {

@@ -14,12 +14,20 @@ Color Solid::uv(double, double) const {
     return color;
 }
 
-Gradient::Gradient(std::string name, Color color)
-    :Texture{name, color} {}
+Gradient::Gradient(std::string name, Color color, Color secondary)
+    :Texture{name, color}, secondary{secondary} {}
 
 Color Gradient::uv(double u, double v) const {
-    double percent_around = fabs(u - 0.5) / 0.5;
-    return Color{1 - percent_around, 1 - v, 1 - percent_around * v};
+    // Define the two colors for the gradient
+    Color color1 = color;  // Starting color (e.g., red)
+    Color color2 = secondary;  // Ending color (e.g., blue)
+
+    double percent_up = v;
+
+    // Interpolate the colors based on the percentage
+    Color interpolated_color = color1 * (1.0 - percent_up) + color2 * percent_up;
+
+    return interpolated_color;
 }
 
 Dots::Dots(std::string name, Color color)
