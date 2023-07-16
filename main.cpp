@@ -98,6 +98,7 @@ Fix saving details
 Fix gradient
 Look into creating process
 Look into smoothing obj by interpolating normals between edges
+Fix normal on box
 Fix black gloss (Try making gloss only reflect the color and not combine with object color)
 */
 
