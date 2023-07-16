@@ -30,12 +30,13 @@ billboard_plane (5 5 10) (5 5 0) (5 -5 0) fuzzy green
 
 mesh (0 0 9.99) tile.txt (8 8 1) (0 0 0) light light
 
-#sphere (0 0 2) 2 (1 1) glass ball
-obj (0 0 2.4) pawn.obj -1 0.5 (90 0 15) gloss white
+sphere (0 0 2) 2 (1 1) gloss ball
+#obj (0 0 2.4) pawn.obj -1 0.5 (90 0 15) gloss white
 
 
-rays 10 500
+rays 10 100
 threads 7
+checkpoints 5
 camera (-2 -10 4) (0 0 3) (0 0 1) 70
 pixels 1280 720
 output chess2.png

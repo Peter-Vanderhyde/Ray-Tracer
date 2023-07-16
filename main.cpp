@@ -17,12 +17,15 @@
 #include "save_details.h"
 #include "point2d.h"
 #include "sun.h"
+#include "combine_images.h"
 #include <iomanip>
 #include <thread>
 #include <iostream>
 #include <vector>
 #include <optional>
 #include <chrono>
+#include <filesystem>
+#include <csignal>
 
 // New Features:
 //  - Allows for a sun direction to provide scene-wide illumination at a specific angle
@@ -43,6 +46,7 @@
 //  - foggy > creates a foggy material that just scatters light in a random direction
 //  - point_light > makes the object with this material invisible to the camera, but casts light into the scene
 //  - directional_light > (wip) casts light in a certain angle and not beyond that angle
+//  - fuzzy_gloss ? mixes diffuse and metal. It takes a diffuse percent and metal fuzz amount
 
 // Textures:
 //  - solid > is one solid color
@@ -53,25 +57,28 @@
 //  - image > takes a png image and maps it to the uv coordinates of whatever object it's applied to
 
 // Normals:
-//  - normal name filename (1 -1 -1) > creates a normal that can be used with the normal_sphere
-//     or normal_triangle or normal_plane objects. The last argument is whether to invert that
+//  - normal name filename (1 1 1) > creates a normal that can be used with the normal_sphere.
+//     normal_triangle or normal_plane objects. The last argument is whether to invert that
 //     axis or not
 
-// Parse Objects:
+// Objects:
 //  - sphere > can use any texture
 //  - normal_sphere > same but with normal map
 //  - triangle > cannot use image texture
 //  - textured_triangle > must use image texture by specifying the image coords on the triangle vecs
 //  - normal_triangle > uses a normal map and the image coords to create a normal texture
+//  - billboard_triangle > can only be seen from one side
 //  - plane > creates a plane by specifying three of the corner coords. cannot use image texture
 //  - textured_plane > must use image texture
 //  - normal_plane > uses the tile arg to tile the normal map
+//  - billboard_plane > a plane that can only be seen from one side
 //  - box > creates a box at a specified position with given dimensions and rotation. cannot use image texture
 //  - textured_box > must use image texture
+//  - normal_box > adds normal on each side (normals may not be correct on all sides yet)
 //  - fog_box > a box specifically for the foggy material to create fog of the given density
-//  - mesh > uses a text file to create triangles. cannot use image texture
+//  - mesh > uses a text file to create triangles. cannot use image texture or normal
 //  - obj > uses obj file to create object that can be scaled and rotated. can use the image texture, but it will not
-//     look right if it's not the texture used for the object. (might not look completely right anyway)
+//     look right if it's not the texture used for the object. (seems to not be applied correctly anyway)
 
 // Other Parsing Keywords:
 //  - camera > position and rotate a virtual camera with a given FOV
@@ -82,7 +89,19 @@
 //  - texture > defines a texture with the given name
 //  - threads > specifies how many threads to use. loses effectiveness past the number of computer cores
 //  - sun > specifies which direction the sun is, so the scene is lit from that angle
-//  - sky > makes the background a blue sky color instead of black. This will add blue light to the scene
+//  - sky > makes the background a blue sky and gray ground color instead of black. This will add blue color to the scene
+//  - checkpoints > tells how many times to create a new checkpoint image. Useful during long renders
+
+
+/*
+Fix saving details
+Fix gradient
+Look into creating process
+Look into smoothing obj by interpolating normals between edges
+Fix black gloss (Try making gloss only reflect the color and not combine with object color)
+*/
+
+namespace fs = std::filesystem;
 
 void print_progress(long long ray_num, long long total_rays, std::chrono::seconds elapsed_time, int rays_done);
 Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_depth,
@@ -92,6 +111,8 @@ void render(Pixels &pixels, int rows, int columns, int samples, Camera camera,
 double angle(const Vector3D &v1, const Vector3D &v2);
 double clamp(double value, double min, double max);
 Color get_sky_color(const Ray &ray, bool sky);
+void delete_png_images(const std::string& directoryPath);
+void signal_handler(int signal);
 
 int main(int argc, char* argv[]) {
     if (argc < 1) {
@@ -111,48 +132,73 @@ int main(int argc, char* argv[]) {
         int thread_count = parser.threads;
         std::optional<Sun> sun = parser.get_sun();
         bool sky = parser.has_sky();
+        int checkpoints = parser.get_checkpoints();
 
-        std::vector<std::thread> threads;
-        std::vector<Pixels> pixel_results;
-
-        for (int i = 0; i < thread_count; ++ i) {
-            pixel_results.push_back(Pixels(pixels.columns, pixels.rows));
+        int samples_per_checkpoint;
+        if (checkpoints == 0) {
+            samples_per_checkpoint = samples;
+            checkpoints = 1;
+        } else {
+            samples_per_checkpoint = static_cast<int>(round(samples / checkpoints));
         }
 
-        int num_rays = static_cast<double>(samples) / thread_count;
-
-        for (int i = 1; i < thread_count; ++i)
-        {
-            std::thread t{render, std::ref(pixel_results.at(i)), pixels.rows, pixels.columns,
-                            static_cast<int>(num_rays), camera, world, depth, sun, sky};
-            threads.push_back(std::move(t));
-        }
-        
-        render(pixel_results.at(0), pixels.rows, pixels.columns,
-               static_cast<int>(num_rays), camera, world, depth, sun, sky);
-        
-        for (auto& thread : threads) {
-            thread.join();
+        if (samples_per_checkpoint < thread_count) {
+            throw std::runtime_error("More threads than rays. " + std::to_string(samples_per_checkpoint) + " rays per checkpoint.");
         }
 
-        std::cout << "\nCombining threaded results...\n";
-        for (auto& p : pixel_results) {
-            for (int y = 0; y < pixels.rows; ++y)
+        std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << '\n';
+        delete_png_images("files/checkpoints");
+        std::signal(SIGINT, signal_handler);
+
+        for (int checkpoint = 0; checkpoint < checkpoints; ++checkpoint) {
+            std::vector<std::thread> threads;
+            std::vector<Pixels> pixel_results;
+
+            for (int i = 0; i < thread_count; ++ i) {
+                pixel_results.push_back(Pixels(pixels.columns, pixels.rows));
+            }
+
+            int num_rays = static_cast<double>(samples_per_checkpoint) / thread_count;
+
+            for (int i = 1; i < thread_count; ++i)
             {
-                for (int x = 0; x < pixels.columns; ++x) {
-                    pixels(y, x) += p(y, x);
+                std::thread t{render, std::ref(pixel_results.at(i)), pixels.rows, pixels.columns,
+                                static_cast<int>(num_rays), camera, world, depth, sun, sky};
+                threads.push_back(std::move(t));
+            }
+            
+            render(pixel_results.at(0), pixels.rows, pixels.columns,
+                static_cast<int>(num_rays), camera, world, depth, sun, sky);
+            
+            for (auto& thread : threads) {
+                thread.join();
+            }
+
+            std::cout << "\nCombining threaded results...\n";
+            for (auto& p : pixel_results) {
+                for (int y = 0; y < pixels.rows; ++y)
+                {
+                    for (int x = 0; x < pixels.columns; ++x) {
+                        pixels(y, x) += p(y, x);
+                    }
                 }
             }
-        }
 
-        for (int y = 0; y < pixels.rows; ++y) {
-            for (int x = 0; x < pixels.columns; ++x) {
-                pixels(y, x) /= thread_count;
+            for (int y = 0; y < pixels.rows; ++y) {
+                for (int x = 0; x < pixels.columns; ++x) {
+                    pixels(y, x) /= thread_count;
+                }
             }
-        }
 
             std::string output_filename = parser.get_output_filename();
-        pixels.save_png("files/renders/" + output_filename);
+            pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
+            std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
+            save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
+            std::cout << '\n';
+        }
+
+        std::string output_filename = parser.get_output_filename();
+        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
         std::cout << "\nWrote " << output_filename << '\n';
         save_details("files/renders/" + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
     }
@@ -332,5 +378,25 @@ Color get_sky_color(const Ray& ray, bool sky) {
     }
     else {
         return Black;
+    }
+}
+
+void delete_png_images(const std::string& directoryPath) {
+    for (const auto& entry : fs::directory_iterator(directoryPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".png") {
+            if (!(fs::remove(entry.path()))) {
+                throw std::runtime_error("Failed to delete image.");
+            }
+        }
+    }
+}
+
+void signal_handler(int signal) {
+    if (signal == SIGINT) {
+        std::string output_filename = "cancelled_render.png";
+        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
+        std::cout << "\nWrote " << output_filename << '\n';
+
+        exit(signal);
     }
 }

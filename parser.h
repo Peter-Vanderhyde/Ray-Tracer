@@ -28,6 +28,7 @@ public:
     std::string get_output_filename();
     std::optional<Sun> get_sun();
     bool has_sky();
+    int get_checkpoints();
 
     int bounces, samples;
     int threads{1};
@@ -43,6 +44,8 @@ private:
     int columns, rows;
     World world;
     std::string output_filename;
+    int checkpoints = 0;
+
     Materials materials;
     Textures textures;
     Normals normals{{"generic", std::make_shared<FlatNormal>(Vector3D{1, 1, 1})}};
@@ -88,6 +91,7 @@ private:
     void parse_threads(std::stringstream &ss);
     void parse_sun(std::stringstream &ss);
     void parse_sky(std::stringstream &ss);
+    void parse_checkpoints(std::stringstream &ss);
     Material *get_material(std::string name);
     Texture* get_texture(std::string name);
     Normal* get_normal(std::string name);

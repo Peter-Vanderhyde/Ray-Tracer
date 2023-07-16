@@ -60,6 +60,10 @@ bool Parser::has_sky() {
     return found_sky;
 }
 
+int Parser::get_checkpoints() {
+    return checkpoints;
+}
+
 void Parser::parse(std::ifstream& input) {
     std::string line;
     while (std::getline(input, line)) {
@@ -151,6 +155,9 @@ void Parser::parse(std::ifstream& input) {
         }
         else if (type == "sky") {
             parse_sky(ss);
+        }
+        else if (type == "checkpoints") {
+            parse_checkpoints(ss);
         }
         else {
             std::string msg{"Unrecognized type keyword in line: " + line};
@@ -955,6 +962,16 @@ void Parser::parse_sun(std::stringstream& ss) {
 void Parser::parse_sky(std::stringstream& ss) {
     if (!(ss >> std::boolalpha >> found_sky)) {
         throw std::runtime_error(input_filename + " the sky needs a specified boolean.");
+    }
+}
+
+void Parser::parse_checkpoints(std::stringstream& ss) {
+    if (ss >> checkpoints) {
+        if (checkpoints < 0) {
+            throw std::runtime_error(input_filename + " checkpoints must be >= 0.");
+        }
+    } else {
+        throw std::runtime_error(input_filename + " must be a value >= 0.");
     }
 }
 
