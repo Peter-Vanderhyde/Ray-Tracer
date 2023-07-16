@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
             throw std::runtime_error("More threads than rays. " + std::to_string(samples_per_checkpoint) + " rays per checkpoint.");
         }
 
-        std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << '\n';
+        std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
         delete_png_images("files/checkpoints");
         std::signal(SIGINT, signal_handler);
 
