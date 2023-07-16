@@ -1,0 +1,41 @@
+# textures
+texture green solid (0.5 1 0.5)
+texture blue solid (0.5 0.5 1)
+texture white solid (1 1 1)
+texture red solid (1 0.5 0.5)
+texture light solid (3 3 3)
+texture wall solid (0.8 0.8 0.8)
+texture checker image checkergray.png
+texture gradient gradient (1 0 0) (1 1 1)
+texture ball solid (1 1 1)
+
+# materials
+material specular specular
+material gloss gloss 0.8
+material light light
+material diffuse diffuse
+material metal metal 0.003
+material ball light
+material floor gloss 0.5
+material fuzzy fuzzy_gloss 0.5 0.005
+material glass glass 1.5
+
+# shapes
+textured_plane (-5 5 0) (-5 -5 0) (5 -5 0) (1 1) floor checker
+mesh (0 0 10) tile.txt (10 10 1) (0 180 0) diffuse white
+billboard_plane (5 -5 10) (5 -5 0) (-5 -5 0) fuzzy wall
+billboard_plane (-5 -5 10) (-5 -5 0) (-5 5 0) fuzzy red
+billboard_plane (-5 5 10) (-5 5 0) (5 5 0) fuzzy blue
+billboard_plane (5 5 10) (5 5 0) (5 -5 0) fuzzy green
+
+mesh (0 0 9.99) tile.txt (8 8 1) (0 0 0) light light
+
+#sphere (0 0 2) 2 (1 1) glass ball
+obj (0 0 2.4) pawn.obj -1 0.5 (90 0 15) gloss white
+
+
+rays 10 500
+threads 7
+camera (-2 -10 4) (0 0 3) (0 0 1) 70
+pixels 1280 720
+output chess2.png

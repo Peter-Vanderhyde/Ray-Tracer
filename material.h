@@ -78,6 +78,15 @@ public:
     double roughness;
 };
 
+class FuzzyGloss : public Material {
+public:
+    FuzzyGloss(double roughness, double metalic);
+
+    Ray scatter(const Ray &ray, const Hit &hit) const override;
+
+    double roughness, metalic;
+};
+
 class Foggy : public Material {
 public:
     Foggy();

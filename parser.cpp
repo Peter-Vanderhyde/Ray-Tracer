@@ -14,6 +14,7 @@
 #include "vector2d.h"
 #include "point3d.h"
 #include "triangleobj.h"
+#include "trianglebillboard.h"
 #include "fogbox.h"
 #include "fogsphere.h"
 #include "normal.h"
@@ -91,8 +92,14 @@ void Parser::parse(std::ifstream& input) {
         else if (type == "normal_triangle") {
             parse_normal_triangle(ss);
         }
+        else if (type == "billboard_triangle") {
+            parse_billboard_triangle(ss);
+        }
         else if (type == "plane") {
             parse_plane(ss);
+        }
+        else if (type == "billboard_plane") {
+            parse_billboard_plane(ss);
         }
         else if (type == "textured_plane") {
             parse_textured_plane(ss);
@@ -269,6 +276,27 @@ void Parser::parse_normal_triangle(std::stringstream& ss) {
     }
 }
 
+void Parser::parse_billboard_triangle(std::stringstream& ss) {
+    Vector3D v0, v1, v2;
+    std::string material_name, texture_name;
+    if (ss >> v0 >> v1 >> v2 >> material_name >> texture_name) {
+        parse_billboard_triangle(v0, v1, v2, material_name, texture_name, "generic");
+    }
+    else {
+        throw std::runtime_error("Malformed billboard triangle (v1 v2 v3 material texture).");
+    }
+}
+
+void Parser::parse_billboard_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
+                                std::string material_name, std::string texture_name,
+                                std::string normal_name) {
+    
+    Material* material{get_material(material_name)};
+    Texture* texture{get_texture(texture_name)};
+    Normal *normal{get_normal(normal_name)};
+    world.add(std::make_shared<TriangleBillboard>(v0, v1, v2, material, texture, normal));
+}
+
 void Parser::parse_plane(std::stringstream& ss) {
     Vector3D c1, c2, c3, c4, center;
     std::string material_name, texture_name;
@@ -282,6 +310,21 @@ void Parser::parse_plane(std::stringstream& ss) {
 
     world.add(std::make_shared<Triangle>(c1, c2, c3, material, texture, normal));
     world.add(std::make_shared<Triangle>(c1, c4, c3, material, texture, normal));
+}
+
+void Parser::parse_billboard_plane(std::stringstream& ss) {
+    Vector3D c1, c2, c3, c4, center;
+    std::string material_name, texture_name;
+    ss >> c1 >> c2 >> c3 >> material_name >> texture_name;
+
+    c4 = c3 + (c1 - c2);
+
+    Material* material{get_material(material_name)};
+    Texture* texture{get_texture(texture_name)};
+    Normal *normal{get_normal("generic")};
+
+    world.add(std::make_shared<TriangleBillboard>(c1, c3, c2, material, texture, normal));
+    world.add(std::make_shared<TriangleBillboard>(c1, c4, c3, material, texture, normal));
 }
 
 void Parser::parse_plane(Point3D c1, Point3D c2, Point3D c3,
@@ -738,6 +781,15 @@ void Parser::parse_material(std::stringstream& ss) {
         }
         else {
             throw std::runtime_error("Missing the roughness value: 0 <= roughness <= 1.");
+        }
+    }
+    else if (material_name == "fuzzy_gloss") {
+        double roughness, metalic;
+        if (ss >> roughness >> metalic) {
+            materials[name] = std::make_shared<FuzzyGloss>(roughness, metalic);
+        }
+        else {
+            throw std::runtime_error("Missing either roughness or metalic value.");
         }
     }
     else if (material_name == "fog") {

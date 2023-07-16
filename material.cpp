@@ -107,9 +107,26 @@ Gloss::Gloss(double roughness)
 Ray Gloss::scatter(const Ray& ray, const Hit& hit) const {
     Vector3D scattered;
 
-    double ran = random_double(0, 1);
-    if (ran > roughness) {
+    double rand = random_double(0, 1);
+    if (rand > roughness) {
         scattered = reflect(unit(ray.direction), hit.normal);
+    }
+    else {
+        scattered = random_in_hemisphere(hit.normal);
+    }
+
+    return Ray(hit.position, scattered);
+}
+
+FuzzyGloss::FuzzyGloss(double roughness, double metalic)
+    :Material("fuzzy_gloss"), roughness{roughness}, metalic{metalic} {}
+
+Ray FuzzyGloss::scatter(const Ray& ray, const Hit& hit) const {
+    Vector3D scattered;
+
+    double rand = random_double(0, 1);
+    if (rand > roughness) {
+        scattered = reflect(ray.direction, hit.normal) + metalic * random_in_hemisphere(hit.normal);
     }
     else {
         scattered = random_in_hemisphere(hit.normal);

@@ -59,7 +59,11 @@ private:
                                    Point2D t0, Point2D t1, Point2D t2,
                                    std::string material_name, std::string texture_name, std::string normal_name);
     void parse_normal_triangle(std::stringstream& ss);
+    void parse_billboard_triangle(std::stringstream& ss);
+    void parse_billboard_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
+                                   std::string material_name, std::string texture_name, std::string normal_name);
     void parse_plane(std::stringstream &ss);
+    void parse_billboard_plane(std::stringstream &ss);
     void parse_plane(Point3D c1, Point3D c2, Point3D c3,
                      std::string material_name, std::string texture_name);
     void parse_textured_plane(std::stringstream &ss);
