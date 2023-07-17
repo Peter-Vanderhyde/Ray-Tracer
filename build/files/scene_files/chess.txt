@@ -8,6 +8,7 @@ texture wall solid (0.8 0.8 0.8)
 texture checker image checkergray.png
 texture gradient gradient (1 0 0) (1 1 1)
 texture ball solid (1 1 1)
+texture between solid (0 1 1)
 
 # materials
 material specular specular
@@ -30,13 +31,13 @@ billboard_plane (5 5 10) (5 5 0) (5 -5 0) fuzzy green
 
 mesh (0 0 9.99) tile.txt (8 8 1) (0 0 0) light light
 
-sphere (0 0 2) 2 (1 1) gloss ball
-#obj (0 0 2.4) pawn.obj -1 0.5 (90 0 15) gloss white
+#sphere (0 0 2) 2 (1 1) gloss between
+obj (0 0 2.4) pawn.obj -1 0.5 (90 0 15) gloss between
 
 
-rays 10 100
+rays 10 5000
 threads 7
-checkpoints 5
+checkpoints 50
 camera (-2 -10 4) (0 0 3) (0 0 1) 70
 pixels 1280 720
 output chess2.png
