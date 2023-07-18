@@ -24,67 +24,67 @@ texture green solid (0.4 0.8 0.4)
 texture gray solid (0.2 0.2 0.2)
 texture purple solid (0.69 0.61 0.85)
 texture light solid (2 2 2)
-texture pillar image pillar.png
-texture floor image cavefloor.png
 texture nebula image nebula.png
 texture earth image earth.png
 texture green_swirl swirl (1 1 1) (1 0 0) 20 0.3
 texture checkered checkered (0.18 0.23 0.5) (0.98 0.91 0.92)
-texture carpet image carpet.png
-texture gradient gradient
-texture gb_marble image gold_black_marble.png
-texture wb_marble image white_black_marble.png
+texture gradient gradient (0 1 0) (0 0 1)
+texture metal2 image Metal2Color.png
+texture tiles image TilesColor.png
+
+normal tiles TilesNormal.png (1 1 1)
 
 mesh (-2 5 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (-2 5 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (-2 5 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (-2 5 0.7) 0.5 gloss gradient
+sphere (-2 5 0.7) 0.5 (1 1) gloss gradient
 mesh (-2 5 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (-2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (-2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 mesh (2 5 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (2 5 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (2 5 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (2 5 0.7) 0.5 glass white
+sphere (2 5 0.7) 0.5 (1 1) glass white
 mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (0 0 0) light red
 mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (90 0 0) light red
 mesh (2 5 0.65) diamond.txt (0.2 0.2 0.2) (0 90 0) light red
 mesh (2 5 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (2 5 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 mesh (-2 15 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (-2 15 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (-2 15 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (-2 15 0.7) 0.5 gloss earth
+sphere (-2 15 0.7) 0.5 (1 1) gloss earth
 mesh (-2 15 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (-2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (-2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 mesh (2 15 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (2 15 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (2 15 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (2 15 0.7) 0.5 specular green
+sphere (2 15 0.7) 0.5 (1 1) specular green
 mesh (2 15 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (2 15 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 mesh (-2 25 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (-2 25 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (-2 25 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (-2 25 0.7) 0.5 metal checkered
+sphere (-2 25 0.7) 0.5 (1 1) metal checkered
 mesh (-2 25 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (-2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (-2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 mesh (2 25 2.5) cord.txt (0.03 1 11) (0 0 0) plain black
 mesh (2 25 2.0001) hang_light.txt (1 1 1) (0 0 0) metal2 black
 mesh (2 25 2) tile.txt (1 1 1) (0 0 0) spot spot
-sphere (2 25 0.7) 0.5 plain green_swirl
+sphere (2 25 0.7) 0.5 (1 1) plain green_swirl
 mesh (2 25 0.2001) tile.txt (0.7 0.7 1) (0 0 45) light spot
-textured_box (2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss gb_marble
+textured_box (2 25 0.1) (0.7 0.7 0.2) (0 0 45) (1 0.2) gloss metal2
 
 fog_box (0 25 7) (15 54 14) (0 0 0) 0.01 fog white
 
 # Floor
-textured_plane (-15 54 0.001) (-15 -4 0.001) (15 -4 0.001) (4.9999 4.9999) plain floor
-textured_plane (-1 50 0.002) (-1 -4 0.002) (1 -4 0.002) (1 27) plain carpet
+#textured_plane (-15 54 0.001) (-15 -4 0.001) (15 -4 0.001) (4.9999 4.9999) plain floor
+plane (-15 54 0.001) (-15 -4 0.001) (15 -4 0.001) plain white
+normal_plane (-1 50 0.002) (-1 -4 0.002) (1 -4 0.002) (1 27) gloss tiles tiles
 #plane (-1 50 0.002) (-1 -4 0.002) (1 -4 0.002) plain red
 
 # Ceiling
@@ -125,16 +125,17 @@ mesh (0 51.8 4.9) tile.txt (2 3 1) (90 0 0) light bright
 
 
 # Pillars
-obj (-5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
-obj (5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
-obj (-5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
-obj (5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
-obj (-5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
-obj (5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (-5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (5 10 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (-5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (5 20 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (-5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
+#obj (5 30 0) pillar.obj -1 0.1 (90 0 0) gloss white
 
 camera (0 0 0.5) (0 50 0.5) (0 0 1) 50
 #camera (0 -10 2) (0 0 2) (0 0 1) 50
-rays 10 50
-threads 1
-pixels 1280 720
+rays 10 700
+threads 7
+checkpoints 70
+pixels 640 360
 output test.png

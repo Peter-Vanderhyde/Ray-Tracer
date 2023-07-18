@@ -7,7 +7,7 @@
 #include "material.h"
 #include "point2d.h"
 
-Sphere::Sphere(const Point3D& center, double radius, Point2D tile, Material* material, Texture* texture, Normal* normal_map)
+Sphere::Sphere(const Point3D& center, double radius, Vector2D tile, Material* material, Texture* texture, Normal* normal_map)
     :Shape{material, texture, normal_map}, center{center}, radius{radius}, tile{tile} {
     if (radius <= 0) {
         throw std::runtime_error("radius must be positive: " + std::to_string(radius));

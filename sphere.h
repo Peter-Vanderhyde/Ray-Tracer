@@ -11,7 +11,7 @@ class Ray;
 
 class Sphere : public Shape{
 public:
-    Sphere(const Point3D& center, double radius, Point2D tile, Material* material, Texture* texture, Normal* normal_map);
+    Sphere(const Point3D& center, double radius, Vector2D tile, Material* material, Texture* texture, Normal* normal_map);
 
     // return the distance if ray intersects
     std::optional<double> intersect(const Ray& ray) const; // doesn't change the sphere
@@ -20,5 +20,5 @@ public:
 
     Point3D center;
     double radius;
-    Point2D tile;
+    Vector2D tile;
 };

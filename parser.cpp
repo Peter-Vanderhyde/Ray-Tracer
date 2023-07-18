@@ -78,6 +78,9 @@ void Parser::parse(std::ifstream& input) {
         if (type == "camera") {
             parse_camera(ss);
         }
+        else if (type == "lens") {
+            parse_lens(ss);
+        }
         else if (type == "pixels") {
             parse_pixels(ss);
         }
@@ -195,7 +198,13 @@ void Parser::parse_camera(std::stringstream& ss) {
         found_camera = true;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed camera.");
+        throw std::runtime_error("Camera is malformed (position target up fov).");
+    }
+}
+
+void Parser::parse_lens(std::stringstream& ss) {
+    if (!(ss >> focus_dist >> aperture)) {
+        throw std::runtime_error("Lens is malformed (focus_distance aperture_size).");
     }
 }
 
@@ -205,14 +214,14 @@ void Parser::parse_pixels(std::stringstream& ss) {
         aspect = static_cast<double>(columns) / rows;
     }
     else {
-        throw std::runtime_error(input_filename + " has malformed pixels.");
+        throw std::runtime_error("Pixels is malformed (width height).");
     }
 }
 
 void Parser::parse_sphere(std::stringstream& ss) {
     Vector3D center;
     double radius;
-    Point2D tile;
+    Vector2D tile;
     std::string material_name, texture_name;
     ss >> center >> radius >> tile >> material_name >> texture_name;
 
@@ -225,10 +234,10 @@ void Parser::parse_sphere(std::stringstream& ss) {
 void Parser::parse_normal_sphere(std::stringstream& ss) {
     Vector3D center;
     double radius;
-    Point2D tile;
+    Vector2D tile;
     std::string material_name, texture_name, normal_name;
     if (!(ss >> center >> radius >> tile >> material_name >> texture_name >> normal_name)) {
-        throw std::runtime_error("Missing arg for normal sphere (center radius tilingXY material texture normal).");
+        throw std::runtime_error("Sphere is malformed (center radius tilingXY material texture normal).");
     }
 
     Material* material{get_material(material_name)};
@@ -240,24 +249,14 @@ void Parser::parse_normal_sphere(std::stringstream& ss) {
 void Parser::parse_triangle(std::stringstream& ss) {
     Vector3D v0, v1, v2;
     std::string material_name, texture_name;
-    ss >> v0 >> v1 >> v2 >> material_name >> texture_name;
+    if (!(ss >> v0 >> v1 >> v2 >> material_name >> texture_name)) {
+        throw std::runtime_error("Triangle is malformed (point1 point2 point3 material texture).");
+    }
     
     Material* material{get_material(material_name)};
     Texture* texture{get_texture(texture_name)};
     Normal *normal{get_normal("generic")};
     world.add(std::make_shared<Triangle>(v0, v1, v2, material, texture, normal));
-}
-
-void Parser::parse_textured_triangle(std::stringstream& ss) {
-    Vector3D v0, v1, v2;
-    Point2D t0, t1, t2;
-    std::string material_name, texture_name;
-    if (ss >> v0 >> v1 >> v2 >> t0 >> t1 >> t2 >> material_name >> texture_name) {
-        parse_textured_triangle(v0, v1, v2, t0, t1, t2, material_name, texture_name, "generic");
-    }
-    else {
-        throw std::runtime_error("Malformed textured triangle (v1 v2 v3 t1 t2 t3 material texture).");
-    }
 }
 
 void Parser::parse_textured_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
@@ -270,6 +269,19 @@ void Parser::parse_textured_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
     world.add(std::make_shared<TriangleObj>(v0, v1, v2, t0, t1, t2, material, texture, normal));
 }
 
+void Parser::parse_textured_triangle(std::stringstream& ss) {
+    Vector3D v0, v1, v2;
+    Point2D t0, t1, t2;
+    std::string material_name, texture_name;
+    if (ss >> v0 >> v1 >> v2 >> t0 >> t1 >> t2 >> material_name >> texture_name) {
+        parse_textured_triangle(v0, v1, v2, t0, t1, t2, material_name, texture_name, "generic");
+    }
+    else {
+        throw std::runtime_error("Textured triangle is malformed (point1 point2 point3\
+                                texture_coord1 texture_coord2 texture_coord3 material texture).");
+    }
+}
+
 void Parser::parse_normal_triangle(std::stringstream& ss) {
     Vector3D v0, v1, v2;
     Point2D n0, n1, n2;
@@ -279,18 +291,7 @@ void Parser::parse_normal_triangle(std::stringstream& ss) {
         parse_textured_triangle(v0, v1, v2, n0, n1, n2, material_name, texture_name, normal_name);
     }
     else {
-        throw std::runtime_error("Malformed normal triangle (v1 v2 v3 n1 n2 n3 material texture normal)");
-    }
-}
-
-void Parser::parse_billboard_triangle(std::stringstream& ss) {
-    Vector3D v0, v1, v2;
-    std::string material_name, texture_name;
-    if (ss >> v0 >> v1 >> v2 >> material_name >> texture_name) {
-        parse_billboard_triangle(v0, v1, v2, material_name, texture_name, "generic");
-    }
-    else {
-        throw std::runtime_error("Malformed billboard triangle (v1 v2 v3 material texture).");
+        throw std::runtime_error("Triangle is malformed (point1 point2 point3 normal_coord1 normal_coord2 normal_coord3 material texture normal)");
     }
 }
 
@@ -304,34 +305,15 @@ void Parser::parse_billboard_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
     world.add(std::make_shared<TriangleBillboard>(v0, v1, v2, material, texture, normal));
 }
 
-void Parser::parse_plane(std::stringstream& ss) {
-    Vector3D c1, c2, c3, c4, center;
+void Parser::parse_billboard_triangle(std::stringstream& ss) {
+    Vector3D v0, v1, v2;
     std::string material_name, texture_name;
-    ss >> c1 >> c2 >> c3 >> material_name >> texture_name;
-
-    c4 = c3 + (c1 - c2);
-
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
-    Normal *normal{get_normal("generic")};
-
-    world.add(std::make_shared<Triangle>(c1, c2, c3, material, texture, normal));
-    world.add(std::make_shared<Triangle>(c1, c4, c3, material, texture, normal));
-}
-
-void Parser::parse_billboard_plane(std::stringstream& ss) {
-    Vector3D c1, c2, c3, c4, center;
-    std::string material_name, texture_name;
-    ss >> c1 >> c2 >> c3 >> material_name >> texture_name;
-
-    c4 = c3 + (c1 - c2);
-
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
-    Normal *normal{get_normal("generic")};
-
-    world.add(std::make_shared<TriangleBillboard>(c1, c3, c2, material, texture, normal));
-    world.add(std::make_shared<TriangleBillboard>(c1, c4, c3, material, texture, normal));
+    if (ss >> v0 >> v1 >> v2 >> material_name >> texture_name) {
+        parse_billboard_triangle(v0, v1, v2, material_name, texture_name, "generic");
+    }
+    else {
+        throw std::runtime_error("Billboard triangle is malformed (point1 point2 point3 material texture).");
+    }
 }
 
 void Parser::parse_plane(Point3D c1, Point3D c2, Point3D c3,
@@ -347,29 +329,35 @@ void Parser::parse_plane(Point3D c1, Point3D c2, Point3D c3,
     world.add(std::make_shared<Triangle>(c1, c4, c3, material, texture, normal));
 }
 
-void Parser::parse_textured_plane(std::stringstream& ss) {
-    Vector3D c1, c2, c3, c4;
-    Point2D tile;
+void Parser::parse_plane(std::stringstream& ss) {
+    Vector3D c1, c2, c3;
     std::string material_name, texture_name;
-    if (ss >> c1 >> c2 >> c3 >> tile >> material_name >> texture_name) {
-        c4 = c3 + (c1 - c2);
-
-        Material* material{get_material(material_name)};
-        Texture* texture{get_texture(texture_name)};
-        Normal *normal{get_normal("generic")};
-
-        world.add(std::make_shared<TriangleObj>(c1, c2, c3, Point2D{0, 0}, Point2D{0, tile.y},
-                                                Point2D{tile.x, tile.y}, material, texture, normal));
-        world.add(std::make_shared<TriangleObj>(c1, c4, c3, Point2D{0, 0}, Point2D{tile.x, 0},
-                                                Point2D{tile.x, tile.y}, material, texture, normal));
+    if (!(ss >> c1 >> c2 >> c3 >> material_name >> texture_name)) {
+        throw std::runtime_error("Plane is malformed (topleft_point botleft_point botright_point material texture).");
     }
-    else {
-        throw std::runtime_error("Malformed textured plane (v1 v2 v3 tile material texture).");
+
+    parse_plane(c1, c2, c3, material_name, texture_name);
+}
+
+void Parser::parse_billboard_plane(std::stringstream& ss) {
+    Vector3D c1, c2, c3, c4, center;
+    std::string material_name, texture_name;
+    if (!(ss >> c1 >> c2 >> c3 >> material_name >> texture_name)) {
+        throw std::runtime_error("Billboard plane is malformed (topleft_point botleft_point botright_point material texture).");
     }
+
+    c4 = c3 + (c1 - c2);
+
+    Material* material{get_material(material_name)};
+    Texture* texture{get_texture(texture_name)};
+    Normal *normal{get_normal("generic")};
+
+    world.add(std::make_shared<TriangleBillboard>(c1, c3, c2, material, texture, normal));
+    world.add(std::make_shared<TriangleBillboard>(c1, c4, c3, material, texture, normal));
 }
 
 void Parser::parse_textured_plane(Vector3D c1, Vector3D c2, Vector3D c3,
-                                Point2D tile, std::string material_name, std::string texture_name) {
+                                Vector2D tile, std::string material_name, std::string texture_name) {
     Vector3D c4;
 
     c4 = c3 + (c1 - c2);
@@ -384,30 +372,19 @@ void Parser::parse_textured_plane(Vector3D c1, Vector3D c2, Vector3D c3,
                                             Point2D{tile.x, tile.y}, material, texture, normal));
 }
 
-void Parser::parse_normal_plane(std::stringstream& ss) {
-    Vector3D c1, c2, c3, c4;
-    Point2D tile;
-    std::string material_name, texture_name, normal_name;
-    if (ss >> c1 >> c2 >> c3 >> tile >> material_name >> texture_name >> normal_name)
-    {
-        c4 = c3 + (c1 - c2);
-
-        Material* material{get_material(material_name)};
-        Texture* texture{get_texture(texture_name)};
-        Normal *normal{get_normal(normal_name)};
-
-        world.add(std::make_shared<TriangleObj>(c1, c2, c3, Point2D{0, 0}, Point2D{0, tile.y},
-                                                Point2D{tile.x, tile.y}, material, texture, normal));
-        world.add(std::make_shared<TriangleObj>(c1, c4, c3, Point2D{0, 0}, Point2D{tile.x, 0},
-                                                Point2D{tile.x, tile.y}, material, texture, normal));
+void Parser::parse_textured_plane(std::stringstream& ss) {
+    Vector3D c1, c2, c3;
+    Vector2D tile;
+    std::string material_name, texture_name;
+    if (!(ss >> c1 >> c2 >> c3 >> tile >> material_name >> texture_name)) {
+        throw std::runtime_error("Textured plane is malformed (topleft_point botleft_point botright_point tile_xy material texture).");
     }
-    else {
-        throw std::runtime_error("Malformed textured plane (v1 v2 v3 tile material texture).");
-    }
+
+    parse_textured_plane(c1, c2, c3, tile, material_name, texture_name);
 }
 
 void Parser::parse_normal_plane(Vector3D c1, Vector3D c2, Vector3D c3,
-                                Point2D tile, std::string material_name, std::string texture_name,
+                                Vector2D tile, std::string material_name, std::string texture_name,
                                 std::string normal_name) {
     Vector3D c4;
 
@@ -418,100 +395,99 @@ void Parser::parse_normal_plane(Vector3D c1, Vector3D c2, Vector3D c3,
     Normal *normal{get_normal(normal_name)};
 
     world.add(std::make_shared<TriangleObj>(c1, c2, c3, Point2D{0, 0}, Point2D{0, tile.y},
-                                            Point2D{tile.x, tile.y}, material, texture, normal));
+                                            Vector2D{tile.x, tile.y}, material, texture, normal));
     world.add(std::make_shared<TriangleObj>(c1, c4, c3, Point2D{0, 0}, Point2D{tile.x, 0},
-                                            Point2D{tile.x, tile.y}, material, texture, normal));
+                                            Vector2D{tile.x, tile.y}, material, texture, normal));
+}
+
+void Parser::parse_normal_plane(std::stringstream& ss) {
+    Vector3D c1, c2, c3;
+    Vector2D tile;
+    std::string material_name, texture_name, normal_name;
+    if (!(ss >> c1 >> c2 >> c3 >> tile >> material_name >> texture_name >> normal_name)) {
+        throw std::runtime_error("Normal plane is malformed (topleft_point botleft_point botright_point material texture normal).");
+    }
+
+    parse_normal_plane(c1, c2, c3, tile, material_name, texture_name, normal_name);
+}
+
+std::vector<Point3D> Parser::parse_box(Vector3D center, Vector3D extents, Vector3D rotations) {
+    double half_x = extents.x / 2;
+    double half_y = extents.y / 2;
+    double half_z = extents.z / 2;
+    // front, left, back, right, top, bot
+    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
+    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
+    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
+    Point3D c1, c2, c3;
+    std::vector<Point3D> vertices;
+    for (size_t i = 0; i < x_signs.size() / 3; ++i) {
+        c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
+        c2 = {half_x * x_signs[3 * i + 1], half_y * y_signs[3 * i + 1], half_z * z_signs[3 * i + 1]};
+        c3 = {half_x * x_signs[3 * i + 2], half_y * y_signs[3 * i + 2], half_z * z_signs[3 * i + 2]};
+        c1.rotate(rotations);
+        c2.rotate(rotations);
+        c3.rotate(rotations);
+        c1 += center;
+        c2 += center;
+        c3 += center;
+        vertices.push_back(c1);
+        vertices.push_back(c2);
+        vertices.push_back(c3);
+    }
+    return vertices;
 }
 
 void Parser::parse_box(std::stringstream& ss) {
     Vector3D center, extents, rotations;
     std::string material_name, texture_name;
-    ss >> center >> extents >> rotations >> material_name >> texture_name;
+    if(!(ss >> center >> extents >> rotations >> material_name >> texture_name)) {
+        throw std::runtime_error("Box is malformed (center extents rotations material texture).");
+    }
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
         throw std::runtime_error("Box must have length in all directions.");
     }
-    double half_x = extents.x / 2;
-    double half_y = extents.y / 2;
-    double half_z = extents.z / 2;
-    // front, left, back, right, top, bot
-    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
-    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
-    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
-    Point3D c1, c2, c3;
-    for (size_t i = 0; i < x_signs.size() / 3; ++i) {
-        c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
-        c2 = {half_x * x_signs[3 * i + 1], half_y * y_signs[3 * i + 1], half_z * z_signs[3 * i + 1]};
-        c3 = {half_x * x_signs[3 * i + 2], half_y * y_signs[3 * i + 2], half_z * z_signs[3 * i + 2]};
-        c1.rotate(rotations);
-        c2.rotate(rotations);
-        c3.rotate(rotations);
-        c1 += center;
-        c2 += center;
-        c3 += center;
-        parse_plane(c1, c2, c3, material_name, texture_name);
+    
+    std::vector<Point3D> vertices = parse_box(center, extents, rotations);
+    for (int i = 0; i < 12; i += 3) {
+        parse_plane(vertices[i], vertices[i + 1], vertices[i + 2], material_name, texture_name);
     }
 }
 
 void Parser::parse_textured_box(std::stringstream& ss) {
     Vector3D center, extents, rotations;
-    Point2D tile;
+    Vector2D tile;
     std::string material_name, texture_name;
-    ss >> center >> extents >> rotations >> tile >> material_name >> texture_name;
+    if (!(ss >> center >> extents >> rotations >> tile >> material_name >> texture_name)) {
+        throw std::runtime_error("Textured box is malformed (center dimensions rotations tile_xy material texture).");
+    }
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
         throw std::runtime_error("Box must have length in all directions.");
     }
-    double half_x = extents.x / 2;
-    double half_y = extents.y / 2;
-    double half_z = extents.z / 2;
-    // front, left, back, right, top, bot
-    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
-    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
-    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
-    Point3D c1, c2, c3;
-    for (size_t i = 0; i < x_signs.size() / 3; ++i) {
-        c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
-        c2 = {half_x * x_signs[3 * i + 1], half_y * y_signs[3 * i + 1], half_z * z_signs[3 * i + 1]};
-        c3 = {half_x * x_signs[3 * i + 2], half_y * y_signs[3 * i + 2], half_z * z_signs[3 * i + 2]};
-        c1.rotate(rotations);
-        c2.rotate(rotations);
-        c3.rotate(rotations);
-        c1 += center;
-        c2 += center;
-        c3 += center;
-        parse_textured_plane(c1, c2, c3, tile, material_name, texture_name);
+    
+    std::vector<Point3D> vertices = parse_box(center, extents, rotations);
+    for (int i = 0; i < 12; i += 3) {
+        parse_textured_plane(vertices[i], vertices[i + 1], vertices[i + 2], tile, material_name, texture_name);
     }
 }
 
 void Parser::parse_normal_box(std::stringstream& ss) {
     Vector3D center, extents, rotations;
-    Point2D tile;
+    Vector2D tile;
     std::string material_name, texture_name, normal_name;
-    ss >> center >> extents >> rotations >> tile >> material_name >> texture_name >> normal_name;
+    if (!(ss >> center >> extents >> rotations >> tile >> material_name >> texture_name >> normal_name)) {
+        throw std::runtime_error("Normal box is malformed (center dimensions rotations tile_xy material texture normal).");
+    }
 
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
         throw std::runtime_error("Box must have length in all directions.");
     }
-    double half_x = extents.x / 2;
-    double half_y = extents.y / 2;
-    double half_z = extents.z / 2;
-    // front, left, back, right, top, bot
-    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
-    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
-    std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
-    Point3D c1, c2, c3;
-    for (size_t i = 0; i < x_signs.size() / 3; ++i) {
-        c1 = {half_x * x_signs[3 * i], half_y * y_signs[3 * i], half_z * z_signs[3 * i]};
-        c2 = {half_x * x_signs[3 * i + 1], half_y * y_signs[3 * i + 1], half_z * z_signs[3 * i + 1]};
-        c3 = {half_x * x_signs[3 * i + 2], half_y * y_signs[3 * i + 2], half_z * z_signs[3 * i + 2]};
-        c1.rotate(rotations);
-        c2.rotate(rotations);
-        c3.rotate(rotations);
-        c1 += center;
-        c2 += center;
-        c3 += center;
-        parse_normal_plane(c1, c2, c3, tile, material_name, texture_name, normal_name);
+    
+    std::vector<Point3D> vertices = parse_box(center, extents, rotations);
+    for (int i = 0; i < 12; i += 3) {
+        parse_normal_plane(vertices[i], vertices[i + 1], vertices[i + 2], tile, material_name, texture_name, normal_name);
     }
 }
 
@@ -519,7 +495,9 @@ void Parser::parse_fog_box(std::stringstream& ss) {
     Vector3D center, dimensions, rotations;
     double density;
     std::string material_name, texture_name;
-    ss >> center >> dimensions >> rotations >> density >> material_name >> texture_name;
+    if (!(ss >> center >> dimensions >> rotations >> density >> material_name >> texture_name)) {
+        throw std::runtime_error("Fog box is malformed (center dimensions rotations density material texture).");
+    }
     
     Material* material{get_material(material_name)};
     Texture* texture{get_texture(texture_name)};
@@ -531,7 +509,9 @@ void Parser::parse_fog_sphere(std::stringstream& ss) {
     Vector3D center;
     double radius, density;
     std::string material_name, texture_name;
-    ss >> center >> radius >> density >> material_name >> texture_name;
+    if (!(ss >> center >> radius >> density >> material_name >> texture_name)) {
+        throw std::runtime_error("Fog sphere is malformed (center radius density material texture).");
+    }
 
     Material *material{get_material(material_name)};
     Texture *texture{get_texture(texture_name)};
@@ -543,7 +523,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     Vector3D position, rotations, scales;
     std::string filename, material_name, texture_name;
     if (!(ss >> position >> filename >> scales >> rotations >> material_name >> texture_name)) {
-        throw std::runtime_error("Malformed mesh line (position filename scaling rotations material texture).");
+        throw std::runtime_error("Mesh is malformed (position filename scaling rotations material texture).");
     }
 
     Material* material = get_material(material_name);
@@ -607,7 +587,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     int sections;
     if (!(ss >> position >> filename >> sections >> scale >> rotations >> material_name >> texture_name))
     {
-        throw std::runtime_error("Malformed obj line. Should be:\nPosition, filename, sections, scale, rotations, material, texture.");
+        throw std::runtime_error("Obj is malformed (position filename sections<-1=all> scale rotations material texture).");
     }
     Material* material = get_material(material_name);
     Texture* texture = get_texture(texture_name);
@@ -725,21 +705,19 @@ void Parser::parse_obj(std::stringstream& ss) {
 }
 
 void Parser::parse_output(std::stringstream& ss) {
-    if (ss >> output_filename) {
-        found_output = true;
+    if (!(ss >> output_filename)) {
+        throw std::runtime_error("Output is malformed (output_filename).");
     }
-    else {
-        throw std::runtime_error(input_filename + " has malformed output.");
-    }
+
+    found_output = true;
 }
 
 void Parser::parse_rays(std::stringstream& ss) {
-    if (ss >> bounces >> samples) {
-        found_rays = true;
+    if (!(ss >> bounces >> samples)) {
+        throw std::runtime_error("Rays is malformed (num_bounces samples_per_pixel).");
     }
-    else {
-        throw std::runtime_error(input_filename + " has malformed rays.");
-    }
+
+    found_rays = true;
 }
 
 void Parser::parse_material(std::stringstream& ss) {
@@ -936,19 +914,19 @@ void Parser::parse_normal(std::stringstream& ss) {
         normals[name] = std::make_shared<NormalMap>(inverted, values, width, height);
     }
     else {
-        throw std::runtime_error("Normal missing name or image file.");
+        throw std::runtime_error("Normal is malformed (image_file inverted_vector).");
     }
 }
 
 void Parser::parse_threads(std::stringstream& ss) {
     if (!(ss >> threads)) {
-        throw std::runtime_error(input_filename + " has malformed threads.");
+        throw std::runtime_error("Threads is malformed (num_threads).");
     }
 }
 
 void Parser::parse_sun(std::stringstream& ss) {
     if (!(ss >> sun_direction >> sun_color >> sun_intensity)) {
-        throw std::runtime_error(input_filename + " the sun needs a specified direction, color, and intensity.");
+        throw std::runtime_error("Sun is malformed (direction color intensity).");
     }
     else {
         found_sun = true;
@@ -961,7 +939,7 @@ void Parser::parse_sun(std::stringstream& ss) {
 
 void Parser::parse_sky(std::stringstream& ss) {
     if (!(ss >> std::boolalpha >> found_sky)) {
-        throw std::runtime_error(input_filename + " the sky needs a specified boolean.");
+        throw std::runtime_error("Sky is malformed (sky_bool).");
     }
 }
 
@@ -971,7 +949,7 @@ void Parser::parse_checkpoints(std::stringstream& ss) {
             throw std::runtime_error(input_filename + " checkpoints must be >= 0.");
         }
     } else {
-        throw std::runtime_error(input_filename + " must be a value >= 0.");
+        throw std::runtime_error("Checkpoints is malformed (num_checkpoints).");
     }
 }
 

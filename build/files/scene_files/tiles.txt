@@ -16,10 +16,11 @@ normal_plane (-8 8 0) (-8 -8 0) (8 -8 0) (3 3) gloss tiles tiles
 box (0 100 0) (100 1 100) (0 0 0) light white
 #sphere (0 0 0) 1000 (1 1) light bg
 
-sky false
+sky true
 
 pixels 1280 720
-rays 10 100
+rays 10 500
 threads 7
+checkpoints 10
 camera (0 -7 5) (0 3 0) (0 0 1) 70
 output test.png

@@ -34,3 +34,14 @@ Vector3D random_in_hemisphere(const Vector3D& normal) {
         return -unit_vector;
     }
 }
+
+Vector3D random_in_unit_disk() {
+    Vector3D p;
+    while (true) {
+        p = {random_double(-1.0, 1.0), random_double(-1.0, 1.0), 0.0};
+        if (dot(p, p) >= 1.0) {
+            continue;
+        }
+        return p;
+    }
+}

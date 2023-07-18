@@ -12,6 +12,9 @@ material plain diffuse
 material fog fog
 material mirror specular
 material glass glass 1.5
+material metal metal 0.05
+material gloss gloss 0.8
+material glossy gloss 0.6
 
 # objects
 
@@ -22,14 +25,16 @@ plane (-25 -25 50) (25 -25 50) (25 25 50) plain white
 plane (-25 -25 0) (25 -25 0) (25 25 0) plain white
 plane (-16 -16 49.9999) (16 -16 49.9999) (16 16 49.9999) light light
 
-box (-7 10 15.0001) (14 14 30) (0 0 -15) mirror white
+box (-7 10 15.0001) (14 14 30) (0 0 -15) glossy red
 #box (12 -15 6.0001) (12 12 12) (0 0 18) plain white
-fog_sphere (12 -15 6.0001) 6 0.1 plain plain
+#fog_sphere (12 -15 6.0001) 6 0.2 plain green
+sphere (12 -15 6.0001) 6 (1 1) gloss green
 
 #fog_box (0 0 25) (50 200 50) (0 0 0) 0.01 plain green
 
-rays 10 10
+rays 10 5000
 threads 7
+checkpoints 50
 camera (0 -100 25) (0 0 25) (0 0 1) 40
-pixels 600 600
+pixels 1080 1080
 output test2.png

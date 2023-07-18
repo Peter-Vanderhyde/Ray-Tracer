@@ -94,6 +94,8 @@
 
 
 /*
+Camera Focus
+Collision tree
 Fix saving details
 Fix gradient
 Look into creating process
@@ -195,7 +197,10 @@ int main(int argc, char* argv[]) {
             pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
             std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
             save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
-            std::cout << '\n';
+            output_filename = parser.get_output_filename();
+            createAverageImage("files/checkpoints", "files/renders/" + output_filename);
+            std::cout << "\nWrote " << output_filename << '\n';
+            save_details("files/renders/" + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
         }
 
         std::string output_filename = parser.get_output_filename();
