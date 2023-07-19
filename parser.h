@@ -45,7 +45,7 @@ private:
     World world;
     std::string output_filename;
     int checkpoints = 0;
-    double focus_dist = NULL, aperture = NULL;
+    double focus_dist, blur_strength;
 
     Materials materials;
     Textures textures;

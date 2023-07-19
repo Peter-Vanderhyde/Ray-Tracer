@@ -32,7 +32,7 @@ Parser::Parser(const std::string& filename)
 
 Camera Parser::get_camera() {
     return Camera{camera_position, camera_target, camera_up,
-                  camera_fov, aspect};
+                    camera_fov, aspect, focus_dist, blur_strength};
 }
 
 World Parser::get_world() {
@@ -203,8 +203,8 @@ void Parser::parse_camera(std::stringstream& ss) {
 }
 
 void Parser::parse_lens(std::stringstream& ss) {
-    if (!(ss >> focus_dist >> aperture)) {
-        throw std::runtime_error("Lens is malformed (focus_distance aperture_size).");
+    if (!(ss >> focus_dist >> blur_strength)) {
+        throw std::runtime_error("Lens is malformed (focus_distance blur_strength).");
     }
 }
 
@@ -450,7 +450,7 @@ void Parser::parse_box(std::stringstream& ss) {
     }
     
     std::vector<Point3D> vertices = parse_box(center, extents, rotations);
-    for (int i = 0; i < 12; i += 3) {
+    for (int i = 0; i < 18; i += 3) {
         parse_plane(vertices[i], vertices[i + 1], vertices[i + 2], material_name, texture_name);
     }
 }
@@ -468,7 +468,7 @@ void Parser::parse_textured_box(std::stringstream& ss) {
     }
     
     std::vector<Point3D> vertices = parse_box(center, extents, rotations);
-    for (int i = 0; i < 12; i += 3) {
+    for (int i = 0; i < 18; i += 3) {
         parse_textured_plane(vertices[i], vertices[i + 1], vertices[i + 2], tile, material_name, texture_name);
     }
 }
@@ -486,7 +486,7 @@ void Parser::parse_normal_box(std::stringstream& ss) {
     }
     
     std::vector<Point3D> vertices = parse_box(center, extents, rotations);
-    for (int i = 0; i < 12; i += 3) {
+    for (int i = 0; i < 18; i += 3) {
         parse_normal_plane(vertices[i], vertices[i + 1], vertices[i + 2], tile, material_name, texture_name, normal_name);
     }
 }

@@ -35,10 +35,10 @@ Vector3D random_in_hemisphere(const Vector3D& normal) {
     }
 }
 
-Vector3D random_in_unit_disk() {
+Vector3D random_in_unit_disk(Vector3D disk_plane) {
     Vector3D p;
     while (true) {
-        p = {random_double(-1.0, 1.0), random_double(-1.0, 1.0), 0.0};
+        p = {random_double(-1.0, 1.0) * disk_plane.x, random_double(-1.0, 1.0) * disk_plane.y, random_double(-1.0, 1.0) * disk_plane.z};
         if (dot(p, p) >= 1.0) {
             continue;
         }

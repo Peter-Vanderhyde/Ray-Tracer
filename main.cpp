@@ -94,8 +94,9 @@
 
 
 /*
-Camera Focus
+Make obj textures line up correctly (normal map too?)
 Collision tree
+Multi processors using MPICH
 Fix saving details
 Fix gradient
 Look into creating process
@@ -202,11 +203,6 @@ int main(int argc, char* argv[]) {
             std::cout << "\nWrote " << output_filename << '\n';
             save_details("files/renders/" + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
         }
-
-        std::string output_filename = parser.get_output_filename();
-        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
-        std::cout << "\nWrote " << output_filename << '\n';
-        save_details("files/renders/" + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
     }
     catch (std::exception& err) {
         std::cout << err.what() << '\n';

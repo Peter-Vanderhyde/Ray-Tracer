@@ -7,30 +7,44 @@
 
 double degree_to_radian(double degrees);
 
-Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double aspect,
-                double aperture, double focus_dist)
-    : position(position), lens_radius(aperture / 2.0) {
+Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double aspect, double focus_dist, double blur_strength)
+    :position{position}, blur_strength{blur_strength * 0.1} {
     
-    Vector3D v_to_target = target - position;
-    Vector3D u = unit(cross(v_to_target, up));
-    Vector3D v = unit(cross(v_to_target, u));
+    // Get vector from center of camera to the target
+    Vector3D v_to_target{target - position};
+    // The hor and ver vectors of the camera
+    u = unit(cross(v_to_target, up));
+    v = unit(cross(v_to_target, u));
 
-    double height = 2.0 * tan(degree_to_radian(fov / 2.0));
-    double width = aspect * height;
+    double width{tan(degree_to_radian(fov) / 2) * 2};
+    double height{width / aspect};
 
-    upper_left = position - width / 2.0 * focus_dist * u - height / 2.0 * focus_dist * v + focus_dist * v_to_target;
-    horizontal = width * focus_dist * u;
-    vertical = height * focus_dist * v;
+    // Determine how to scale the viewport to account for focus depth
+    double dist_to_target = length(v_to_target);
+    if (dist_to_target == 0) {
+        throw std::runtime_error("The target cannot be the same as the camera position.");
+    } else if (focus_dist == 0) {
+        throw std::runtime_error("Cannot set focus distance to 0.");
+    }
+
+    double scale = dist_to_target * focus_dist;
+    upper_left = position - (width / 2) * u * scale - (height / 2) * v * scale;
+    upper_left += v_to_target * focus_dist;
+
+    horizontal = u * width * scale;
+    vertical = v * height * scale;
 }
 
 Ray Camera::compute_ray(double s, double t) const {
-    Vector3D rd = lens_radius * random_in_unit_disk();
-    Vector3D offset = u * rd.x + v * rd.y;
-
-    Point3D origin = position + offset;
-    Vector3D direction = upper_left + s * horizontal + t * vertical - origin;
-
-    return Ray(origin, unit(direction));
+    Point3D origin{upper_left + horizontal * s + vertical * t};
+    Vector3D rand_dir;
+    Point3D start_point = position;
+    if (blur_strength != 0) {
+        rand_dir = random_in_unit_disk(Vector3D(1, 0, 1)) * blur_strength;
+        start_point += u * rand_dir.x + v * rand_dir.z;
+    }
+    
+    return Ray(start_point, unit(origin - start_point));
 }
 
 double degree_to_radian(double degrees) {

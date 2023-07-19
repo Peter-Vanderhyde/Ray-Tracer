@@ -1,0 +1,23 @@
+texture red solid (0.5 0.1 0.1)
+texture green solid (0.1 0.5 0.1)
+texture blue solid (0.1 0.1 0.5)
+texture white solid (1 1 1)
+
+material diffuse diffuse
+material light light
+
+plane (-10 10 0) (-10 -10 0) (10 -10 0) diffuse white
+sphere (0 0 1) 1 (1 1) diffuse red
+sphere (1 4 1) 1 (1 1) diffuse green
+sphere (-1 -4 1) 1 (1 1) diffuse blue
+
+sky true
+
+camera (3 -15 3) (0 0 1) (0 0 1) 20
+lens 0.95 3
+
+rays 10 100
+checkpoints 0
+threads 7
+pixels 1280 720
+output test.png

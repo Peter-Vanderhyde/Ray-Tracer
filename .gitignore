@@ -1,3 +1,4 @@
 build/*
 !build/files
 /.vscode
+/build/files/checkpoints/*
