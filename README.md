@@ -117,6 +117,10 @@ output <file name>
 ![40](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/541916bd-f4a8-4f49-bcbf-776d578a672c)
 ![normal_scene_field](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/dad689d5-743e-4257-b5e0-21314c9281ff)
 ![portal](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/18263c9a-f2e5-42a4-8f0c-36aba3af18c5)
+![cornell_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/a5da6bd5-1a2c-4b10-bc82-e1f441013539)
+![cornell](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/33912d07-0389-49fe-a111-97b982adfcd5)
+![blurred](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/9ff681a5-60fe-40f0-a532-ea3020990931)
+![white_pawn2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/7cf0e476-14c3-4885-bde7-ccae2a3985fb)
 ![motorcycle](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6a31b266-7657-446d-a7cd-6c34610a5bc0)
 ![club_ball_2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/13cc993c-f431-4706-8f59-b5a9a5180a7e)
 ![metal_earth](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/e0487f92-5898-4c24-80e1-d2beb0ed5a36)
@@ -125,4 +129,5 @@ output <file name>
 ![gradient](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/efefb7f4-b3ac-4194-b5fe-f88a4597e280)
 ![combined](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8542102a-62d6-4728-9ca9-1085d01f073b)
 ![coffee2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/23581cba-7f6b-4c1b-91c2-e7aa6248b0eb)
+![room_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6b2778c3-ea04-46c5-bae5-babe65fd8d7b)
 
