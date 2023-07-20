@@ -10,7 +10,7 @@ A guide on what types are used for the various parameters within the scene txt f
 ```
 <fuzziness> -> float
 <index_ratio> -> float
-<color> -> RGB tuple no commas (r g b) 0-1.0
+<color> -> RGB tuple no commas (r g b) 0.0-1.0
 <coords> -> XYZ tuple no commas (x y z)
 <name> -> string
 <file name> -> string
@@ -22,45 +22,87 @@ A guide on what types are used for the various parameters within the scene txt f
 material <name> diffuse
 material <name> specular
 material <name> metal <fuzziness 0.0=clear>
-material <name> glass <index_ratio i.e. how much the light bends 1.0=none>  
+material <name> glass <index ratio i.e. how much the light bends 1.0=none>  
 material <name> light
+material <name> flat_glass <index ratio> <thickness>
+material <name> gloss <roughness>
+material <name> metalic_gloss <roughness> <metalic>
+material <name> fog
+material <name> point_light
+material <name> directional_light <spread angle>
 ```
 ### Creating a Texture
 ```
-texture <name> solid <color tuple (no commas)>
-texture <name> gradient <primary color> <secondary color> <num of stripes> <stripe width 0.0-1.0>
+texture <name> solid <color>
+texture <name> gradient <primary color> <secondary color>
+texture <name> dots <color>
+texture <name> swirl <primary color> <secondary color> <num of stripes> <stripe width 0.0-1.0>
 texture <name> squares <primary color> <secondary color>
 texture <name> checkered <primary color> <secondary color>
 texture <name> image <file name>
 ```
+### Creating a Normal
+```
+normal <name> <filename> <flip normal axis direction vector>  # (1 -1 1) flips the y-axis normal direction
+```
 ### Creating basic Objects
 ```
-sphere <center coords> <radius> <u v> <material name> <texture name>
-triangle <coord 1> <coord 2> <coord 3> <material name> <texture name>
-plane <coord 1> <coord 2> <coord 3> <material name> <texture name>
+sphere <center> <radius> <u v> <material> <texture>
+triangle <coord 1> <coord 2> <coord 3> <material> <texture>
+plane <topleft> <botleft> <botright> <material> <texture>
+box <position> <dimensions> <rotations> <material> <texture>
+```
+*Sphere allows for image texture to be used*
+
+### More Advanced Objects
+- Textured objects allow image textures to be used
+```
+textured_triangle <coord 1> <coord 2> <coord 3> <image coord 1> <image coord 2> <image coord 3> <material> <texture>
+textured_plane <topleft> <botleft> <botright> <tileXY> <material> <texture>
+textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
+```
+- Normal objects allow normal maps to be used along with image textures
+```
+normal_sphere <center> <radius> <tileXY> <material> <texture> <normal>
+normal_triangle <coord 1> <coord 2> <coord 3> <normal coord 1> <normal coord 2> <normal coord 3> <material> <texture> <normal>
+normal_plane <topleft> <botleft> <botright> <tileXY> <material> <texture> <normal>
+normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <normal>
+```
+- Billboards only collide with rays on one side allowing things like the camera to look into enclosed spaces
+```
+billboard_triangle <coord 1> <coord 2> <coord 3> <material> <texture>
+billboard_plane <topleft> <botleft> <botright> <material> <texture>
+```
+- Fog objects require that the fog material is used for them
+```
+fog_sphere <center> <radius> <density> <material> <texture>
+fog_box <position> <dimensions> <rotations> <density> <material> <texture>
 ```
 
 ### Creating a Mesh
 ```
-mesh <place coord> <file name> <scale> <rotation> <material name> <texture name>
+mesh <position> <file name> <scale vector> <rotation> <material> <texture>
 ```
 ### Creating an Object From a .obj
 ```
-obj <place coord> <file name> <sections to render -1=all> <material name> <texture name>
+obj <position> <file name> <sections to render -1=all> <scale vector> <material name> <texture name>
 ```
 ### Creating a Basic Environment
 ```
-sun <direction vector>
+sun <direction vector> <color> <intensity double>
 sky <boolean>
 ```
 ### Setting Up Scene
 ```
 rays <bounces> <num of rays>
 threads <num of threads>
-camera <position coord> <looking at> <up direction> <fov>
-pixels <result width> <result height>
+checkpoints <num of checkpoints>
+camera <position> <looking at> <up vector> <fov>
+lens <distance percentage> <blur amount>
+pixels <image width> <image height>
 output <file name>
 ```
+- Lens takes two parameters. The first determines where the focus is. When set to 1.0, the focus will be directly at the "looking at" vector camera parameter. 0.5 would focus halfway between the camera position and it's "looking at" vector. The second argument is a double 0.0-inf determining blur amount. 0 makes everything in the scene fully focused.
 
 ### Example Renders
 ![13](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4e301d58-7aac-4800-9862-6f92996c4b37)

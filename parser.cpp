@@ -768,7 +768,7 @@ void Parser::parse_material(std::stringstream& ss) {
             throw std::runtime_error("Missing the roughness value: 0 <= roughness <= 1.");
         }
     }
-    else if (material_name == "fuzzy_gloss") {
+    else if (material_name == "metalic_gloss") {
         double roughness, metalic;
         if (ss >> roughness >> metalic) {
             materials[name] = std::make_shared<FuzzyGloss>(roughness, metalic);
