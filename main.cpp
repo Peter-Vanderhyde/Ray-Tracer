@@ -35,6 +35,7 @@
 //     so it's easy to find out how the scene was made
 //  - Added Vector2D and Point2D objects
 //  - Implemented normal maps so they can be used
+//  - Can now create depth of field
 
 // Materials:
 //  - light > objects emit light
@@ -46,7 +47,7 @@
 //  - foggy > creates a foggy material that just scatters light in a random direction
 //  - point_light > makes the object with this material invisible to the camera, but casts light into the scene
 //  - directional_light > (wip) casts light in a certain angle and not beyond that angle
-//  - fuzzy_gloss ? mixes diffuse and metal. It takes a diffuse percent and metal fuzz amount
+//  - fuzzy_gloss > mixes diffuse and metal. It takes a diffuse percent and metal fuzz amount
 
 // Textures:
 //  - solid > is one solid color
@@ -57,13 +58,13 @@
 //  - image > takes a png image and maps it to the uv coordinates of whatever object it's applied to
 
 // Normals:
-//  - normal name filename (1 1 1) > creates a normal that can be used with the normal_sphere.
-//     normal_triangle or normal_plane objects. The last argument is whether to invert that
-//     axis or not
+//  - normal name filename (1 1 1) > creates a normal that can be used with the normal_sphere,
+//     normal_triangle, normal_plane or normal_box objects. The last argument is whether to invert that
+//     normal axis or not
 
 // Objects:
 //  - sphere > can use any texture
-//  - normal_sphere > same but with normal map
+//  - normal_sphere > sphere but with normal map
 //  - triangle > cannot use image texture
 //  - textured_triangle > must use image texture by specifying the image coords on the triangle vecs
 //  - normal_triangle > uses a normal map and the image coords to create a normal texture
@@ -71,7 +72,7 @@
 //  - plane > creates a plane by specifying three of the corner coords. cannot use image texture
 //  - textured_plane > must use image texture
 //  - normal_plane > uses the tile arg to tile the normal map
-//  - billboard_plane > a plane that can only be seen from one side
+//  - billboard_plane > a plane that can only be seen from one side (Order the corners topleft, botleft, botright)
 //  - box > creates a box at a specified position with given dimensions and rotation. cannot use image texture
 //  - textured_box > must use image texture
 //  - normal_box > adds normal on each side (normals may not be correct on all sides yet)
@@ -82,6 +83,7 @@
 
 // Other Parsing Keywords:
 //  - camera > position and rotate a virtual camera with a given FOV
+//  - lens > Specifies the percentage toward the camera looking at vector and blur amount
 //  - pixels > specifies the images width and height
 //  - output > the filename of the output file
 //  - rays > specifies the number of bounces the rays can do and the number of rays per pixel
@@ -90,7 +92,7 @@
 //  - threads > specifies how many threads to use. loses effectiveness past the number of computer cores
 //  - sun > specifies which direction the sun is, so the scene is lit from that angle
 //  - sky > makes the background a blue sky and gray ground color instead of black. This will add blue color to the scene
-//  - checkpoints > tells how many times to create a new checkpoint image. Useful during long renders
+//  - checkpoints > tells how many times to create a new checkpoint image. Useful during long renders to see render progress
 
 
 /*
@@ -147,7 +149,9 @@ int main(int argc, char* argv[]) {
         }
 
         if (samples_per_checkpoint < thread_count) {
-            throw std::runtime_error("More threads than rays. " + std::to_string(samples_per_checkpoint) + " rays per checkpoint.");
+            throw std::runtime_error(
+                "More threads than rays. " + std::to_string(samples_per_checkpoint) + " rays per checkpoint."
+            );
         }
 
         std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
@@ -197,11 +201,13 @@ int main(int argc, char* argv[]) {
             std::string output_filename = parser.get_output_filename();
             pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
             std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
-            save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
+            save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename,
+                            "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
             output_filename = parser.get_output_filename();
             createAverageImage("files/checkpoints", "files/renders/" + output_filename);
             std::cout << "\nWrote " << output_filename << '\n';
-            save_details("files/renders/" + output_filename, "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
+            save_details("files/renders/" + output_filename,
+                            "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
         }
     }
     catch (std::exception& err) {
