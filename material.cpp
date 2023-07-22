@@ -161,8 +161,22 @@ Ray DirectionalLight::scatter(const Ray&, const Hit& hit) const {
     return Ray(hit.position, random_in_hemisphere(hit.normal));
 }
 
+Matte::Matte(double reflectiveness, double roughness)
+    :Material{"matte"}, reflectiveness{reflectiveness}, roughness{roughness} {}
+
+Ray Matte::scatter(const Ray& ray, const Hit& hit) const {
+    Vector3D new_normal = hit.normal + random_in_hemisphere(hit.normal) * roughness;
+    return Ray(hit.position, biased_reflection(ray.direction, new_normal, reflectiveness));
+}
+
 Vector3D reflect(const Vector3D& vector, const Vector3D& normal) {
     return vector - 2 * dot(vector, normal) * normal;
+}
+
+Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, double bias) {
+    Vector3D reflected = reflect(vector, normal);
+    Vector3D rand_dir = random_in_hemisphere(normal);
+    return unit((1.0 - bias) * rand_dir + bias * reflected);
 }
 
 Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ratio) {

@@ -1,35 +1,22 @@
 # textures
-texture sun image sun.png
-texture mercury image mercury.png
-texture venus image venus.png
 texture earth image earth.png
 texture moon image moon.png
-texture mars image mars.png
-texture jupiter image jupiter.png
-texture saturn image saturn.png
-texture uranus image uranus.png
-texture neptune image neptune.png
+texture stars image stars.png
 
 # materials
 material light light
 material plain diffuse
 
 # objects
-sphere (12 15 0) 10 light sun
-sphere (10 0 0) 0.05 light mercury
-sphere (10.5 0 0) 0.08 light venus
-sphere (11 0 0) 0.1 light earth
-#sphere (11.5 0.1 0) 0.03 light moon
-sphere (11.5 0 0) 0.07 light mars
-sphere (12 0 0) 0.16 light jupiter
-sphere (12.5 0 0) 0.12 light saturn
-sphere (13 0 0) 0.1 light uranus
-sphere (13.5 0 0) 0.12 light neptune
+sphere (0 0 0) 0.1 (1 1) plain earth
+sphere (0.2 0.01 0.1) 0.02 (1 1) plain moon
+sphere (0 0 0) 10000000 (1 1) light stars
 
-#sun (1 0 -1)
+sun (-1 0 -0.1) (1 1 1) 20
 
-rays 10 100
+rays 10 10000
 threads 7
-camera (12 -1 0) (12 0 0) (0 0 1) 50
-pixels 1280 720
+checkpoints 10
+camera (0 -1 0) (0 0 0) (0 0 1) 40
+pixels 1920 1080
 output test.png

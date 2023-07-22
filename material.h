@@ -108,7 +108,18 @@ public:
     Ray scatter(const Ray &ray, const Hit &hit) const override;
 };
 
+class Matte : public Material {
+public:
+    Matte(double reflectiveness, double roughness);
+
+    Ray scatter(const Ray& ray, const Hit& hit) const override;
+
+    double reflectiveness, roughness;
+};
+
 Vector3D reflect(const Vector3D &vector, const Vector3D &normal);
+
+Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, double bias);
 
 Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ratio);
 

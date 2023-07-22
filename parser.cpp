@@ -792,6 +792,15 @@ void Parser::parse_material(std::stringstream& ss) {
             throw std::runtime_error("Missing the spread angle for directional light.");
         }
     }
+    else if (material_name == "matte") {
+        double reflectiveness, roughness;
+        if (ss >> reflectiveness >> roughness) {
+            materials[name] = std::make_shared<Matte>(reflectiveness, roughness);
+        }
+        else {
+            throw std::runtime_error("Malformed matte material (reflectiveness roughness).");
+        }
+    }
     else {
         throw std::runtime_error("Unknown material: " + name);
     }

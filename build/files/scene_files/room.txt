@@ -6,6 +6,7 @@ texture gradient gradient (0.2 0.8 0.2) (0.2 0.2 0.8)
 texture blue_squares squares (0.2 0.2 0.8) (0 1 0.5)
 texture nebula image nebula.png
 texture earth image  earth.png
+texture moon image moon.png
 texture blue solid (0.8 0.8 1)
 texture red solid (1 0.3 0.3)
 texture brown solid (0.7 0.4 0.1)
@@ -20,12 +21,13 @@ material plain diffuse
 material metal metal 0.15
 material metal2 metal 2
 material gloss gloss 0.5
+material matte matte 1 0.2
 
-normal tile TilesNormal.png (1 1 -1)
+normal tile TilesNormal.png (1 1 1)
 
 # objects
 sphere (0 1 1) 1 (1 1) gloss gradient
-normal_sphere (-1.5 -3 1) 1 (1 1) gloss brown tile
+normal_sphere (-1.5 -3 1) 1 (1 1) matte brown tile
 sphere (1.5 -3 1) 1 (1 1) glass plain
 sphere (-3 0 1) 1 (1 1) plain tan_checkered
 sphere (3 0 1) 1 (1 1) plain nebula
@@ -42,10 +44,10 @@ mesh (0 0 20) tile.txt (30 30 1) (0 0 0) light light
 #sun (1 0 -1)
 sky false
 
-rays 10 5000
+rays 10 500
 threads 7
-checkpoints 50
+checkpoints 10
 camera (0 -30 4) (0 -1.7 0.7) (0 0 1) 10
-lens 1 4
-pixels 1920 1080
+lens 1 0
+pixels 1280 720
 output test.png

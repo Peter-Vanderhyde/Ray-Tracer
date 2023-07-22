@@ -5,6 +5,7 @@ A C++ ray tracer created as a school project.
 *Keep in Mind*
 - Positive x is right, positive y is forward, and positive z is up
 - Color values are from 0.0 - 1.0
+- `comments` are made with the `#` symbol before a line
 ### Parameter Guide
 A guide on what types are used for the various parameters within the scene txt file.
 ```
@@ -41,6 +42,7 @@ texture <name> squares <primary color> <secondary color>
 texture <name> checkered <primary color> <secondary color>
 texture <name> image <file name>
 ```
+- Using image files requires that the image is placed in the `/build/files/images` folder
 ### Creating a Normal
 ```
 normal <name> <filename> <flip normal axis direction vector>  # (1 -1 1) flips the y-axis normal direction
@@ -92,17 +94,58 @@ obj <position> <file name> <sections to render -1=all> <scale vector> <material 
 sun <direction vector> <color> <intensity double>
 sky <boolean>
 ```
-### Setting Up Scene
+### Other Scene Settings
 ```
-rays <bounces> <num of rays>
+rays <bounces> <num of rays per pixel>
 threads <num of threads>
 checkpoints <num of checkpoints>
-camera <position> <looking at> <up vector> <fov>
+camera <position> <looking at vector> <up vector> <fov>
 lens <distance percentage> <blur amount>
 pixels <image width> <image height>
 output <file name>
 ```
 - Lens takes two parameters. The first determines where the focus is. When set to 1.0, the focus will be directly at the "looking at" vector camera parameter. 0.5 would focus halfway between the camera position and it's "looking at" vector. The second argument is a double 0.0-inf determining blur amount. 0 makes everything in the scene fully focused.
+
+## Example Scene
+```
+# Textures
+texture bright_white solid (4 4 4)
+texture white solid (1 1 1)
+texture red solid (0.6 0 0)
+texture blue solid (0.2 0.2 0.7)
+texture green solid (0.2 0.7 0.2)
+texture floor solid (0.3 0.3 0.3)
+
+# Materials
+material diff diffuse
+material light point_light
+material metal metal 0.7
+material gloss gloss 0.9
+material mirror specular
+material matte matte 0.95 0.1
+
+# Objects
+
+# floor
+plane (-100 100 0) (-100 -100 0) (100 -100 0) diff floor
+# lighting
+sphere (20 -20 25) 10 (1 1) light bright_white
+
+box (2 10 2) (4 4 4) (0 0 30) matte red
+sphere (-5 0 2) 2 (1 1) metal blue
+sphere (-4 -16 2) 2 (1 1) mirror green
+sphere (6 -8 2) 2 (1 1) gloss white
+
+sky true
+
+rays 10 100
+threads 7
+camera (0 -20 2) (0 -8 2) (0 0 1) 70
+lens 1 0
+pixels 1280 720
+output test.png
+```
+- **Results are placed in `/build/files/renders`.**
 
 ### Example Renders
 ![13](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4e301d58-7aac-4800-9862-6f92996c4b37)
@@ -130,4 +173,3 @@ output <file name>
 ![combined](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8542102a-62d6-4728-9ca9-1085d01f073b)
 ![coffee2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/23581cba-7f6b-4c1b-91c2-e7aa6248b0eb)
 ![room_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6b2778c3-ea04-46c5-bae5-babe65fd8d7b)
-

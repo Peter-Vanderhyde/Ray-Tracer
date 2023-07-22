@@ -96,6 +96,11 @@
 
 
 /*
+Add specular map support
+Transparent textures/shapes
+multi-material objects
+Add sphere rotations so textures can be rotated
+Attempt a matte surface
 Make obj textures line up correctly (normal map too?)
 Collision tree
 Multi processors using MPICH
@@ -117,6 +122,7 @@ void render(Pixels &pixels, int rows, int columns, int samples, Camera camera,
 double angle(const Vector3D &v1, const Vector3D &v2);
 double clamp(double value, double min, double max);
 Color get_sky_color(const Ray &ray, bool sky);
+std::optional<Color> get_sunlight(Sun sun, const Ray& ray);
 void delete_png_images(const std::string& directoryPath);
 void signal_handler(int signal);
 
@@ -289,16 +295,18 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
     }
 
     std::optional<Hit> hit = world.find_nearest(ray, curr_depth);
+    if (hit.has_value() && fabs(length(hit.value().position - ray.origin)) > 1000000 && opt_sun.has_value()) {
+        std::optional<Color> sunlight = get_sunlight(opt_sun.value(), ray);
+        if (sunlight.has_value()) {
+            return sunlight.value();
+        }
+    }
     if (!hit.has_value()) {
         if (opt_sun.has_value() && curr_depth != 0) {
-            Sun sun = opt_sun.value();
-            Vector3D unit_direction = unit(-ray.direction);
-            double angle_diff = angle(unit_direction, sun.direction);
-            if (angle_diff <= 10.0) {
-                double t = std::abs(dot(unit_direction, sun.direction));
-                return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * sun.color * sun.intensity;
-            }
-            else {
+            std::optional<Color> sunlight = get_sunlight(opt_sun.value(), ray);
+            if (sunlight.has_value()) {
+                return sunlight.value();
+            } else {
                 return get_sky_color(ray, sky);
             }
         }
@@ -309,17 +317,11 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
     Hit hit_value = hit.value();
     auto hit_normal = unit(hit_value.normal);
     std::optional<Vector3D> shape_normal_map = hit_value.shape->normal_map->get_vector(hit_value.uv);
-    // if (std::this_thread::get_id() == (std::thread::id)1) {
-    //     Vector3D A{0, 0, 1};
-    //     Vector3D B{0.1, 0, 0.9};
-    //     Vector3D C{0, -1, 0};
-    //     Vector3D dif = 
-    //     std::cout << accurate << " " << unit(C + accurate) << '\n';
-    // }
     if (shape_normal_map.has_value()) {
         Vector3D map = shape_normal_map.value();
         if (hit_normal != Vector3D{0, 0, 1} && hit_normal != Vector3D{0, 0, -1})
         {
+            // Conforming the normal map vector to the shape of the object
             Vector3D bitangent = cross(Vector3D{0, 0, 1}, hit_normal);
             bitangent = unit(bitangent);
             Vector3D tangent = cross(bitangent, hit_normal);
@@ -328,6 +330,7 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
             hit_value.normal = unit(hit_value.normal);
         }
         else {
+            // Avoiding an error when crossing the same vector
             Vector3D bitangent = Vector3D{1, 0, 0};
             Vector3D tangent = Vector3D{0, 1, 0};
             if (hit_normal.z == -1) {
@@ -346,11 +349,9 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
         hit_value.normal = unit(hit_normal);
     }
     if (length(hit_value.normal) == 0) {
+        // Something went wrong with the normal calculation
         return Red;
     }
-    // if (std::this_thread::get_id() == (std::thread::id)1) {
-    //     std::cout << " " << hit_value.normal << '\n';
-    // }
 
     Material *material = hit_value.shape->material;
     Texture *texture = hit_value.shape->texture;
@@ -386,6 +387,18 @@ Color get_sky_color(const Ray& ray, bool sky) {
     }
     else {
         return Black;
+    }
+}
+
+std::optional<Color> get_sunlight(Sun sun, const Ray& ray) {
+    Vector3D unit_direction = unit(-ray.direction);
+    double angle_diff = angle(unit_direction, sun.direction);
+    if (angle_diff <= 10.0) {
+        double t = std::abs(dot(unit_direction, sun.direction));
+        return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * sun.color * sun.intensity;
+    }
+    else {
+        return {};
     }
 }
 
