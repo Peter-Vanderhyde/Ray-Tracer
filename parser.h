@@ -58,6 +58,7 @@ private:
     void parse_lens(std::stringstream& ss);
     void parse_pixels(std::stringstream& ss);
     void parse_sphere(std::stringstream& ss);
+    void parse_textured_sphere(std::stringstream& ss);
     void parse_normal_sphere(std::stringstream& ss);
     void parse_triangle(std::stringstream& ss);
     void parse_textured_triangle(Vector3D v0, Vector3D v1, Vector3D v2,

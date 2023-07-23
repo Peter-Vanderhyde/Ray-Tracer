@@ -49,12 +49,12 @@ normal <name> <filename> <flip normal axis direction vector>  # (1 -1 1) flips t
 ```
 ### Creating basic Objects
 ```
-sphere <center> <radius> <u v> <material> <texture>
+sphere <center> <radius> <tile_u tile_v> <rotations> <material> <texture>
 triangle <coord 1> <coord 2> <coord 3> <material> <texture>
 plane <topleft> <botleft> <botright> <material> <texture>
 box <position> <dimensions> <rotations> <material> <texture>
 ```
-*Sphere allows for image texture to be used*
+- The `<tile_u tile_v>` parameter determines the tiling of the texture on the sphere, both around and up/down (`Sphere allows for image texture to be used. The other shapes do not by default.`). It should be set to `(1 1)` for the normal texture application.
 
 ### More Advanced Objects
 - Textured objects allow image textures to be used
@@ -130,9 +130,9 @@ material matte matte 0.95 0.1
 plane (-100 100 0) (-100 -100 0) (100 -100 0) diff floor
 
 box (2 10 2) (4 4 4) (0 0 30) matte red
-sphere (-5 0 2) 2 (1 1) metal blue
-sphere (-4 -16 2) 2 (1 1) mirror green
-sphere (6 -8 2) 2 (1 1) gloss white
+sphere (-5 0 2) 2 (1 1) (0 0 0) metal blue
+sphere (-4 -16 2) 2 (1 1) (0 0 0) mirror green
+sphere (6 -8 2) 2 (1 1) (0 0 0) gloss white
 
 sky true
 sun (-20 20 -25) 20 (1 1 1) 10
@@ -157,7 +157,6 @@ output test.png
 ![38](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/30c22fd9-8394-4a5d-b427-dc6d2d536847)
 ![36](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/b3d5ac58-7ba2-4504-8712-add6ac29828b)
 ![40](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/541916bd-f4a8-4f49-bcbf-776d578a672c)
-![normal_scene_field](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/dad689d5-743e-4257-b5e0-21314c9281ff)
 ![portal](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/18263c9a-f2e5-42a4-8f0c-36aba3af18c5)
 ![cornell_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/a5da6bd5-1a2c-4b10-bc82-e1f441013539)
 ![cornell](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/33912d07-0389-49fe-a111-97b982adfcd5)

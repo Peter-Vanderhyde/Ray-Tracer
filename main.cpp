@@ -100,7 +100,6 @@
 Add specular map support
 Change specular to allow editing both specular color and gloss amount
 Bloom maybe
-Transparent textures/shapes
 multi-material objects
 Add sphere rotations so textures can be rotated
 Make obj textures line up correctly (normal map too?)
@@ -108,6 +107,7 @@ Collision tree
 Fix saving details
 Look into smoothing obj by interpolating normals between edges
 Fix normal on box
+Fix metal freaking out
 */
 
 namespace fs = std::filesystem;

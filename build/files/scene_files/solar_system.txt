@@ -2,26 +2,29 @@
 texture earth_day image earth_day.png
 texture earth_night image earth_night.png
 texture earth_lights image earth_lights.png
-texture clouds image transparent_image.png
+texture clouds image transparent_clouds.png
 texture moon image moon8k.png
-#texture stars image stars.png
+texture stars image stars.png
 
 # materials
 material light light
 material plain diffuse
 
+# normals
+normal land_normal earth_normal.png (1 1 1)
+
 # objects
-sphere (0 0 0) 0.1 (1 1) plain earth_day
-sphere (0 0 0) 0.10001 (1 1) light earth_lights
-sphere (0 0 0) 0.1001 (1 1) plain clouds
-sphere (0.2 0.01 0.1) 0.02 (1 1) plain moon
+normal_sphere (0 0 0) 0.1 (1 1) (0 -23.5 -50) plain earth_day land_normal
+sphere (0 0 0) 0.10001 (1 1) (0 -23.5 -50) light earth_lights
+sphere (0 0 0) 0.1001 (1 1) (0 -23.5 -50) plain clouds
+sphere (0.2 0.01 0.1) 0.02 (1 1) (0 0 0) plain moon
 
-sun (-1 0 -0.1) 10 (1 1 1) 60
-#skysphere (1 1) stars
+sun (-1 0 -0.1) 10 (1 1 1) 80
+skysphere (1 1) stars
 
-rays 10 1000
+rays 10 10000
 threads 7
 checkpoints 0
 camera (0 -1 0) (0 0 0) (0 0 1) 40
-pixels 1280 720
+pixels 1920 1080
 output test.png

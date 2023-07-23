@@ -11,14 +11,15 @@ class Ray;
 
 class Sphere : public Shape{
 public:
-    Sphere(const Point3D& center, double radius, Vector2D tile, Material* material, Texture* texture, Normal* normal_map);
+    Sphere(const Point3D& center, double radius, Vector2D tile, Vector3D rotations, Material* material, Texture* texture, Normal* normal_map);
 
     // return the distance if ray intersects
-    std::optional<double> intersect(const Ray& ray) const; // doesn't change the sphere
-    Hit construct_hit(const Ray& ray, double time) const;
-    virtual Point2D uv(const Hit* hit) const;
+    std::optional<double> intersect(const Ray& ray) const override; // doesn't change the sphere
+    Hit construct_hit(const Ray& ray, double time) const override;
+    Point2D uv(const Hit* hit) const override;
 
     Point3D center;
     double radius;
     Vector2D tile;
+    Vector3D rotations{0, 0, 0};
 };

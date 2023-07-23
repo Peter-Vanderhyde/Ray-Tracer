@@ -213,31 +213,33 @@ void Parser::parse_pixels(std::stringstream& ss) {
 }
 
 void Parser::parse_sphere(std::stringstream& ss) {
-    Vector3D center;
+    Vector3D center, rotations;
     double radius;
     Vector2D tile;
     std::string material_name, texture_name;
-    ss >> center >> radius >> tile >> material_name >> texture_name;
+    if (!(ss >> center >> radius >> tile >> rotations >> material_name >> texture_name)) {
+        throw std::runtime_error("Sphere malformed (center radius tile rotations material texture).");
+    }
 
     Material* material{get_material(material_name)};
     Texture* texture{get_texture(texture_name)};
     Normal *normal{get_normal("generic")};
-    world.add(std::make_shared<Sphere>(center, radius, tile, material, texture, normal));
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, material, texture, normal));
 }
 
 void Parser::parse_normal_sphere(std::stringstream& ss) {
-    Vector3D center;
+    Vector3D center, rotations;
     double radius;
     Vector2D tile;
     std::string material_name, texture_name, normal_name;
-    if (!(ss >> center >> radius >> tile >> material_name >> texture_name >> normal_name)) {
-        throw std::runtime_error("Sphere is malformed (center radius tilingXY material texture normal).");
+    if (!(ss >> center >> radius >> tile >> rotations >> material_name >> texture_name >> normal_name)) {
+        throw std::runtime_error("Sphere is malformed (center radius tile rotations material texture normal).");
     }
 
     Material* material{get_material(material_name)};
     Texture* texture{get_texture(texture_name)};
     Normal *normal{get_normal(normal_name)};
-    world.add(std::make_shared<Sphere>(center, radius, tile, material, texture, normal));
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, material, texture, normal));
 }
 
 void Parser::parse_triangle(std::stringstream& ss) {

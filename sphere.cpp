@@ -7,8 +7,9 @@
 #include "material.h"
 #include "point2d.h"
 
-Sphere::Sphere(const Point3D& center, double radius, Vector2D tile, Material* material, Texture* texture, Normal* normal_map)
-    :Shape{material, texture, normal_map}, center{center}, radius{radius}, tile{tile} {
+Sphere::Sphere(const Point3D& center, double radius, Vector2D tile, Vector3D rotations,
+                Material* material, Texture* texture, Normal* normal_map)
+    :Shape{material, texture, normal_map}, center{center}, radius{radius}, tile{tile}, rotations{rotations} {
     if (radius <= 0) {
         throw std::runtime_error("radius must be positive: " + std::to_string(radius));
     }
@@ -50,8 +51,16 @@ Hit Sphere::construct_hit(const Ray& ray, double time) const {
 }
 
 Point2D Sphere::uv(const Hit* hit) const {
-    double theta = std::acos(hit->normal.z);
-    double phi = std::atan2(hit->normal.y, hit->normal.x);
+    Hit hit_copy = *hit;
+    Vector3D normal = hit_copy.normal;
+
+    // Apply rotations to the normal vector of the copied hit object
+    if (rotations.x != 0 || rotations.y != 0 || rotations.z != 0) {
+        normal.rotate(rotations);
+    }
+
+    double theta = std::acos(normal.z);
+    double phi = std::atan2(normal.y, normal.x);
 
     double u = 0.5 + phi / (2 * Constants::Pi); // [0, 1] range along median of sphere
     double v = theta / Constants::Pi; // [0, 1] range along z axis
