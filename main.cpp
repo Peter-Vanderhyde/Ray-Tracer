@@ -18,6 +18,7 @@
 #include "point2d.h"
 #include "sun.h"
 #include "combine_images.h"
+#include "skysphere.h"
 #include <iomanip>
 #include <thread>
 #include <iostream>
@@ -97,6 +98,8 @@
 
 /*
 Add specular map support
+Change specular to allow editing both specular color and gloss amount
+Bloom maybe
 Transparent textures/shapes
 multi-material objects
 Add sphere rotations so textures can be rotated
@@ -109,20 +112,20 @@ Fix gradient
 Look into creating process
 Look into smoothing obj by interpolating normals between edges
 Fix normal on box
-Fix black gloss (Try making gloss only reflect the color and not combine with object color)
 */
 
 namespace fs = std::filesystem;
 
 void print_progress(long long ray_num, long long total_rays, std::chrono::seconds elapsed_time, int rays_done);
 Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_depth,
-                std::optional<Sun> opt_sun, bool sky);
+                std::optional<Sun> opt_sun, bool sky, std::optional<Skysphere> skysphere);
 void render(Pixels &pixels, int rows, int columns, int samples, Camera camera,
-            World world, int depth, std::optional<Sun> sun, bool sky);
+            World world, int depth, std::optional<Sun> sun, bool sky, std::optional<Skysphere> skysphere);
 double angle(const Vector3D &v1, const Vector3D &v2);
 double clamp(double value, double min, double max);
-Color get_sky_color(const Ray &ray, bool sky);
-std::optional<Color> get_sunlight(Sun sun, const Ray& ray);
+Color get_background_color(const Ray& ray, std::optional<Sun> sun, bool sky, std::optional<Skysphere> skysphere);
+Color get_sky_color(const Ray& ray, bool sky, std::optional<Skysphere> skysphere);
+Color get_sunlight(Sun sun, const Ray& ray, Color sky_color);
 void delete_png_images(const std::string& directoryPath);
 void signal_handler(int signal);
 
@@ -142,7 +145,8 @@ int main(int argc, char* argv[]) {
         int depth = parser.bounces + 1;
         int samples = parser.samples;
         int thread_count = parser.threads;
-        std::optional<Sun> sun = parser.get_sun();
+        std::optional<Sun> sun = parser.sun;
+        std::optional<Skysphere> skysphere = parser.skysphere;
         bool sky = parser.has_sky();
         int checkpoints = parser.get_checkpoints();
 
@@ -162,6 +166,7 @@ int main(int argc, char* argv[]) {
 
         std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
         delete_png_images("files/checkpoints");
+        // Handles Ctrl-C interrupt
         std::signal(SIGINT, signal_handler);
 
         for (int checkpoint = 0; checkpoint < checkpoints; ++checkpoint) {
@@ -177,12 +182,12 @@ int main(int argc, char* argv[]) {
             for (int i = 1; i < thread_count; ++i)
             {
                 std::thread t{render, std::ref(pixel_results.at(i)), pixels.rows, pixels.columns,
-                                static_cast<int>(num_rays), camera, world, depth, sun, sky};
+                                static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere};
                 threads.push_back(std::move(t));
             }
             
             render(pixel_results.at(0), pixels.rows, pixels.columns,
-                static_cast<int>(num_rays), camera, world, depth, sun, sky);
+                static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere);
             
             for (auto& thread : threads) {
                 thread.join();
@@ -222,7 +227,8 @@ int main(int argc, char* argv[]) {
 }
 
 void render(Pixels& pixels, int rows, int columns, int samples,
-            Camera camera, World world, int depth, std::optional<Sun> sun, bool sky) {
+            Camera camera, World world, int depth, std::optional<Sun> sun, bool sky,
+            std::optional<Skysphere> skysphere) {
     const long long rays_total = rows * columns * static_cast<long long>(samples);
     long long ray_num = 0;
     if (std::this_thread::get_id() == (std::thread::id)1) {
@@ -240,7 +246,7 @@ void render(Pixels& pixels, int rows, int columns, int samples,
                 double x = (j + random_double()) / (columns - 1);
                 double y = (i + random_double()) / (rows - 1);
                 Ray ray = camera.compute_ray(x, y);
-                color += trace_path(world, ray, depth, 0, sun, sky);
+                color += trace_path(world, ray, depth, 0, sun, sky, skysphere);
                 ++ray_num;
                 if (ray_num % (rays_total / 1000) == 0 && std::this_thread::get_id() == (std::thread::id)1) {
                     auto current_time = std::chrono::high_resolution_clock::now();
@@ -288,34 +294,18 @@ void print_progress(long long ray_num, long long total_rays, std::chrono::second
 }
 
 Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_depth,
-                std::optional<Sun> opt_sun, bool sky) {
+                std::optional<Sun> sun, bool sky, std::optional<Skysphere> skysphere) {
     if (curr_depth == max_depth) {
 
-        return get_sky_color(ray, sky);
+        return get_background_color(ray, sun, sky, skysphere);
     }
 
     std::optional<Hit> hit = world.find_nearest(ray, curr_depth);
-    if (hit.has_value() && fabs(length(hit.value().position - ray.origin)) > 1000000 && opt_sun.has_value()) {
-        std::optional<Color> sunlight = get_sunlight(opt_sun.value(), ray);
-        if (sunlight.has_value()) {
-            return sunlight.value();
-        }
-    }
     if (!hit.has_value()) {
-        if (opt_sun.has_value() && curr_depth != 0) {
-            std::optional<Color> sunlight = get_sunlight(opt_sun.value(), ray);
-            if (sunlight.has_value()) {
-                return sunlight.value();
-            } else {
-                return get_sky_color(ray, sky);
-            }
-        }
-        else {
-            return get_sky_color(ray, sky);
-        }
+        return get_background_color(ray, sun, sky, skysphere);
     }
     Hit hit_value = hit.value();
-    auto hit_normal = unit(hit_value.normal);
+    Vector3D hit_normal = unit(hit_value.normal);
     std::optional<Vector3D> shape_normal_map = hit_value.shape->normal_map->get_vector(hit_value.uv);
     if (shape_normal_map.has_value()) {
         Vector3D map = shape_normal_map.value();
@@ -361,27 +351,40 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
         return color * std::pow(std::abs(dot(hit_value.normal, ray.direction)), 0.333);
     }
     Ray scattered = material->scatter(ray, hit_value);
-    return trace_path(world, scattered, max_depth, curr_depth+1, opt_sun, sky) * texture->uv(hit_value.uv.x, hit_value.uv.y);
+    return trace_path(world, scattered, max_depth, curr_depth+1, sun, sky, skysphere) * texture->uv(hit_value.uv.x, hit_value.uv.y);
 }
 
 double angle(const Vector3D& v1, const Vector3D& v2) {
-    return acos(clamp(dot(v1, v2), -1.0, 1.0)) * (180.0 / Constants::Pi);
+    return acos(dot(v1, v2) / fabs(length(v1) * length(v2))) * (180.0 / Constants::Pi);
 }
 
 double clamp(double value, double min, double max) {
     return std::max(min, std::min(value, max));
 }
 
-Color get_sky_color(const Ray& ray, bool sky) {
+Color get_background_color(const Ray& ray, std::optional<Sun> sun, bool sky, std::optional<Skysphere> skysphere) {
+    Color sky_color = get_sky_color(ray, sky, skysphere);
+    if (sun.has_value()) {
+        return get_sunlight(sun.value(), ray, sky_color);
+    }
+    
+    return sky_color;
+}
+
+Color get_sky_color(const Ray& ray, bool sky, std::optional<Skysphere> skysphere) {
+    if (skysphere.has_value()) {
+        std::optional<double> time = skysphere.value().intersect(ray);
+        if (time.has_value()) {
+            Point2D uv = skysphere.value().uv(ray, time.value());
+            return skysphere.value().texture->uv(uv.x, uv.y);
+        }
+    }
     if (sky) {
         Vector3D unit_direction = unit(ray.direction);
-        if (unit_direction.z > 0)
-        {
-            auto t = 0.5*(unit_direction.y + 1.0);
-            return (1.0-t)*Color(1.0, 1.0, 1.0) + t*Color(0.5, 0.7, 1.0);
-        }
-        else
-        {
+        if (unit_direction.z > 0) {
+            auto white_amount = pow(1 - unit_direction.z, 5.0);
+            return white_amount * Color(1.0, 1.0, 1.0) + (1.0 - white_amount) * Color(0.035, 0.404, 0.824);
+        } else {
             return Color(0.416, 0.392, 0.380);
         }
     }
@@ -390,15 +393,15 @@ Color get_sky_color(const Ray& ray, bool sky) {
     }
 }
 
-std::optional<Color> get_sunlight(Sun sun, const Ray& ray) {
+Color get_sunlight(Sun sun, const Ray& ray, Color sky_color) {
     Vector3D unit_direction = unit(-ray.direction);
     double angle_diff = angle(unit_direction, sun.direction);
-    if (angle_diff <= 10.0) {
-        double t = std::abs(dot(unit_direction, sun.direction));
-        return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * sun.color * sun.intensity;
+    if (angle_diff <= sun.size) {
+        double t = angle_diff / sun.size;
+        return t * sky_color + (1.0 - t) * sun.color * sun.intensity;
     }
     else {
-        return {};
+        return sky_color;
     }
 }
 

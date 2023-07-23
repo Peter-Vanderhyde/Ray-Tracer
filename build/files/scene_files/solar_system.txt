@@ -1,6 +1,7 @@
 # textures
-texture earth image earth.png
-texture moon image moon.png
+texture earth image earth_day.png
+texture clouds image earth_clouds.png
+texture moon image moon8k.png
 texture stars image stars.png
 
 # materials
@@ -10,13 +11,13 @@ material plain diffuse
 # objects
 sphere (0 0 0) 0.1 (1 1) plain earth
 sphere (0.2 0.01 0.1) 0.02 (1 1) plain moon
-sphere (0 0 0) 10000000 (1 1) light stars
 
-sun (-1 0 -0.1) (1 1 1) 20
+sun (-1 0 -0.1) 10 (1 1 1) 60
+skysphere (1 1) stars
 
-rays 10 10000
+rays 10 1000
 threads 7
-checkpoints 10
+checkpoints 0
 camera (0 -1 0) (0 0 0) (0 0 1) 40
 pixels 1920 1080
 output test.png

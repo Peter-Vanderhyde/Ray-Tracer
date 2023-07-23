@@ -114,7 +114,7 @@ texture white solid (1 1 1)
 texture red solid (0.6 0 0)
 texture blue solid (0.2 0.2 0.7)
 texture green solid (0.2 0.7 0.2)
-texture floor solid (0.3 0.3 0.3)
+texture floor solid (0.05 0.05 0.05)
 
 # Materials
 material diff diffuse
@@ -128,8 +128,6 @@ material matte matte 0.95 0.1
 
 # floor
 plane (-100 100 0) (-100 -100 0) (100 -100 0) diff floor
-# lighting
-sphere (20 -20 25) 10 (1 1) light bright_white
 
 box (2 10 2) (4 4 4) (0 0 30) matte red
 sphere (-5 0 2) 2 (1 1) metal blue
@@ -137,6 +135,7 @@ sphere (-4 -16 2) 2 (1 1) mirror green
 sphere (6 -8 2) 2 (1 1) gloss white
 
 sky true
+sun (-20 20 -25) 20 (1 1 1) 10
 
 rays 10 100
 threads 7

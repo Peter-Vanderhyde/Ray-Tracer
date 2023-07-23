@@ -10,6 +10,7 @@
 #include "world.h"
 #include "color.h"
 #include "sun.h"
+#include "skysphere.h"
 
 class Material;
 class Texture;
@@ -26,21 +27,21 @@ public:
     World get_world();
     Pixels get_pixels();
     std::string get_output_filename();
-    std::optional<Sun> get_sun();
     bool has_sky();
     int get_checkpoints();
 
     int bounces, samples;
     int threads{1};
+    std::optional<Sun> sun = {};
+    std::optional<Skysphere> skysphere = {};
 
 private:
     std::string input_filename;
     bool found_camera, found_pixels, found_output, found_rays;
-    bool found_sun = false, found_sky = false;
+    bool found_sky = false;
     Point3D camera_position, camera_target;
-    Vector3D camera_up, sun_direction;
-    double camera_fov, aspect, sun_intensity;
-    Color sun_color;
+    Vector3D camera_up;
+    double camera_fov, aspect;
     int columns, rows;
     World world;
     std::string output_filename;
@@ -94,6 +95,7 @@ private:
     void parse_threads(std::stringstream &ss);
     void parse_sun(std::stringstream &ss);
     void parse_sky(std::stringstream &ss);
+    void parse_skysphere(std::stringstream &ss);
     void parse_checkpoints(std::stringstream &ss);
     Material *get_material(std::string name);
     Texture* get_texture(std::string name);

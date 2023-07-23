@@ -47,15 +47,6 @@ std::string Parser::get_output_filename() {
     return output_filename;
 }
 
-std::optional<Sun> Parser::get_sun() {
-    if (found_sun) {
-        return Sun(sun_direction, sun_color, sun_intensity);
-    }
-    else {
-        return {};
-    }
-}
-
 bool Parser::has_sky() {
     return found_sky;
 }
@@ -158,6 +149,9 @@ void Parser::parse(std::ifstream& input) {
         }
         else if (type == "sky") {
             parse_sky(ss);
+        }
+        else if (type == "skysphere") {
+            parse_skysphere(ss);
         }
         else if (type == "checkpoints") {
             parse_checkpoints(ss);
@@ -934,22 +928,36 @@ void Parser::parse_threads(std::stringstream& ss) {
 }
 
 void Parser::parse_sun(std::stringstream& ss) {
-    if (!(ss >> sun_direction >> sun_color >> sun_intensity)) {
-        throw std::runtime_error("Sun is malformed (direction color intensity).");
+    Vector3D direction;
+    double size, intensity;
+    Color color;
+    if (!(ss >> direction >> size >> color >> intensity)) {
+        throw std::runtime_error("Sun is malformed (direction size color intensity).");
     }
-    else {
-        found_sun = true;
-        if (sun_direction.x == 3.14 && sun_direction.y == 1.59 && sun_direction.z == 2.65) {
-            sun_direction = random_in_hemisphere(Vector3D{0, 0, -1});
-            std::cout << "\nThe sun's direction is " << sun_direction << '\n';
-        }
+
+    if (direction.x == 3.14 && direction.y == 1.59 && direction.z == 2.65) {
+        direction = random_in_hemisphere(Vector3D{0, 0, -1});
+        std::cout << "\nThe sun's direction is " << direction << '\n';
     }
+    
+    sun = Sun(direction, size, color, intensity);
 }
 
 void Parser::parse_sky(std::stringstream& ss) {
     if (!(ss >> std::boolalpha >> found_sky)) {
         throw std::runtime_error("Sky is malformed (sky_bool).");
     }
+}
+
+void Parser::parse_skysphere(std::stringstream& ss) {
+    Point2D tile;
+    std::string texture_name;
+    if (!(ss >> tile >> texture_name)) {
+        throw std::runtime_error("Skysphere is malformed (tile texture).");
+    }
+
+    auto texture{get_texture(texture_name)};
+    skysphere = Skysphere(tile, texture);
 }
 
 void Parser::parse_checkpoints(std::stringstream& ss) {
