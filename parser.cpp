@@ -806,7 +806,7 @@ void Parser::parse_texture(std::stringstream& ss) {
     ss >> name >> texture_name;
     if (texture_name == "solid") {
         if (ss >> color){
-            textures[name] = std::make_shared<Solid>(texture_name, color);
+            textures[name] = std::make_shared<Solid>(color);
         }
         else {
             throw std::runtime_error("Missing solid color.");
@@ -816,7 +816,7 @@ void Parser::parse_texture(std::stringstream& ss) {
         Color secondary;
         if (ss >> color >> secondary)
         {
-            textures[name] = std::make_shared<Gradient>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Gradient>(color, secondary);
         }
         else {
             throw std::runtime_error("Malformed gradient. Need primaryColor, secondaryColor.");
@@ -824,7 +824,7 @@ void Parser::parse_texture(std::stringstream& ss) {
     }
     else if (texture_name == "dots") {
         if (ss >> color) {
-            textures[name] = std::make_shared<Dots>(texture_name, color);
+            textures[name] = std::make_shared<Dots>(color);
         }
         else {
             throw std::runtime_error("Missing dots color.");
@@ -835,7 +835,7 @@ void Parser::parse_texture(std::stringstream& ss) {
         double num_of_stripes, width_percent;
         if (ss >> color >> secondary >> num_of_stripes >> width_percent)
         {
-            textures[name] = std::make_shared<Swirl>(texture_name, color, secondary, num_of_stripes, width_percent);
+            textures[name] = std::make_shared<Swirl>(color, secondary, num_of_stripes, width_percent);
         }
         else {
             throw std::runtime_error("Malformed swirl. Need color, secondary, num stripes, width percent.");
@@ -844,7 +844,7 @@ void Parser::parse_texture(std::stringstream& ss) {
     else if (texture_name == "squares") {
         Color secondary;
         if (ss >> color >> secondary){
-            textures[name] = std::make_shared<Squares>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Squares>(color, secondary);
         }
         else {
             throw std::runtime_error("Missing primary or secondary color for squares.");
@@ -853,7 +853,7 @@ void Parser::parse_texture(std::stringstream& ss) {
     else if (texture_name == "checkered") {
         Color secondary;
         if (ss >> color >> secondary){
-            textures[name] = std::make_shared<Checkered>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Checkered>(color, secondary);
         }
         else {
             throw std::runtime_error("Missing primary or secondary color for checkered.");
@@ -880,7 +880,7 @@ void Parser::parse_texture(std::stringstream& ss) {
                 values.push_back(i);
             }
 
-            textures[name] = std::make_shared<Image>(texture_name, values, width, height);
+            textures[name] = std::make_shared<Image>(values, width, height);
         }
         else {
             throw std::runtime_error("Malformed image texture.");

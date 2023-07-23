@@ -8,22 +8,24 @@ public:
     Texture(std::string name, const Color &color);
     virtual ~Texture() {};
     virtual Color uv(double u, double v) const = 0;
+    virtual double opacity(double u, double v) const;
+
+    std::string name;
 
 protected:
-    std::string name;
     Color color;
 };
 
 
 class Solid : public Texture {
 public:
-    Solid(std::string name, Color color);
+    Solid(Color color);
     Color uv(double u, double v) const override;
 };
 
 class Gradient : public Texture {
 public:
-    Gradient(std::string name, Color color, Color secondary);
+    Gradient(Color color, Color secondary);
     Color uv(double u, double v) const override;
 
     Color secondary;
@@ -31,13 +33,13 @@ public:
 
 class Dots : public Texture {
 public:
-    Dots(std::string name, Color color);
+    Dots(Color color);
     Color uv(double u, double v) const override;
 };
 
 class Swirl : public Texture {
 public:
-    Swirl(std::string name, Color color, Color secondary, double num_of_stripes, double width_percent);
+    Swirl(Color color, Color secondary, double num_of_stripes, double width_percent);
     Color uv(double u, double v) const override;
 
     Color secondary;
@@ -46,7 +48,7 @@ public:
 
 class Squares : public Texture {
 public:
-    Squares(std::string name, Color color, Color secondary);
+    Squares(Color color, Color secondary);
     Color uv(double u, double v) const override;
 
     Color secondary;
@@ -54,7 +56,7 @@ public:
 
 class Checkered : public Texture {
 public:
-    Checkered(std::string name, Color color, Color secondary);
+    Checkered(Color color, Color secondary);
     Color uv(double u, double v) const override;
 
     Color secondary;
@@ -62,8 +64,9 @@ public:
 
 class Image : public Texture {
 public:
-    Image(std::string name, std::vector<int> image, unsigned width, unsigned height);
+    Image(std::vector<int> image, unsigned width, unsigned height);
     Color uv(double u, double v) const override;
+    double opacity(double u, double v) const override;
 
     std::vector<int> image;
     unsigned width, height;

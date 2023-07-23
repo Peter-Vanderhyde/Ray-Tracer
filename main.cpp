@@ -103,13 +103,9 @@ Bloom maybe
 Transparent textures/shapes
 multi-material objects
 Add sphere rotations so textures can be rotated
-Attempt a matte surface
 Make obj textures line up correctly (normal map too?)
 Collision tree
-Multi processors using MPICH
 Fix saving details
-Fix gradient
-Look into creating process
 Look into smoothing obj by interpolating normals between edges
 Fix normal on box
 */
@@ -305,53 +301,46 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
         return get_background_color(ray, sun, sky, skysphere);
     }
     Hit hit_value = hit.value();
-    Vector3D hit_normal = unit(hit_value.normal);
-    std::optional<Vector3D> shape_normal_map = hit_value.shape->normal_map->get_vector(hit_value.uv);
-    if (shape_normal_map.has_value()) {
-        Vector3D map = shape_normal_map.value();
-        if (hit_normal != Vector3D{0, 0, 1} && hit_normal != Vector3D{0, 0, -1})
-        {
-            // Conforming the normal map vector to the shape of the object
-            Vector3D bitangent = cross(Vector3D{0, 0, 1}, hit_normal);
-            bitangent = unit(bitangent);
-            Vector3D tangent = cross(bitangent, hit_normal);
-            tangent = unit(tangent);
-            hit_value.normal = bitangent * map.x + tangent * map.y + hit_normal * map.z;
-            hit_value.normal = unit(hit_value.normal);
-        }
-        else {
-            // Avoiding an error when crossing the same vector
-            Vector3D bitangent = Vector3D{1, 0, 0};
-            Vector3D tangent = Vector3D{0, 1, 0};
-            if (hit_normal.z == -1) {
-                bitangent *= -1;
-            }
-            hit_value.normal = bitangent * map.x + tangent * map.y + hit_normal * map.z;
-            if (length(hit_value.normal) == 0) {
-                hit_value.normal = unit(hit_normal);
-            }
-            else {
-                hit_value.normal = unit(hit_value.normal);   
-            }
+
+    Material *material = hit_value.shape->material;
+    Texture *texture = hit_value.shape->texture;
+    double opacity = texture->opacity(hit_value.uv.x, hit_value.uv.y);
+    std::optional<Color> passthrough = {};
+    if (opacity != 1.0) {
+        passthrough = trace_path(world, Ray(hit_value.position, ray.direction), max_depth, curr_depth, sun, sky, skysphere);
+        if (opacity == 0.0) {
+            return passthrough.value();
         }
     }
-    else {
-        hit_value.normal = unit(hit_normal);
-    }
-    if (length(hit_value.normal) == 0) {
+
+    // Apply any normal maps to the shape normal
+    Vector3D shape_normal = hit_value.shape->normal_map->get_vector(hit_value.uv, hit_value.normal);
+    if (length(shape_normal) == 0) {
         // Something went wrong with the normal calculation
         return Red;
     }
 
-    Material *material = hit_value.shape->material;
-    Texture *texture = hit_value.shape->texture;
+    // Apply normal map adjustments to the hit normal
+    hit_value.normal = shape_normal;
+
     if (material->emitting)
     {
         Color color = texture->uv(hit_value.uv.x, hit_value.uv.y);
-        return color * std::pow(std::abs(dot(hit_value.normal, ray.direction)), 0.333);
+        color *= std::pow(std::abs(dot(hit_value.normal, ray.direction)), 0.333);
+        if (opacity != 1.0) {
+            // Combine transparent color with color behind it
+            return opacity * color + (1.0 - opacity) * passthrough.value();
+        }
+        return color;
     }
+
     Ray scattered = material->scatter(ray, hit_value);
-    return trace_path(world, scattered, max_depth, curr_depth+1, sun, sky, skysphere) * texture->uv(hit_value.uv.x, hit_value.uv.y);
+    Color color = trace_path(world, scattered, max_depth, curr_depth+1, sun, sky, skysphere) * texture->uv(hit_value.uv.x, hit_value.uv.y);
+    if (opacity != 1.0) {
+        // combine transparent color with color behind it
+        return opacity * color + (1.0 - opacity) * passthrough.value();
+    }
+    return color;
 }
 
 double angle(const Vector3D& v1, const Vector3D& v2) {
