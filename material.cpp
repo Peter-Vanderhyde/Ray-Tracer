@@ -32,11 +32,24 @@ Ray Diffuse::scatter(const Ray&, const Hit& hit) const {
     return Ray(hit.position, random_in_hemisphere(hit.normal));
 }
 
-Specular::Specular()
-    :Material("specular") {}
+Specular::Specular(double specularity, double glossiness)
+    :Material("specular"), specularity{specularity}, glossiness{glossiness} {}
 
 Ray Specular::scatter(const Ray& ray, const Hit& hit) const {
-    return Ray(hit.position, reflect(ray.direction, hit.normal));
+    Vector3D reflection_direction = reflect(ray.direction, hit.normal);
+    // Vector3D scattered_direction;
+
+    // double rand = random_double(0.0, 1.0);
+    // if (rand > glossiness) {
+    //     // Diffuse reflection
+    //     scattered_direction = random_in_hemisphere(hit.normal);
+    // } else {
+    //     // Specular reflection
+    //     scattered_direction = reflection_direction;
+    // }
+
+    // return Ray(hit.position, scattered_direction);
+    return Ray(hit.position, reflection_direction + (1.0 - glossiness) * random_in_hemisphere(hit.normal));
 }
 
 Metal::Metal(double fuzz)
@@ -161,14 +174,6 @@ Ray DirectionalLight::scatter(const Ray&, const Hit& hit) const {
     return Ray(hit.position, random_in_hemisphere(hit.normal));
 }
 
-Matte::Matte(double reflectiveness, double roughness)
-    :Material{"matte"}, reflectiveness{reflectiveness}, roughness{roughness} {}
-
-Ray Matte::scatter(const Ray& ray, const Hit& hit) const {
-    Vector3D new_normal = hit.normal + random_in_hemisphere(hit.normal) * roughness;
-    return Ray(hit.position, biased_reflection(ray.direction, new_normal, reflectiveness));
-}
-
 Vector3D reflect(const Vector3D& vector, const Vector3D& normal) {
     return vector - 2 * dot(vector, normal) * normal;
 }
@@ -194,11 +199,4 @@ Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ra
 double schlick(double cos_theta, double index_ratio) {
     double r0 = std::pow((1 - index_ratio) / (1 + index_ratio), 2);
     return r0 + (1 - r0) * std::pow(1 - cos_theta, 5);
-}
-
-double mix(double glossy, double diffuse) {
-    double mixFactor = std::clamp(glossy, 0.0, 1.0);
-    
-    // Mix the two materials together
-    return mixFactor * glossy + (1.0 - mixFactor) * diffuse;
 }

@@ -29,7 +29,7 @@ vector<unsigned char> averageRGBValues(const vector<vector<unsigned char>>& imag
 	int numImages = imagesVec.size();
 	
 	//Iterate through each pixel
-	for (int i = 0; i < imagesVec[0].size(); i += 4) {
+	for (int i = 0; static_cast<unsigned int>(i) < imagesVec[0].size(); i += 4) {
 		int redSum = 0;
 		int greenSum = 0;
 		int blueSum = 0;
@@ -42,9 +42,9 @@ vector<unsigned char> averageRGBValues(const vector<vector<unsigned char>>& imag
 		}
 		
 		//Calculate the average values
-		unsigned char redAvg = (unsigned char) (redSum / numImages);
-		unsigned char greenAvg = (unsigned char) (greenSum / numImages);
-		unsigned char blueAvg = (unsigned char) (blueSum / numImages);
+		unsigned char redAvg = static_cast<unsigned char>(redSum / numImages);
+		unsigned char greenAvg = static_cast<unsigned char>(greenSum / numImages);
+		unsigned char blueAvg = static_cast<unsigned char>(blueSum / numImages);
 		
 		//Add the values to the result vector
 		averageRGB.push_back(redAvg);

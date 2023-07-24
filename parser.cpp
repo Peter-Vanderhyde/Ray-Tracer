@@ -726,7 +726,12 @@ void Parser::parse_material(std::stringstream& ss) {
         materials[name] = std::make_shared<Diffuse>();
     }
     else if (material_name == "specular") {
-        materials[name] = std::make_shared<Specular>();
+        double specularity, glossiness;
+        if (!(ss >> specularity >> glossiness)) {
+            throw std::runtime_error("Specular material missing specularity and/or glossiness.");
+        }
+
+        materials[name] = std::make_shared<Specular>(specularity, glossiness);
     }
     else if (material_name == "metal") {
         double fuzz;
@@ -786,15 +791,6 @@ void Parser::parse_material(std::stringstream& ss) {
         }
         else {
             throw std::runtime_error("Missing the spread angle for directional light.");
-        }
-    }
-    else if (material_name == "matte") {
-        double reflectiveness, roughness;
-        if (ss >> reflectiveness >> roughness) {
-            materials[name] = std::make_shared<Matte>(reflectiveness, roughness);
-        }
-        else {
-            throw std::runtime_error("Malformed matte material (reflectiveness roughness).");
         }
     }
     else {
@@ -887,6 +883,16 @@ void Parser::parse_texture(std::stringstream& ss) {
         else {
             throw std::runtime_error("Malformed image texture.");
         }
+    }
+    else if (texture_name == "specular_texture") {
+        std::string spec_texture, spec_material;
+        if (!(ss >> spec_texture >> spec_material)) {
+            throw std::runtime_error("Specular texture missing texture or specular material.");
+        }
+
+        Texture* texture{get_texture(spec_texture)};
+        Material* material{get_material(spec_material)};
+        textures[name] = std::make_shared<SpecularTexture>(texture, material);
     }
     else {
         throw std::runtime_error("Unknown texture name: " + texture_name);

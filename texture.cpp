@@ -1,6 +1,7 @@
 #include "texture.h"
 #include "pixels.h"
 #include "point2d.h"
+#include "material.h"
 #include <cmath>
 
 Texture::Texture(std::string name, const Color& color)
@@ -112,4 +113,22 @@ double Image::opacity(double u, double v) const {
     int index = y * width + x;
     double opacity = image[index * 4 + 3];
     return opacity / 255.0;
+}
+
+SpecularTexture::SpecularTexture(Texture* texture, Material* material)
+    : Texture{"specular_texture", Color{1, 1, 1}}, texture{texture} {
+    spec_material = static_cast<Specular*>(material);
+}
+
+Color SpecularTexture::uv(double u, double v) const {
+
+    return mix(spec_material->specularity, texture->uv(u, v), Color(1.0, 1.0, 1.0));
+}
+
+Color mix(double mixFactor, const Color& color1, const Color& color2) {
+    // Clamp the mixFactor to the range [0, 1]
+    mixFactor = std::clamp(mixFactor, 0.0, 1.0);
+
+    // Linear interpolation between color1 and color2 based on mixFactor
+    return (1.0 - mixFactor) * color1 + mixFactor * color2;
 }

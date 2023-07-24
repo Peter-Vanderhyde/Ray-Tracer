@@ -37,9 +37,11 @@ public:
 
 class Specular : public Material {
 public:
-    Specular();
+    Specular(double specularity, double glossiness);
 
     Ray scatter(const Ray &ray, const Hit &hit) const override;
+
+    double specularity, glossiness;
 };
 
 class Metal : public Material {
@@ -108,15 +110,6 @@ public:
     Ray scatter(const Ray &ray, const Hit &hit) const override;
 };
 
-class Matte : public Material {
-public:
-    Matte(double reflectiveness, double roughness);
-
-    Ray scatter(const Ray& ray, const Hit& hit) const override;
-
-    double reflectiveness, roughness;
-};
-
 Vector3D reflect(const Vector3D &vector, const Vector3D &normal);
 
 Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, double bias);
@@ -124,5 +117,3 @@ Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, doubl
 Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ratio);
 
 double schlick(double cos_theta, double index_ratio);
-
-double mix(double glossy, double diffuse);

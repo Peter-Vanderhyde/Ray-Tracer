@@ -41,7 +41,7 @@
 // Materials:
 //  - light > objects emit light
 //  - diffuse > objects scatter light in a random hemisphere
-//  - specular > perfectly reflects light like a mirror
+//  - specular > has a range of properties from a mirror to totally diffuse with glossy or metalic in between
 //  - metal > like specular except with an extra argument of how fuzzy to make the reflection
 //  - glass > uses an index ratio argument to determine the amount of light refraction
 //  - gloss > creates a partially diffuse and partially specular object
@@ -57,6 +57,7 @@
 //  - squares > creates squares of specified color with specified size
 //  - checkered > creates a checkered pattern of the specified colors
 //  - image > takes a png image and maps it to the uv coordinates of whatever object it's applied to
+//  - specular_texture > a texture used in conjunction with a specular material to create a specific look
 
 // Normals:
 //  - normal name filename (1 1 1) > creates a normal that can be used with the normal_sphere,

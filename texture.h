@@ -3,6 +3,9 @@
 #include "color.h"
 #include "pixels.h"
 
+class Material;
+class Specular;
+
 class Texture {
 public:
     Texture(std::string name, const Color &color);
@@ -71,3 +74,14 @@ public:
     std::vector<int> image;
     unsigned width, height;
 };
+
+class SpecularTexture : public Texture {
+public:
+    SpecularTexture(Texture* texture, Material* material);
+    Color uv(double u, double v) const override;
+
+    Texture* texture;
+    Specular* spec_material;
+};
+
+Color mix(double mixFactor, const Color& color1, const Color& color2);

@@ -1,0 +1,375 @@
+texture red solid (1 0 0)
+texture white solid (0.05 0.05 0.05)
+material floor diffuse
+material spec0 specular 0.0 0.0
+material spec1 specular 0.0 0.1
+material spec2 specular 0.0 0.2
+material spec3 specular 0.0 0.3
+material spec4 specular 0.0 0.4
+material spec5 specular 0.0 0.5
+material spec6 specular 0.0 0.6
+material spec7 specular 0.0 0.7
+material spec8 specular 0.0 0.8
+material spec9 specular 0.0 0.9
+material spec10 specular 0.0 1.0
+material spec11 specular 0.1 0.0
+material spec12 specular 0.1 0.1
+material spec13 specular 0.1 0.2
+material spec14 specular 0.1 0.3
+material spec15 specular 0.1 0.4
+material spec16 specular 0.1 0.5
+material spec17 specular 0.1 0.6
+material spec18 specular 0.1 0.7
+material spec19 specular 0.1 0.8
+material spec20 specular 0.1 0.9
+material spec21 specular 0.1 1.0
+material spec22 specular 0.2 0.0
+material spec23 specular 0.2 0.1
+material spec24 specular 0.2 0.2
+material spec25 specular 0.2 0.3
+material spec26 specular 0.2 0.4
+material spec27 specular 0.2 0.5
+material spec28 specular 0.2 0.6
+material spec29 specular 0.2 0.7
+material spec30 specular 0.2 0.8
+material spec31 specular 0.2 0.9
+material spec32 specular 0.2 1.0
+material spec33 specular 0.3 0.0
+material spec34 specular 0.3 0.1
+material spec35 specular 0.3 0.2
+material spec36 specular 0.3 0.3
+material spec37 specular 0.3 0.4
+material spec38 specular 0.3 0.5
+material spec39 specular 0.3 0.6
+material spec40 specular 0.3 0.7
+material spec41 specular 0.3 0.8
+material spec42 specular 0.3 0.9
+material spec43 specular 0.3 1.0
+material spec44 specular 0.4 0.0
+material spec45 specular 0.4 0.1
+material spec46 specular 0.4 0.2
+material spec47 specular 0.4 0.3
+material spec48 specular 0.4 0.4
+material spec49 specular 0.4 0.5
+material spec50 specular 0.4 0.6
+material spec51 specular 0.4 0.7
+material spec52 specular 0.4 0.8
+material spec53 specular 0.4 0.9
+material spec54 specular 0.4 1.0
+material spec55 specular 0.5 0.0
+material spec56 specular 0.5 0.1
+material spec57 specular 0.5 0.2
+material spec58 specular 0.5 0.3
+material spec59 specular 0.5 0.4
+material spec60 specular 0.5 0.5
+material spec61 specular 0.5 0.6
+material spec62 specular 0.5 0.7
+material spec63 specular 0.5 0.8
+material spec64 specular 0.5 0.9
+material spec65 specular 0.5 1.0
+material spec66 specular 0.6 0.0
+material spec67 specular 0.6 0.1
+material spec68 specular 0.6 0.2
+material spec69 specular 0.6 0.3
+material spec70 specular 0.6 0.4
+material spec71 specular 0.6 0.5
+material spec72 specular 0.6 0.6
+material spec73 specular 0.6 0.7
+material spec74 specular 0.6 0.8
+material spec75 specular 0.6 0.9
+material spec76 specular 0.6 1.0
+material spec77 specular 0.7 0.0
+material spec78 specular 0.7 0.1
+material spec79 specular 0.7 0.2
+material spec80 specular 0.7 0.3
+material spec81 specular 0.7 0.4
+material spec82 specular 0.7 0.5
+material spec83 specular 0.7 0.6
+material spec84 specular 0.7 0.7
+material spec85 specular 0.7 0.8
+material spec86 specular 0.7 0.9
+material spec87 specular 0.7 1.0
+material spec88 specular 0.8 0.0
+material spec89 specular 0.8 0.1
+material spec90 specular 0.8 0.2
+material spec91 specular 0.8 0.3
+material spec92 specular 0.8 0.4
+material spec93 specular 0.8 0.5
+material spec94 specular 0.8 0.6
+material spec95 specular 0.8 0.7
+material spec96 specular 0.8 0.8
+material spec97 specular 0.8 0.9
+material spec98 specular 0.8 1.0
+material spec99 specular 0.9 0.0
+material spec100 specular 0.9 0.1
+material spec101 specular 0.9 0.2
+material spec102 specular 0.9 0.3
+material spec103 specular 0.9 0.4
+material spec104 specular 0.9 0.5
+material spec105 specular 0.9 0.6
+material spec106 specular 0.9 0.7
+material spec107 specular 0.9 0.8
+material spec108 specular 0.9 0.9
+material spec109 specular 0.9 1.0
+material spec110 specular 1.0 0.0
+material spec111 specular 1.0 0.1
+material spec112 specular 1.0 0.2
+material spec113 specular 1.0 0.3
+material spec114 specular 1.0 0.4
+material spec115 specular 1.0 0.5
+material spec116 specular 1.0 0.6
+material spec117 specular 1.0 0.7
+material spec118 specular 1.0 0.8
+material spec119 specular 1.0 0.9
+material spec120 specular 1.0 1.0
+texture spec_tex0 specular_texture red spec0
+texture spec_tex1 specular_texture red spec1
+texture spec_tex2 specular_texture red spec2
+texture spec_tex3 specular_texture red spec3
+texture spec_tex4 specular_texture red spec4
+texture spec_tex5 specular_texture red spec5
+texture spec_tex6 specular_texture red spec6
+texture spec_tex7 specular_texture red spec7
+texture spec_tex8 specular_texture red spec8
+texture spec_tex9 specular_texture red spec9
+texture spec_tex10 specular_texture red spec10
+texture spec_tex11 specular_texture red spec11
+texture spec_tex12 specular_texture red spec12
+texture spec_tex13 specular_texture red spec13
+texture spec_tex14 specular_texture red spec14
+texture spec_tex15 specular_texture red spec15
+texture spec_tex16 specular_texture red spec16
+texture spec_tex17 specular_texture red spec17
+texture spec_tex18 specular_texture red spec18
+texture spec_tex19 specular_texture red spec19
+texture spec_tex20 specular_texture red spec20
+texture spec_tex21 specular_texture red spec21
+texture spec_tex22 specular_texture red spec22
+texture spec_tex23 specular_texture red spec23
+texture spec_tex24 specular_texture red spec24
+texture spec_tex25 specular_texture red spec25
+texture spec_tex26 specular_texture red spec26
+texture spec_tex27 specular_texture red spec27
+texture spec_tex28 specular_texture red spec28
+texture spec_tex29 specular_texture red spec29
+texture spec_tex30 specular_texture red spec30
+texture spec_tex31 specular_texture red spec31
+texture spec_tex32 specular_texture red spec32
+texture spec_tex33 specular_texture red spec33
+texture spec_tex34 specular_texture red spec34
+texture spec_tex35 specular_texture red spec35
+texture spec_tex36 specular_texture red spec36
+texture spec_tex37 specular_texture red spec37
+texture spec_tex38 specular_texture red spec38
+texture spec_tex39 specular_texture red spec39
+texture spec_tex40 specular_texture red spec40
+texture spec_tex41 specular_texture red spec41
+texture spec_tex42 specular_texture red spec42
+texture spec_tex43 specular_texture red spec43
+texture spec_tex44 specular_texture red spec44
+texture spec_tex45 specular_texture red spec45
+texture spec_tex46 specular_texture red spec46
+texture spec_tex47 specular_texture red spec47
+texture spec_tex48 specular_texture red spec48
+texture spec_tex49 specular_texture red spec49
+texture spec_tex50 specular_texture red spec50
+texture spec_tex51 specular_texture red spec51
+texture spec_tex52 specular_texture red spec52
+texture spec_tex53 specular_texture red spec53
+texture spec_tex54 specular_texture red spec54
+texture spec_tex55 specular_texture red spec55
+texture spec_tex56 specular_texture red spec56
+texture spec_tex57 specular_texture red spec57
+texture spec_tex58 specular_texture red spec58
+texture spec_tex59 specular_texture red spec59
+texture spec_tex60 specular_texture red spec60
+texture spec_tex61 specular_texture red spec61
+texture spec_tex62 specular_texture red spec62
+texture spec_tex63 specular_texture red spec63
+texture spec_tex64 specular_texture red spec64
+texture spec_tex65 specular_texture red spec65
+texture spec_tex66 specular_texture red spec66
+texture spec_tex67 specular_texture red spec67
+texture spec_tex68 specular_texture red spec68
+texture spec_tex69 specular_texture red spec69
+texture spec_tex70 specular_texture red spec70
+texture spec_tex71 specular_texture red spec71
+texture spec_tex72 specular_texture red spec72
+texture spec_tex73 specular_texture red spec73
+texture spec_tex74 specular_texture red spec74
+texture spec_tex75 specular_texture red spec75
+texture spec_tex76 specular_texture red spec76
+texture spec_tex77 specular_texture red spec77
+texture spec_tex78 specular_texture red spec78
+texture spec_tex79 specular_texture red spec79
+texture spec_tex80 specular_texture red spec80
+texture spec_tex81 specular_texture red spec81
+texture spec_tex82 specular_texture red spec82
+texture spec_tex83 specular_texture red spec83
+texture spec_tex84 specular_texture red spec84
+texture spec_tex85 specular_texture red spec85
+texture spec_tex86 specular_texture red spec86
+texture spec_tex87 specular_texture red spec87
+texture spec_tex88 specular_texture red spec88
+texture spec_tex89 specular_texture red spec89
+texture spec_tex90 specular_texture red spec90
+texture spec_tex91 specular_texture red spec91
+texture spec_tex92 specular_texture red spec92
+texture spec_tex93 specular_texture red spec93
+texture spec_tex94 specular_texture red spec94
+texture spec_tex95 specular_texture red spec95
+texture spec_tex96 specular_texture red spec96
+texture spec_tex97 specular_texture red spec97
+texture spec_tex98 specular_texture red spec98
+texture spec_tex99 specular_texture red spec99
+texture spec_tex100 specular_texture red spec100
+texture spec_tex101 specular_texture red spec101
+texture spec_tex102 specular_texture red spec102
+texture spec_tex103 specular_texture red spec103
+texture spec_tex104 specular_texture red spec104
+texture spec_tex105 specular_texture red spec105
+texture spec_tex106 specular_texture red spec106
+texture spec_tex107 specular_texture red spec107
+texture spec_tex108 specular_texture red spec108
+texture spec_tex109 specular_texture red spec109
+texture spec_tex110 specular_texture red spec110
+texture spec_tex111 specular_texture red spec111
+texture spec_tex112 specular_texture red spec112
+texture spec_tex113 specular_texture red spec113
+texture spec_tex114 specular_texture red spec114
+texture spec_tex115 specular_texture red spec115
+texture spec_tex116 specular_texture red spec116
+texture spec_tex117 specular_texture red spec117
+texture spec_tex118 specular_texture red spec118
+texture spec_tex119 specular_texture red spec119
+texture spec_tex120 specular_texture red spec120
+sphere (-5 5 0.5) 0.5 (1 1) (0 0 0) spec0 spec_tex0
+sphere (-4 5 0.5) 0.5 (1 1) (0 0 0) spec1 spec_tex1
+sphere (-3 5 0.5) 0.5 (1 1) (0 0 0) spec2 spec_tex2
+sphere (-2 5 0.5) 0.5 (1 1) (0 0 0) spec3 spec_tex3
+sphere (-1 5 0.5) 0.5 (1 1) (0 0 0) spec4 spec_tex4
+sphere (0 5 0.5) 0.5 (1 1) (0 0 0) spec5 spec_tex5
+sphere (1 5 0.5) 0.5 (1 1) (0 0 0) spec6 spec_tex6
+sphere (2 5 0.5) 0.5 (1 1) (0 0 0) spec7 spec_tex7
+sphere (3 5 0.5) 0.5 (1 1) (0 0 0) spec8 spec_tex8
+sphere (4 5 0.5) 0.5 (1 1) (0 0 0) spec9 spec_tex9
+sphere (5 5 0.5) 0.5 (1 1) (0 0 0) spec10 spec_tex10
+sphere (-5 4 0.5) 0.5 (1 1) (0 0 0) spec11 spec_tex11
+sphere (-4 4 0.5) 0.5 (1 1) (0 0 0) spec12 spec_tex12
+sphere (-3 4 0.5) 0.5 (1 1) (0 0 0) spec13 spec_tex13
+sphere (-2 4 0.5) 0.5 (1 1) (0 0 0) spec14 spec_tex14
+sphere (-1 4 0.5) 0.5 (1 1) (0 0 0) spec15 spec_tex15
+sphere (0 4 0.5) 0.5 (1 1) (0 0 0) spec16 spec_tex16
+sphere (1 4 0.5) 0.5 (1 1) (0 0 0) spec17 spec_tex17
+sphere (2 4 0.5) 0.5 (1 1) (0 0 0) spec18 spec_tex18
+sphere (3 4 0.5) 0.5 (1 1) (0 0 0) spec19 spec_tex19
+sphere (4 4 0.5) 0.5 (1 1) (0 0 0) spec20 spec_tex20
+sphere (5 4 0.5) 0.5 (1 1) (0 0 0) spec21 spec_tex21
+sphere (-5 3 0.5) 0.5 (1 1) (0 0 0) spec22 spec_tex22
+sphere (-4 3 0.5) 0.5 (1 1) (0 0 0) spec23 spec_tex23
+sphere (-3 3 0.5) 0.5 (1 1) (0 0 0) spec24 spec_tex24
+sphere (-2 3 0.5) 0.5 (1 1) (0 0 0) spec25 spec_tex25
+sphere (-1 3 0.5) 0.5 (1 1) (0 0 0) spec26 spec_tex26
+sphere (0 3 0.5) 0.5 (1 1) (0 0 0) spec27 spec_tex27
+sphere (1 3 0.5) 0.5 (1 1) (0 0 0) spec28 spec_tex28
+sphere (2 3 0.5) 0.5 (1 1) (0 0 0) spec29 spec_tex29
+sphere (3 3 0.5) 0.5 (1 1) (0 0 0) spec30 spec_tex30
+sphere (4 3 0.5) 0.5 (1 1) (0 0 0) spec31 spec_tex31
+sphere (5 3 0.5) 0.5 (1 1) (0 0 0) spec32 spec_tex32
+sphere (-5 2 0.5) 0.5 (1 1) (0 0 0) spec33 spec_tex33
+sphere (-4 2 0.5) 0.5 (1 1) (0 0 0) spec34 spec_tex34
+sphere (-3 2 0.5) 0.5 (1 1) (0 0 0) spec35 spec_tex35
+sphere (-2 2 0.5) 0.5 (1 1) (0 0 0) spec36 spec_tex36
+sphere (-1 2 0.5) 0.5 (1 1) (0 0 0) spec37 spec_tex37
+sphere (0 2 0.5) 0.5 (1 1) (0 0 0) spec38 spec_tex38
+sphere (1 2 0.5) 0.5 (1 1) (0 0 0) spec39 spec_tex39
+sphere (2 2 0.5) 0.5 (1 1) (0 0 0) spec40 spec_tex40
+sphere (3 2 0.5) 0.5 (1 1) (0 0 0) spec41 spec_tex41
+sphere (4 2 0.5) 0.5 (1 1) (0 0 0) spec42 spec_tex42
+sphere (5 2 0.5) 0.5 (1 1) (0 0 0) spec43 spec_tex43
+sphere (-5 1 0.5) 0.5 (1 1) (0 0 0) spec44 spec_tex44
+sphere (-4 1 0.5) 0.5 (1 1) (0 0 0) spec45 spec_tex45
+sphere (-3 1 0.5) 0.5 (1 1) (0 0 0) spec46 spec_tex46
+sphere (-2 1 0.5) 0.5 (1 1) (0 0 0) spec47 spec_tex47
+sphere (-1 1 0.5) 0.5 (1 1) (0 0 0) spec48 spec_tex48
+sphere (0 1 0.5) 0.5 (1 1) (0 0 0) spec49 spec_tex49
+sphere (1 1 0.5) 0.5 (1 1) (0 0 0) spec50 spec_tex50
+sphere (2 1 0.5) 0.5 (1 1) (0 0 0) spec51 spec_tex51
+sphere (3 1 0.5) 0.5 (1 1) (0 0 0) spec52 spec_tex52
+sphere (4 1 0.5) 0.5 (1 1) (0 0 0) spec53 spec_tex53
+sphere (5 1 0.5) 0.5 (1 1) (0 0 0) spec54 spec_tex54
+sphere (-5 0 0.5) 0.5 (1 1) (0 0 0) spec55 spec_tex55
+sphere (-4 0 0.5) 0.5 (1 1) (0 0 0) spec56 spec_tex56
+sphere (-3 0 0.5) 0.5 (1 1) (0 0 0) spec57 spec_tex57
+sphere (-2 0 0.5) 0.5 (1 1) (0 0 0) spec58 spec_tex58
+sphere (-1 0 0.5) 0.5 (1 1) (0 0 0) spec59 spec_tex59
+sphere (0 0 0.5) 0.5 (1 1) (0 0 0) spec60 spec_tex60
+sphere (1 0 0.5) 0.5 (1 1) (0 0 0) spec61 spec_tex61
+sphere (2 0 0.5) 0.5 (1 1) (0 0 0) spec62 spec_tex62
+sphere (3 0 0.5) 0.5 (1 1) (0 0 0) spec63 spec_tex63
+sphere (4 0 0.5) 0.5 (1 1) (0 0 0) spec64 spec_tex64
+sphere (5 0 0.5) 0.5 (1 1) (0 0 0) spec65 spec_tex65
+sphere (-5 -1 0.5) 0.5 (1 1) (0 0 0) spec66 spec_tex66
+sphere (-4 -1 0.5) 0.5 (1 1) (0 0 0) spec67 spec_tex67
+sphere (-3 -1 0.5) 0.5 (1 1) (0 0 0) spec68 spec_tex68
+sphere (-2 -1 0.5) 0.5 (1 1) (0 0 0) spec69 spec_tex69
+sphere (-1 -1 0.5) 0.5 (1 1) (0 0 0) spec70 spec_tex70
+sphere (0 -1 0.5) 0.5 (1 1) (0 0 0) spec71 spec_tex71
+sphere (1 -1 0.5) 0.5 (1 1) (0 0 0) spec72 spec_tex72
+sphere (2 -1 0.5) 0.5 (1 1) (0 0 0) spec73 spec_tex73
+sphere (3 -1 0.5) 0.5 (1 1) (0 0 0) spec74 spec_tex74
+sphere (4 -1 0.5) 0.5 (1 1) (0 0 0) spec75 spec_tex75
+sphere (5 -1 0.5) 0.5 (1 1) (0 0 0) spec76 spec_tex76
+sphere (-5 -2 0.5) 0.5 (1 1) (0 0 0) spec77 spec_tex77
+sphere (-4 -2 0.5) 0.5 (1 1) (0 0 0) spec78 spec_tex78
+sphere (-3 -2 0.5) 0.5 (1 1) (0 0 0) spec79 spec_tex79
+sphere (-2 -2 0.5) 0.5 (1 1) (0 0 0) spec80 spec_tex80
+sphere (-1 -2 0.5) 0.5 (1 1) (0 0 0) spec81 spec_tex81
+sphere (0 -2 0.5) 0.5 (1 1) (0 0 0) spec82 spec_tex82
+sphere (1 -2 0.5) 0.5 (1 1) (0 0 0) spec83 spec_tex83
+sphere (2 -2 0.5) 0.5 (1 1) (0 0 0) spec84 spec_tex84
+sphere (3 -2 0.5) 0.5 (1 1) (0 0 0) spec85 spec_tex85
+sphere (4 -2 0.5) 0.5 (1 1) (0 0 0) spec86 spec_tex86
+sphere (5 -2 0.5) 0.5 (1 1) (0 0 0) spec87 spec_tex87
+sphere (-5 -3 0.5) 0.5 (1 1) (0 0 0) spec88 spec_tex88
+sphere (-4 -3 0.5) 0.5 (1 1) (0 0 0) spec89 spec_tex89
+sphere (-3 -3 0.5) 0.5 (1 1) (0 0 0) spec90 spec_tex90
+sphere (-2 -3 0.5) 0.5 (1 1) (0 0 0) spec91 spec_tex91
+sphere (-1 -3 0.5) 0.5 (1 1) (0 0 0) spec92 spec_tex92
+sphere (0 -3 0.5) 0.5 (1 1) (0 0 0) spec93 spec_tex93
+sphere (1 -3 0.5) 0.5 (1 1) (0 0 0) spec94 spec_tex94
+sphere (2 -3 0.5) 0.5 (1 1) (0 0 0) spec95 spec_tex95
+sphere (3 -3 0.5) 0.5 (1 1) (0 0 0) spec96 spec_tex96
+sphere (4 -3 0.5) 0.5 (1 1) (0 0 0) spec97 spec_tex97
+sphere (5 -3 0.5) 0.5 (1 1) (0 0 0) spec98 spec_tex98
+sphere (-5 -4 0.5) 0.5 (1 1) (0 0 0) spec99 spec_tex99
+sphere (-4 -4 0.5) 0.5 (1 1) (0 0 0) spec100 spec_tex100
+sphere (-3 -4 0.5) 0.5 (1 1) (0 0 0) spec101 spec_tex101
+sphere (-2 -4 0.5) 0.5 (1 1) (0 0 0) spec102 spec_tex102
+sphere (-1 -4 0.5) 0.5 (1 1) (0 0 0) spec103 spec_tex103
+sphere (0 -4 0.5) 0.5 (1 1) (0 0 0) spec104 spec_tex104
+sphere (1 -4 0.5) 0.5 (1 1) (0 0 0) spec105 spec_tex105
+sphere (2 -4 0.5) 0.5 (1 1) (0 0 0) spec106 spec_tex106
+sphere (3 -4 0.5) 0.5 (1 1) (0 0 0) spec107 spec_tex107
+sphere (4 -4 0.5) 0.5 (1 1) (0 0 0) spec108 spec_tex108
+sphere (5 -4 0.5) 0.5 (1 1) (0 0 0) spec109 spec_tex109
+sphere (-5 -5 0.5) 0.5 (1 1) (0 0 0) spec110 spec_tex110
+sphere (-4 -5 0.5) 0.5 (1 1) (0 0 0) spec111 spec_tex111
+sphere (-3 -5 0.5) 0.5 (1 1) (0 0 0) spec112 spec_tex112
+sphere (-2 -5 0.5) 0.5 (1 1) (0 0 0) spec113 spec_tex113
+sphere (-1 -5 0.5) 0.5 (1 1) (0 0 0) spec114 spec_tex114
+sphere (0 -5 0.5) 0.5 (1 1) (0 0 0) spec115 spec_tex115
+sphere (1 -5 0.5) 0.5 (1 1) (0 0 0) spec116 spec_tex116
+sphere (2 -5 0.5) 0.5 (1 1) (0 0 0) spec117 spec_tex117
+sphere (3 -5 0.5) 0.5 (1 1) (0 0 0) spec118 spec_tex118
+sphere (4 -5 0.5) 0.5 (1 1) (0 0 0) spec119 spec_tex119
+sphere (5 -5 0.5) 0.5 (1 1) (0 0 0) spec120 spec_tex120
+plane (-10 10 0) (-10 -10 0) (10 -10 0) floor white
+
+sky true
+sun (-10 -10 -25) 20 (1 1 1) 2
+rays 10 100
+checkpoints 10
+pixels 600 600
+camera (0 0 10) (0 0 0) (0 1 0) 60
+output spec_test.png

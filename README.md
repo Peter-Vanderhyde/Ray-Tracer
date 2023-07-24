@@ -21,7 +21,7 @@ A guide on what types are used for the various parameters within the scene txt f
 ### Creating a Material
 ```
 material <name> diffuse
-material <name> specular
+material <name> specular <specularity> <glossiness>
 material <name> metal <fuzziness 0.0=clear>
 material <name> glass <index ratio i.e. how much the light bends 1.0=none>  
 material <name> light
@@ -41,6 +41,7 @@ texture <name> swirl <primary color> <secondary color> <num of stripes> <stripe 
 texture <name> squares <primary color> <secondary color>
 texture <name> checkered <primary color> <secondary color>
 texture <name> image <file name>
+texture <name> specular_texture <texture> <specular_material>
 ```
 - Using image files requires that the image is placed in the `/build/files/images` folder
 ### Creating a Normal
@@ -108,6 +109,13 @@ output <file name>
 
 ## Example Scene
 ```
+# Materials
+material diff diffuse
+material light point_light
+material metal metal 0.7
+material gloss gloss 0.9
+material mirror specular 0.2 1
+
 # Textures
 texture bright_white solid (4 4 4)
 texture white solid (1 1 1)
@@ -115,23 +123,16 @@ texture red solid (0.6 0 0)
 texture blue solid (0.2 0.2 0.7)
 texture green solid (0.2 0.7 0.2)
 texture floor solid (0.05 0.05 0.05)
-
-# Materials
-material diff diffuse
-material light point_light
-material metal metal 0.7
-material gloss gloss 0.9
-material mirror specular
-material matte matte 0.95 0.1
+texture green_mirror specular_texture green mirror
 
 # Objects
 
 # floor
 plane (-100 100 0) (-100 -100 0) (100 -100 0) diff floor
 
-box (2 10 2) (4 4 4) (0 0 30) matte red
+box (2 10 2) (4 4 4) (0 0 30) diff red
 sphere (-5 0 2) 2 (1 1) (0 0 0) metal blue
-sphere (-4 -16 2) 2 (1 1) (0 0 0) mirror green
+sphere (-4 -16 2) 2 (1 1) (0 0 0) mirror green_mirror
 sphere (6 -8 2) 2 (1 1) (0 0 0) gloss white
 
 sky true
