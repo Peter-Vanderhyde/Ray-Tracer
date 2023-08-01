@@ -1,30 +1,35 @@
-# textures
-texture earth_day image earth_day.png
-texture earth_night image earth_night.png
-texture earth_lights image earth_lights.png
-texture clouds image transparent_clouds.png
-texture moon image moon8k.png
-texture stars image stars.png
-
 # materials
 material light light
-material plain diffuse
+material diffuse diffuse
+material water_material specular 0 0.75
+material land_material diffuse
+
+# textures
+texture earth_day_texture image earth_day.png
+texture water_texture specular_texture water_material earth_day_texture
+texture earth_lights_texture image earth_lights.png
+texture clouds_texture image transparent_clouds.png
+texture moon_texture image moon8k.png
+texture stars_texture image stars.png
+
+# speculars
+specular earth_materials water_material earth_day_texture land_material earth_day_texture earth_specular.png
 
 # normals
-normal land_normal earth_normal.png (1 1 1)
+normal earth_normal earth_normal.png (1 1 1)
 
 # objects
-normal_sphere (0 0 0) 0.1 (1 1) (0 -23.5 -50) plain earth_day land_normal
-sphere (0 0 0) 0.10001 (1 1) (0 -23.5 -50) light earth_lights
-sphere (0 0 0) 0.1001 (1 1) (0 -23.5 -50) plain clouds
-sphere (0.2 0.01 0.1) 0.02 (1 1) (0 0 0) plain moon
+normal_sphere (0 0 0) 0.10001 (1 1) (0 -23.5 -50) light earth_lights_texture earth_normal
+normal_sphere (0 0 0) 0.1001 (1 1) (0 -23.5 -50) diffuse clouds_texture earth_normal
+sphere (1.43893 5.77491 0.959288) 0.04 (1 1) (0 0 0) diffuse moon_texture
+normal_specular_sphere (0 0 0) 0.1 (1 1) (0 -23.5 -50) earth_materials earth_normal
 
 sun (-1 0 -0.1) 10 (1 1 1) 80
-skysphere (1 1) stars
+skysphere (1 1) stars_texture
 
 rays 10 10000
 threads 7
-checkpoints 0
+checkpoints 100
 camera (0 -1 0) (0 0 0) (0 0 1) 40
 pixels 1920 1080
 output test.png

@@ -125,6 +125,7 @@ Color get_sky_color(const Ray& ray, bool sky, std::optional<Skysphere> skysphere
 Color get_sunlight(Sun sun, const Ray& ray, Color sky_color);
 void delete_png_images(const std::string& directoryPath);
 void signal_handler(int signal);
+Color mix(double mixFactor, const Color& color1, const Color& color2);
 
 int main(int argc, char* argv[]) {
     if (argc < 1) {
@@ -302,10 +303,11 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
         return get_background_color(ray, sun, sky, skysphere);
     }
     Hit hit_value = hit.value();
+    Point2D hit_uv = hit_value.uv;
 
-    Material *material = hit_value.shape->material;
-    Texture *texture = hit_value.shape->texture;
-    double opacity = texture->opacity(hit_value.uv.x, hit_value.uv.y);
+    Material *material = hit_value.shape->get_material(hit_uv.x, hit_uv.y);
+    Texture *texture = hit_value.shape->get_texture(hit_uv.x, hit_uv.y);
+    double opacity = texture->opacity(hit_uv.x, hit_uv.y);
     std::optional<Color> passthrough = {};
     if (opacity != 1.0) {
         passthrough = trace_path(world, Ray(hit_value.position, ray.direction), max_depth, curr_depth, sun, sky, skysphere);
@@ -315,7 +317,7 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
     }
 
     // Apply any normal maps to the shape normal
-    Vector3D shape_normal = hit_value.shape->normal_map->get_vector(hit_value.uv, hit_value.normal);
+    Vector3D shape_normal = hit_value.shape->normal_map->get_vector(hit_uv, hit_value.normal);
     if (length(shape_normal) == 0) {
         // Something went wrong with the normal calculation
         return Red;
@@ -326,7 +328,7 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
 
     if (material->emitting)
     {
-        Color color = texture->uv(hit_value.uv.x, hit_value.uv.y);
+        Color color = texture->uv(hit_uv.x, hit_uv.y);
         color *= std::pow(std::abs(dot(hit_value.normal, ray.direction)), 0.333);
         if (opacity != 1.0) {
             // Combine transparent color with color behind it
@@ -336,7 +338,8 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
     }
 
     Ray scattered = material->scatter(ray, hit_value);
-    Color color = trace_path(world, scattered, max_depth, curr_depth+1, sun, sky, skysphere) * texture->uv(hit_value.uv.x, hit_value.uv.y);
+    Color texture_color = texture->uv(hit_uv.x, hit_uv.y);
+    Color color = trace_path(world, scattered, max_depth, curr_depth+1, sun, sky, skysphere) * texture_color;
     if (opacity != 1.0) {
         // combine transparent color with color behind it
         return opacity * color + (1.0 - opacity) * passthrough.value();
@@ -413,4 +416,12 @@ void signal_handler(int signal) {
 
         exit(signal);
     }
+}
+
+Color mix(double mixFactor, const Color& color1, const Color& color2) {
+    // Clamp the mixFactor to the range [0, 1]
+    mixFactor = std::clamp(mixFactor, 0.0, 1.0);
+
+    // Linear interpolation between color1 and color2 based on mixFactor
+    return (1.0 - mixFactor) * color1 + mixFactor * color2;
 }

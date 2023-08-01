@@ -8,8 +8,8 @@
 #include "triangle.h"
 
 TriangleBillboard::TriangleBillboard(const Point3D &vertex0, const Point3D &vertex1, const Point3D &vertex2,
-    Material* material, Texture* texture, Normal* normal_map)
-    :Triangle{vertex0, vertex1, vertex2, material, texture, normal_map} {}
+                                        std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Triangle{vertex0, vertex1, vertex2, property_map, normal_map} {}
 
 std::optional<double> TriangleBillboard::intersect(const Ray& ray) const {
     // Moeller-Trumbore intersection

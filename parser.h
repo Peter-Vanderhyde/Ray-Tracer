@@ -15,10 +15,12 @@
 class Material;
 class Texture;
 class Normal;
+class SpecularMap;
 
 using Materials = std::map<std::string, std::shared_ptr<Material>>;
 using Textures = std::map<std::string, std::shared_ptr<Texture>>;
 using Normals = std::map<std::string, std::shared_ptr<Normal>>;
+using Speculars = std::map<std::string, std::shared_ptr<SpecularMap>>;
 
 class Parser {
 public:
@@ -46,11 +48,12 @@ private:
     World world;
     std::string output_filename;
     int checkpoints = 0;
-    double focus_dist, blur_strength;
+    double focus_dist = 1, blur_strength = 0;
 
     Materials materials;
     Textures textures;
     Normals normals{{"generic", std::make_shared<FlatNormal>(Vector3D{1, 1, 1})}};
+    Speculars speculars;
 
     void parse(std::ifstream& input);
     void verify();
@@ -58,8 +61,9 @@ private:
     void parse_lens(std::stringstream& ss);
     void parse_pixels(std::stringstream& ss);
     void parse_sphere(std::stringstream& ss);
-    void parse_textured_sphere(std::stringstream& ss);
+    void parse_specular_sphere(std::stringstream& ss);
     void parse_normal_sphere(std::stringstream& ss);
+    void parse_normal_specular_sphere(std::stringstream& ss);
     void parse_triangle(std::stringstream& ss);
     void parse_textured_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
                                    Point2D t0, Point2D t1, Point2D t2,
@@ -93,6 +97,7 @@ private:
     void parse_material(std::stringstream &ss);
     void parse_texture(std::stringstream &ss);
     void parse_normal(std::stringstream &ss);
+    void parse_specular(std::stringstream &ss);
     void parse_threads(std::stringstream &ss);
     void parse_sun(std::stringstream &ss);
     void parse_sky(std::stringstream &ss);
@@ -101,6 +106,8 @@ private:
     Material *get_material(std::string name);
     Texture* get_texture(std::string name);
     Normal* get_normal(std::string name);
+    std::shared_ptr<PropertyMap> get_specular(std::string name);
+    std::shared_ptr<PropertyMap> get_properties(std::string material_name, std::string texture_name);
 };
 
 void remove_comment(std::string& line);

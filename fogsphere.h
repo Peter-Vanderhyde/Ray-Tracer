@@ -15,7 +15,7 @@ class Ray;
 class FogSphere : public Shape{
 public:
     FogSphere(const Point3D& center, double radius, double density,
-        Material* material, Texture* texture, Normal* normal_map);
+        std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 
     // return the distance if ray intersects
     std::optional<double> intersect(const Ray& ray) const; // doesn't change the sphere

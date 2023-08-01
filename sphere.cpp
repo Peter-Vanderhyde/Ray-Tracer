@@ -8,8 +8,8 @@
 #include "point2d.h"
 
 Sphere::Sphere(const Point3D& center, double radius, Vector2D tile, Vector3D rotations,
-                Material* material, Texture* texture, Normal* normal_map)
-    :Shape{material, texture, normal_map}, center{center}, radius{radius}, tile{tile}, rotations{rotations} {
+                std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Shape{property_map, normal_map}, center{center}, radius{radius}, tile{tile}, rotations{rotations} {
     if (radius <= 0) {
         throw std::runtime_error("radius must be positive: " + std::to_string(radius));
     }

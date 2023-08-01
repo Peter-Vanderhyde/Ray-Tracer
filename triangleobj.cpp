@@ -8,9 +8,9 @@
 #include "triangle.h"
 
 TriangleObj::TriangleObj(const Point3D &vertex0, const Point3D &vertex1, const Point3D &vertex2,
-    const Point2D& vt0, const Point2D& vt1, const Point2D& vt2,
-    Material* material, Texture* texture, Normal* normal_map)
-    :Triangle{vertex0, vertex1, vertex2, material, texture, normal_map},
+                        const Point2D& vt0, const Point2D& vt1, const Point2D& vt2,
+                        std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Triangle{vertex0, vertex1, vertex2, property_map, normal_map},
     vt0{fmax(vt0.x - 0.0001, 0), fmax(vt0.y - 0.0001, 0)}, vt1{fmax(vt1.x - 0.0001, 0), fmax(vt1.y - 0.0001, 0)},
     vt2{fmax(vt2.x - 0.0001, 0), fmax(vt2.y - 0.0001, 0)} {}
 

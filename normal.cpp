@@ -5,18 +5,18 @@
 #include <math.h>
 #include "constants.h"
 
-Normal::Normal(const Vector3D inverted)
-    :inverted{inverted} {}
+Normal::Normal(std::string name, const Vector3D inverted)
+    :name{name}, inverted{inverted} {}
 
 FlatNormal::FlatNormal(const Vector3D inverted)
-    :Normal{inverted} {}
+    :Normal{"generic", inverted} {}
 
 Vector3D FlatNormal::get_vector(const Point2D&, const Vector3D& hit_normal) const {
     return unit(hit_normal);
 }
 
 NormalMap::NormalMap(const Vector3D inverted, std::vector<int> image, unsigned width, unsigned height)
-    :Normal{inverted}, image{image}, width{width}, height{height} {}
+    :Normal{"normal_map", inverted}, image{image}, width{width}, height{height} {}
 
 Vector3D NormalMap::get_vector(const Point2D& uv, const Vector3D& hit_normal) const  {
     int x = static_cast<int>(uv.x * (width - 1));
@@ -64,7 +64,7 @@ void NormalMap::adjust_normal(Vector3D& map_normal, const Vector3D& hit_normal) 
 }
 
 Golfball::Golfball(const Vector3D inverted)
-    :Normal{inverted} {}
+    :Normal{"golf_ball", inverted} {}
 
 Vector3D Golfball::get_vector(const Point2D& uv, const Vector3D&) const {
     double x = 0.999 - fmod(uv.x * 10, 1.0) * 2;

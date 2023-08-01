@@ -5,5 +5,13 @@
 #include "texture.h"
 #include "normal.h"
 
-Shape::Shape(Material* material, Texture* texture, Normal* normal_map)
-    :material{material}, texture{texture}, normal_map{normal_map} {}
+Shape::Shape(std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :property_map{property_map}, normal_map{normal_map} {}
+
+Material* Shape::get_material(double u, double v) const {
+    return property_map->get_material(u, v);
+}
+
+Texture* Shape::get_texture(double u, double v) const {
+    return property_map->get_texture(u, v);
+}

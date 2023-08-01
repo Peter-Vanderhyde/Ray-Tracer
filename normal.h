@@ -7,10 +7,11 @@
 
 class Normal {
 public:
-    Normal(const Vector3D inverted);
+    Normal(std::string name, const Vector3D inverted);
     virtual ~Normal(){};
     virtual Vector3D get_vector(const Point2D &uv, const Vector3D& hit_normal) const = 0;
 
+    const std::string name;
     const Vector3D inverted;
 };
 

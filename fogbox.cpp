@@ -9,12 +9,9 @@
 #include "random.h"
 
 FogBox::FogBox(const Point3D& center, const Vector3D& dimensions, const Vector3D& rotations, double density,
-            Material* material, Texture* texture, Normal* normal_map)
-    :Shape{material, texture, normal_map}, neg_inv_density{-1/density} {
-    create_box(center, dimensions, rotations, material, texture, normal_map);
-    // if (density <= 0) {
-    //     throw std::runtime_error("radius must be positive: " + std::to_string(radius));
-    // }
+            std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Shape{property_map, normal_map}, neg_inv_density{-1/density} {
+    create_box(center, dimensions, rotations, property_map, normal_map);
 }
 
 std::optional<double> FogBox::intersect(const Ray& ray) const {
@@ -77,16 +74,16 @@ Point2D FogBox::uv(const Hit*) const {
 
 void FogBox::create_plane(
         Point3D c1, Point3D c2, Point3D c3,
-        Material* material, Texture* texture, Normal* normal_map) {
+        std::shared_ptr<PropertyMap> property_map, Normal* normal_map) {
     Vector3D c4, center;
     c4 = c3 + (c1 - c2);
 
-    triangles.push_back(std::make_shared<Triangle>(c1, c2, c3, material, texture, normal_map));
-    triangles.push_back(std::make_shared<Triangle>(c1, c4, c3, material, texture, normal_map));
+    triangles.push_back(std::make_shared<Triangle>(c1, c2, c3, property_map, normal_map));
+    triangles.push_back(std::make_shared<Triangle>(c1, c4, c3, property_map, normal_map));
 }
 
 void FogBox::create_box(const Vector3D& center, const Vector3D& extents, const Vector3D& rotations,
-                    Material* material, Texture* texture, Normal* normal_map) {
+                    std::shared_ptr<PropertyMap> property_map, Normal* normal_map) {
     if (extents.x <= 0.0 || extents.y <= 0.0 || extents.z <= 0.0) {
         throw std::runtime_error("Box must have length in all directions");
     }
@@ -107,6 +104,6 @@ void FogBox::create_box(const Vector3D& center, const Vector3D& extents, const V
         c1 += center;
         c2 += center;
         c3 += center;
-        create_plane(c1, c2, c3, material, texture, normal_map);
+        create_plane(c1, c2, c3, property_map, normal_map);
     }
 }

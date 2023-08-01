@@ -9,8 +9,8 @@
 #include "random.h"
 
 FogSphere::FogSphere(const Point3D& center, double radius, double density,
-            Material* material, Texture* texture, Normal* normal_map)
-    :Shape{material, texture, normal_map}, center{center}, radius{radius}, neg_inv_density{-1/density} {}
+            std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Shape{property_map, normal_map}, center{center}, radius{radius}, neg_inv_density{-1/density} {}
 
 std::optional<double> FogSphere::intersect(const Ray& ray) const {
     // intersection of line and 3D sphere
