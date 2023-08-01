@@ -15,7 +15,7 @@ class Ray;
 class FogBox : public Shape{
 public:
     FogBox(const Point3D& center, const Vector3D& dimensions, const Vector3D& rotations, double density,
-        Material* material, Texture* texture, Normal* normal_map);
+        std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 
     // return the distance if ray intersects
     std::optional<double> intersect(const Ray& ray) const; // doesn't change the sphere
@@ -27,7 +27,7 @@ public:
 
 private:
     void create_plane(Point3D c1, Point3D c2, Point3D c3,
-                    Material* material, Texture* texture, Normal* normal_map);
+                    std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
     void create_box(const Vector3D &center, const Vector3D &extents, const Vector3D &rotations,
-                         Material* material, Texture* texture, Normal* normal_map);
+                         std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 };

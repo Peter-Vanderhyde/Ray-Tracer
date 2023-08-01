@@ -28,6 +28,8 @@ add_executable(main
   sun.cpp
   trianglebillboard.cpp
   combine_images.cpp
+  skysphere.cpp
+  property_map.cpp
 )
 target_compile_options(main PUBLIC -Wall -Wextra -Ofast -pedantic -ggdb -fno-omit-frame-pointer -std=c++17)
 target_link_libraries(main ${SOURCES})

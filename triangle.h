@@ -14,7 +14,7 @@ class Hit;
 class Triangle : public Shape {
 public:
     Triangle(const Point3D &vertex0, const Point3D &vertex1, const Point3D &vertex2,
-        Material* material, Texture* texture, Normal* normal_map);
+                std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 
 
     std::optional<double> intersect(const Ray& ray) const override;

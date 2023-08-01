@@ -15,7 +15,7 @@ public:
 private:
     Point3D position;
     Point3D upper_left;
-    double blur_strength;
+    double blur_strength = 0;
     Vector3D u, v;
     Vector3D horizontal, vertical; // Vectors along u, v with lengths width, height
 };

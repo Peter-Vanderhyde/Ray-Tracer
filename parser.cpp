@@ -19,6 +19,7 @@
 #include "fogsphere.h"
 #include "normal.h"
 #include "random.h"
+#include "property_map.h"
 
 Parser::Parser(const std::string& filename)
     :input_filename{filename}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
@@ -45,15 +46,6 @@ Pixels Parser::get_pixels() {
 
 std::string Parser::get_output_filename() {
     return output_filename;
-}
-
-std::optional<Sun> Parser::get_sun() {
-    if (found_sun) {
-        return Sun(sun_direction, sun_color, sun_intensity);
-    }
-    else {
-        return {};
-    }
 }
 
 bool Parser::has_sky() {
@@ -87,8 +79,14 @@ void Parser::parse(std::ifstream& input) {
         else if (type == "sphere") {
             parse_sphere(ss);
         }
+        else if (type == "specular_sphere") {
+            parse_specular_sphere(ss);
+        }
         else if (type == "normal_sphere") {
             parse_normal_sphere(ss);
+        }
+        else if (type == "normal_specular_sphere") {
+            parse_normal_specular_sphere(ss);
         }
         else if (type == "triangle") {
             parse_triangle(ss);
@@ -150,6 +148,9 @@ void Parser::parse(std::ifstream& input) {
         else if (type == "normal") {
             parse_normal(ss);
         }
+        else if (type == "specular") {
+            parse_specular(ss);
+        }
         else if (type == "threads") {
             parse_threads(ss);
         }
@@ -158,6 +159,9 @@ void Parser::parse(std::ifstream& input) {
         }
         else if (type == "sky") {
             parse_sky(ss);
+        }
+        else if (type == "skysphere") {
+            parse_skysphere(ss);
         }
         else if (type == "checkpoints") {
             parse_checkpoints(ss);
@@ -219,31 +223,57 @@ void Parser::parse_pixels(std::stringstream& ss) {
 }
 
 void Parser::parse_sphere(std::stringstream& ss) {
-    Vector3D center;
+    Vector3D center, rotations;
     double radius;
     Vector2D tile;
     std::string material_name, texture_name;
-    ss >> center >> radius >> tile >> material_name >> texture_name;
+    if (!(ss >> center >> radius >> tile >> rotations >> material_name >> texture_name)) {
+        throw std::runtime_error("Sphere malformed (center radius tile rotations material texture).");
+    }
 
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
-    world.add(std::make_shared<Sphere>(center, radius, tile, material, texture, normal));
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, property_map, normal));
+}
+
+void Parser::parse_specular_sphere(std::stringstream& ss) {
+    Vector3D center, rotations;
+    double radius;
+    Vector2D tile;
+    std::string specular_name;
+    if (!(ss >> center >> radius >> tile >> rotations >> specular_name)) {
+        throw std::runtime_error("Specular sphere malformed (center radius tile rotations specular_map).");
+    }
+
+    std::shared_ptr<PropertyMap> property_map{get_specular(specular_name)};
+    Normal *normal{get_normal("generic")};
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, property_map, normal));
 }
 
 void Parser::parse_normal_sphere(std::stringstream& ss) {
-    Vector3D center;
+    Vector3D center, rotations;
     double radius;
     Vector2D tile;
     std::string material_name, texture_name, normal_name;
-    if (!(ss >> center >> radius >> tile >> material_name >> texture_name >> normal_name)) {
-        throw std::runtime_error("Sphere is malformed (center radius tilingXY material texture normal).");
+    if (!(ss >> center >> radius >> tile >> rotations >> material_name >> texture_name >> normal_name)) {
+        throw std::runtime_error("Normal sphere is malformed (center radius tile rotations material texture normal).");
     }
-
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal(normal_name)};
-    world.add(std::make_shared<Sphere>(center, radius, tile, material, texture, normal));
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, property_map, normal));
+}
+
+void Parser::parse_normal_specular_sphere(std::stringstream& ss) {
+    Vector3D center, rotations;
+    double radius;
+    Vector2D tile;
+    std::string specular_name, normal_name;
+    if (!(ss >> center >> radius >> tile >> rotations >> specular_name >> normal_name)) {
+        throw std::runtime_error("Normal specular sphere is malformed (center radius tile rotations specular normal).");
+    }
+    std::shared_ptr<PropertyMap> property_map{get_specular(specular_name)};
+    Normal *normal{get_normal(normal_name)};
+    world.add(std::make_shared<Sphere>(center, radius, tile, rotations, property_map, normal));
 }
 
 void Parser::parse_triangle(std::stringstream& ss) {
@@ -253,20 +283,18 @@ void Parser::parse_triangle(std::stringstream& ss) {
         throw std::runtime_error("Triangle is malformed (point1 point2 point3 material texture).");
     }
     
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
-    world.add(std::make_shared<Triangle>(v0, v1, v2, material, texture, normal));
+    world.add(std::make_shared<Triangle>(v0, v1, v2, property_map, normal));
 }
 
 void Parser::parse_textured_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
                                 Point2D t0, Point2D t1, Point2D t2, std::string material_name, std::string texture_name,
                                 std::string normal_name) {
     
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal(normal_name)};
-    world.add(std::make_shared<TriangleObj>(v0, v1, v2, t0, t1, t2, material, texture, normal));
+    world.add(std::make_shared<TriangleObj>(v0, v1, v2, t0, t1, t2, property_map, normal));
 }
 
 void Parser::parse_textured_triangle(std::stringstream& ss) {
@@ -299,10 +327,9 @@ void Parser::parse_billboard_triangle(Vector3D v0, Vector3D v1, Vector3D v2,
                                 std::string material_name, std::string texture_name,
                                 std::string normal_name) {
     
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal(normal_name)};
-    world.add(std::make_shared<TriangleBillboard>(v0, v1, v2, material, texture, normal));
+    world.add(std::make_shared<TriangleBillboard>(v0, v1, v2, property_map, normal));
 }
 
 void Parser::parse_billboard_triangle(std::stringstream& ss) {
@@ -321,12 +348,11 @@ void Parser::parse_plane(Point3D c1, Point3D c2, Point3D c3,
     Vector3D c4, center;
     c4 = c3 + (c1 - c2);
 
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
-    world.add(std::make_shared<Triangle>(c1, c2, c3, material, texture, normal));
-    world.add(std::make_shared<Triangle>(c1, c4, c3, material, texture, normal));
+    world.add(std::make_shared<Triangle>(c1, c2, c3, property_map, normal));
+    world.add(std::make_shared<Triangle>(c1, c4, c3, property_map, normal));
 }
 
 void Parser::parse_plane(std::stringstream& ss) {
@@ -348,12 +374,11 @@ void Parser::parse_billboard_plane(std::stringstream& ss) {
 
     c4 = c3 + (c1 - c2);
 
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
-    world.add(std::make_shared<TriangleBillboard>(c1, c3, c2, material, texture, normal));
-    world.add(std::make_shared<TriangleBillboard>(c1, c4, c3, material, texture, normal));
+    world.add(std::make_shared<TriangleBillboard>(c1, c3, c2, property_map, normal));
+    world.add(std::make_shared<TriangleBillboard>(c1, c4, c3, property_map, normal));
 }
 
 void Parser::parse_textured_plane(Vector3D c1, Vector3D c2, Vector3D c3,
@@ -362,14 +387,13 @@ void Parser::parse_textured_plane(Vector3D c1, Vector3D c2, Vector3D c3,
 
     c4 = c3 + (c1 - c2);
 
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
     world.add(std::make_shared<TriangleObj>(c1, c2, c3, Point2D{0, 0}, Point2D{0, tile.y},
-                                            Point2D{tile.x, tile.y}, material, texture, normal));
+                                            Point2D{tile.x, tile.y}, property_map, normal));
     world.add(std::make_shared<TriangleObj>(c1, c4, c3, Point2D{0, 0}, Point2D{tile.x, 0},
-                                            Point2D{tile.x, tile.y}, material, texture, normal));
+                                            Point2D{tile.x, tile.y}, property_map, normal));
 }
 
 void Parser::parse_textured_plane(std::stringstream& ss) {
@@ -390,14 +414,13 @@ void Parser::parse_normal_plane(Vector3D c1, Vector3D c2, Vector3D c3,
 
     c4 = c3 + (c1 - c2);
 
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal(normal_name)};
 
     world.add(std::make_shared<TriangleObj>(c1, c2, c3, Point2D{0, 0}, Point2D{0, tile.y},
-                                            Vector2D{tile.x, tile.y}, material, texture, normal));
+                                            Vector2D{tile.x, tile.y}, property_map, normal));
     world.add(std::make_shared<TriangleObj>(c1, c4, c3, Point2D{0, 0}, Point2D{tile.x, 0},
-                                            Vector2D{tile.x, tile.y}, material, texture, normal));
+                                            Vector2D{tile.x, tile.y}, property_map, normal));
 }
 
 void Parser::parse_normal_plane(std::stringstream& ss) {
@@ -499,10 +522,9 @@ void Parser::parse_fog_box(std::stringstream& ss) {
         throw std::runtime_error("Fog box is malformed (center dimensions rotations density material texture).");
     }
     
-    Material* material{get_material(material_name)};
-    Texture* texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
-    world.add(std::make_shared<FogBox>(center, dimensions, rotations, density, material, texture, normal));
+    world.add(std::make_shared<FogBox>(center, dimensions, rotations, density, property_map, normal));
 }
 
 void Parser::parse_fog_sphere(std::stringstream& ss) {
@@ -513,10 +535,9 @@ void Parser::parse_fog_sphere(std::stringstream& ss) {
         throw std::runtime_error("Fog sphere is malformed (center radius density material texture).");
     }
 
-    Material *material{get_material(material_name)};
-    Texture *texture{get_texture(texture_name)};
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
-    world.add(std::make_shared<FogSphere>(center, radius, density, material, texture, normal));
+    world.add(std::make_shared<FogSphere>(center, radius, density, property_map, normal));
 }
 
 void Parser::parse_mesh(std::stringstream& ss) {
@@ -526,8 +547,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
         throw std::runtime_error("Mesh is malformed (position filename scaling rotations material texture).");
     }
 
-    Material* material = get_material(material_name);
-    Texture* texture = get_texture(texture_name);
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
     std::ifstream input{"files/meshes/" + filename};
@@ -576,7 +596,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
 
     // read each triangle line
     for (int a, b, c; input >> a >> b >> c;) {
-        world.add(std::make_shared<Triangle>(vertices.at(a), vertices.at(b), vertices.at(c), material, texture, normal));
+        world.add(std::make_shared<Triangle>(vertices.at(a), vertices.at(b), vertices.at(c), property_map, normal));
     }
 }
 
@@ -589,8 +609,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     {
         throw std::runtime_error("Obj is malformed (position filename sections<-1=all> scale rotations material texture).");
     }
-    Material* material = get_material(material_name);
-    Texture* texture = get_texture(texture_name);
+    std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
     std::ifstream input{"files/objs/" + filename};
@@ -686,12 +705,12 @@ void Parser::parse_obj(std::stringstream& ss) {
                 try{
                     if (face[0].second == -1){
                         world.add(std::make_shared<Triangle>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
-                                                             material, texture, normal));
+                                                             property_map, normal));
                     }
                     else {
                         world.add(std::make_shared<TriangleObj>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
                                                              texture_vertices.at(face[0].second), texture_vertices.at(face[i + 1].second), texture_vertices.at(face[i + 2].second),
-                                                             material, texture, normal));
+                                                             property_map, normal));
                     }
                 }
                 catch (const std::exception& e) {
@@ -738,7 +757,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<Metal>(fuzz);
         }
         else {
-            throw std::runtime_error("Missing fuzz parameter for metal.");
+            throw std::runtime_error("Metal material malformed (fuzz).");
         }
     }
     else if (material_name == "glass") {
@@ -747,7 +766,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<Glass>(index_ratio);
         }
         else {
-            throw std::runtime_error("Missing index ratio parameter for glass.");
+            throw std::runtime_error("Glass material malformed (refraction_index).");
         }
     }
     else if (material_name == "flat_glass") {
@@ -756,7 +775,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<FlatGlass>(index_ratio, thickness);
         }
         else {
-            throw std::runtime_error("Missing index ratio parameter for glass.");
+            throw std::runtime_error("Glass material malformed (refraction_index).");
         }
     }
     else if (material_name == "gloss") {
@@ -765,7 +784,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<Gloss>(roughness);
         }
         else {
-            throw std::runtime_error("Missing the roughness value: 0 <= roughness <= 1.");
+            throw std::runtime_error("Gloss material malformed (roughness_from_0-1).");
         }
     }
     else if (material_name == "metalic_gloss") {
@@ -774,7 +793,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<FuzzyGloss>(roughness, metalic);
         }
         else {
-            throw std::runtime_error("Missing either roughness or metalic value.");
+            throw std::runtime_error("Metalic_gloss material malformed (roughness metalic).");
         }
     }
     else if (material_name == "fog") {
@@ -789,7 +808,7 @@ void Parser::parse_material(std::stringstream& ss) {
             materials[name] = std::make_shared<DirectionalLight>(spread_angle);
         }
         else {
-            throw std::runtime_error("Missing the spread angle for directional light.");
+            throw std::runtime_error("Directional light material malformed (spread_angle).");
         }
     }
     else {
@@ -803,28 +822,28 @@ void Parser::parse_texture(std::stringstream& ss) {
     ss >> name >> texture_name;
     if (texture_name == "solid") {
         if (ss >> color){
-            textures[name] = std::make_shared<Solid>(texture_name, color);
+            textures[name] = std::make_shared<Solid>(color);
         }
         else {
-            throw std::runtime_error("Missing solid color.");
+            throw std::runtime_error("Solid texture malformed (color).");
         }
     }
     else if (texture_name == "gradient") {
         Color secondary;
         if (ss >> color >> secondary)
         {
-            textures[name] = std::make_shared<Gradient>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Gradient>(color, secondary);
         }
         else {
-            throw std::runtime_error("Malformed gradient. Need primaryColor, secondaryColor.");
+            throw std::runtime_error("Gradient texture malformed (primary_color secondary_color).");
         }
     }
     else if (texture_name == "dots") {
         if (ss >> color) {
-            textures[name] = std::make_shared<Dots>(texture_name, color);
+            textures[name] = std::make_shared<Dots>(color);
         }
         else {
-            throw std::runtime_error("Missing dots color.");
+            throw std::runtime_error("Dots texture malformed (dots_color).");
         }
     }
     else if (texture_name == "swirl") {
@@ -832,28 +851,28 @@ void Parser::parse_texture(std::stringstream& ss) {
         double num_of_stripes, width_percent;
         if (ss >> color >> secondary >> num_of_stripes >> width_percent)
         {
-            textures[name] = std::make_shared<Swirl>(texture_name, color, secondary, num_of_stripes, width_percent);
+            textures[name] = std::make_shared<Swirl>(color, secondary, num_of_stripes, width_percent);
         }
         else {
-            throw std::runtime_error("Malformed swirl. Need color, secondary, num stripes, width percent.");
+            throw std::runtime_error("Swirl texture malformed (primary_color secondary_color num_of_stripes width_perc).");
         }
     }
     else if (texture_name == "squares") {
         Color secondary;
         if (ss >> color >> secondary){
-            textures[name] = std::make_shared<Squares>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Squares>(color, secondary);
         }
         else {
-            throw std::runtime_error("Missing primary or secondary color for squares.");
+            throw std::runtime_error("Squares texture malformed (primary_color secondary_color).");
         }
     }
     else if (texture_name == "checkered") {
         Color secondary;
         if (ss >> color >> secondary){
-            textures[name] = std::make_shared<Checkered>(texture_name, color, secondary);
+            textures[name] = std::make_shared<Checkered>(color, secondary);
         }
         else {
-            throw std::runtime_error("Missing primary or secondary color for checkered.");
+            throw std::runtime_error("Checkered texture malformed (primary_color secondary_color).");
         }
     }
     else if (texture_name == "image") {
@@ -877,10 +896,10 @@ void Parser::parse_texture(std::stringstream& ss) {
                 values.push_back(i);
             }
 
-            textures[name] = std::make_shared<Image>(texture_name, values, width, height);
+            textures[name] = std::make_shared<Image>(values, width, height);
         }
         else {
-            throw std::runtime_error("Malformed image texture.");
+            throw std::runtime_error("Image texture malformed (image_name)");
         }
     }
     else {
@@ -914,7 +933,41 @@ void Parser::parse_normal(std::stringstream& ss) {
         normals[name] = std::make_shared<NormalMap>(inverted, values, width, height);
     }
     else {
-        throw std::runtime_error("Normal is malformed (image_file inverted_vector).");
+        throw std::runtime_error("Normal malformed (name image_file inverted_vector).");
+    }
+}
+
+void Parser::parse_specular(std::stringstream& ss) {
+    std::string name, material1, texture1, material2, texture2, image_file;
+    if (ss >> name >> material1 >> texture1 >> material2 >> texture2 >> image_file)
+    {
+        std::cout << "Parsing " + image_file + " specular...\n";
+        std::ifstream input("files/speculars/" + image_file);
+        if(!input) {
+            throw std::runtime_error("Cannot open image file: " + image_file);
+        }
+        std::vector<unsigned char> image;
+        unsigned width, height;
+        unsigned error = lodepng::decode(image, width, height, "files/speculars/" + image_file);
+        if (error) {
+            std::cout << "Error: " + error;
+        }
+
+        Pixels pixels{static_cast<int>(width), static_cast<int>(height)};
+        std::vector<int> values;
+        for (int i : image) {
+            values.push_back(i);
+        }
+
+        Material* default_material{get_material(material1)};
+        Texture* default_texture{get_texture(texture1)};
+        Material* second_material{get_material(material2)};
+        Texture* second_texture{get_texture(texture2)};
+        speculars[name] = std::make_shared<SpecularMap>(default_material, default_texture,
+                                                        second_material, second_texture, values, width, height);
+    }
+    else {
+        throw std::runtime_error("Specular malformed (name material1 texture1 material2 texture2 image_file).");
     }
 }
 
@@ -925,22 +978,36 @@ void Parser::parse_threads(std::stringstream& ss) {
 }
 
 void Parser::parse_sun(std::stringstream& ss) {
-    if (!(ss >> sun_direction >> sun_color >> sun_intensity)) {
-        throw std::runtime_error("Sun is malformed (direction color intensity).");
+    Vector3D direction;
+    double size, intensity;
+    Color color;
+    if (!(ss >> direction >> size >> color >> intensity)) {
+        throw std::runtime_error("Sun is malformed (direction size color intensity).");
     }
-    else {
-        found_sun = true;
-        if (sun_direction.x == 3.14 && sun_direction.y == 1.59 && sun_direction.z == 2.65) {
-            sun_direction = random_in_hemisphere(Vector3D{0, 0, -1});
-            std::cout << "\nThe sun's direction is " << sun_direction << '\n';
-        }
+
+    if (direction.x == 3.14 && direction.y == 1.59 && direction.z == 2.65) {
+        direction = random_in_hemisphere(Vector3D{0, 0, -1});
+        std::cout << "\nThe sun's direction is " << direction << '\n';
     }
+    
+    sun = Sun(direction, size, color, intensity);
 }
 
 void Parser::parse_sky(std::stringstream& ss) {
     if (!(ss >> std::boolalpha >> found_sky)) {
         throw std::runtime_error("Sky is malformed (sky_bool).");
     }
+}
+
+void Parser::parse_skysphere(std::stringstream& ss) {
+    Point2D tile;
+    std::string texture_name;
+    if (!(ss >> tile >> texture_name)) {
+        throw std::runtime_error("Skysphere is malformed (tile texture).");
+    }
+
+    auto texture{get_texture(texture_name)};
+    skysphere = Skysphere(tile, texture);
 }
 
 void Parser::parse_checkpoints(std::stringstream& ss) {
@@ -984,6 +1051,23 @@ Normal* Parser::get_normal(std::string name) {
     else {
         throw std::runtime_error("Normal " + name + " not defined.");
     }
+}
+
+std::shared_ptr<PropertyMap> Parser::get_specular(std::string name) {
+    auto i = speculars.find(name);
+    if (i != speculars.end()) {
+        auto specular = i->second;
+        return specular;
+    }
+    else {
+        throw std::runtime_error("Specular " + name + " not defined.");
+    }
+}
+
+std::shared_ptr<PropertyMap> Parser::get_properties(std::string material_name, std::string texture_name) {
+    auto material = get_material(material_name);
+    auto texture = get_texture(texture_name);
+    return std::make_shared<PropertyMap>(material, texture);
 }
 
 void remove_comment(std::string& line) {

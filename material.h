@@ -110,8 +110,8 @@ public:
 
 Vector3D reflect(const Vector3D &vector, const Vector3D &normal);
 
+Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, double bias);
+
 Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ratio);
 
 double schlick(double cos_theta, double index_ratio);
-
-double mix(double glossy, double diffuse);

@@ -7,8 +7,8 @@
 #include "point2d.h"
 
 Triangle::Triangle(const Point3D &vertex0, const Point3D &vertex1, const Point3D &vertex2,
-    Material* material, Texture* texture, Normal* normal_map)
-    :Shape{material, texture, normal_map}, vertex0{vertex0}, vertex1{vertex1}, vertex2{vertex2},
+                    std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
+    :Shape{property_map, normal_map}, vertex0{vertex0}, vertex1{vertex1}, vertex2{vertex2},
     edge1{vertex1 - vertex0}, edge2{vertex2 - vertex0} {
     Vector3D norm = cross(edge1, edge2);
     if (length(norm) < Constants::Epsilon) {

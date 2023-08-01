@@ -21,20 +21,20 @@ std::optional<Hit> World::find_nearest(const Ray& ray, int curr_depth) const {
         if (t.has_value() && t.value() < time)
         {
             curr_obj = objects.at(i).get();
-            if (curr_obj->material->name == "point_light"){
+            if (curr_obj->get_material(0.0, 0.0)->name == "point_light"){
                 if (curr_depth != 0) {
                     nearest = objects.at(i).get();
                     time = t.value();
                 }
             }
-            else if (curr_obj->material->name == "directional_light") {
+            else if (curr_obj->get_material(0.0, 0.0)->name == "directional_light") {
                 Vector3D normal = curr_obj->construct_hit(ray, t.value()).normal;
                 Vector3D direction = -ray.direction;
                 if (curr_obj->intersect(Ray(ray.origin, -normal)).has_value()) {
                     nearest = objects.at(i).get();
                     time = t.value();
                 }
-                else if (acos(dot(normal, direction) / (length(normal) * length(direction))) * 180 / Constants::Pi <= curr_obj->material->spread) {
+                else if (acos(dot(normal, direction) / (length(normal) * length(direction))) * 180 / Constants::Pi <= curr_obj->get_material(0.0, 0.0)->spread) {
                     nearest = objects.at(i).get();
                     time = t.value();
                 }

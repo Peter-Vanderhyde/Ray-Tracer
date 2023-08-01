@@ -4,9 +4,10 @@
 
 class Sun {
 public:
-    Sun(Vector3D direction, Color color, double intensity);
+    Sun(Vector3D direction, double size, Color color, double intensity);
 
     Vector3D direction;
+    double size;
     Color color;
     double intensity;
 };

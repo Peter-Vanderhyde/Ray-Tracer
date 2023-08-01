@@ -36,14 +36,16 @@ Specular::Specular()
     :Material("specular") {}
 
 Ray Specular::scatter(const Ray& ray, const Hit& hit) const {
-    return Ray(hit.position, reflect(ray.direction, hit.normal));
+    Vector3D reflection_direction = reflect(ray.direction, hit.normal);
+    return Ray(hit.position, reflection_direction);
 }
 
 Metal::Metal(double fuzz)
     :Material("metal"), fuzz{fuzz} {}
 
 Ray Metal::scatter(const Ray& ray, const Hit& hit) const {
-    return Ray(hit.position, reflect(ray.direction, hit.normal) + fuzz * random_in_hemisphere(hit.normal));
+    Vector3D direction = reflect(ray.direction, hit.normal) + fuzz * random_in_hemisphere(hit.normal);
+    return Ray(hit.position, unit(direction));
 }
 
 Glass::Glass(double index_ratio)
@@ -165,6 +167,12 @@ Vector3D reflect(const Vector3D& vector, const Vector3D& normal) {
     return vector - 2 * dot(vector, normal) * normal;
 }
 
+Vector3D biased_reflection(const Vector3D& vector, const Vector3D& normal, double bias) {
+    Vector3D reflected = reflect(vector, normal);
+    Vector3D rand_dir = random_in_hemisphere(normal);
+    return unit((1.0 - bias) * rand_dir + bias * reflected);
+}
+
 Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ratio) {
     double cos_theta = -dot(normal, vector);
     double discriminant = 1.0 - std::pow(index_ratio, 2) * (1 - std::pow(cos_theta, 2));
@@ -180,11 +188,4 @@ Vector3D refract(const Vector3D &vector, const Vector3D &normal, double index_ra
 double schlick(double cos_theta, double index_ratio) {
     double r0 = std::pow((1 - index_ratio) / (1 + index_ratio), 2);
     return r0 + (1 - r0) * std::pow(1 - cos_theta, 5);
-}
-
-double mix(double glossy, double diffuse) {
-    double mixFactor = std::clamp(glossy, 0.0, 1.0);
-    
-    // Mix the two materials together
-    return mixFactor * glossy + (1.0 - mixFactor) * diffuse;
 }
