@@ -240,3 +240,4 @@ output test.png
 ![combined](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8542102a-62d6-4728-9ca9-1085d01f073b)
 ![coffee2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/23581cba-7f6b-4c1b-91c2-e7aa6248b0eb)
 ![room_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6b2778c3-ea04-46c5-bae5-babe65fd8d7b)
+![space6](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8df9eb56-e60a-42b8-84d4-e920bf732474)
