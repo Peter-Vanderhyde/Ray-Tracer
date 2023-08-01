@@ -1,6 +1,6 @@
 // Peter Vanderhyde
 // Graphics Project
-// December 2022
+// Fall 2022
 
 #include "camera.h"
 #include "sphere.h"
