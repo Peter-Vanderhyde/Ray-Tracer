@@ -37,11 +37,9 @@ public:
 
 class Specular : public Material {
 public:
-    Specular(double specularity, double glossiness);
+    Specular();
 
     Ray scatter(const Ray &ray, const Hit &hit) const override;
-
-    double specularity, glossiness;
 };
 
 class Metal : public Material {

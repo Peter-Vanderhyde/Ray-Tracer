@@ -32,31 +32,20 @@ Ray Diffuse::scatter(const Ray&, const Hit& hit) const {
     return Ray(hit.position, random_in_hemisphere(hit.normal));
 }
 
-Specular::Specular(double specularity, double glossiness)
-    :Material("specular"), specularity{specularity}, glossiness{glossiness} {}
+Specular::Specular()
+    :Material("specular") {}
 
 Ray Specular::scatter(const Ray& ray, const Hit& hit) const {
     Vector3D reflection_direction = reflect(ray.direction, hit.normal);
-    // Vector3D scattered_direction;
-
-    // double rand = random_double(0.0, 1.0);
-    // if (rand > glossiness) {
-    //     // Diffuse reflection
-    //     scattered_direction = random_in_hemisphere(hit.normal);
-    // } else {
-    //     // Specular reflection
-    //     scattered_direction = reflection_direction;
-    // }
-
-    // return Ray(hit.position, scattered_direction);
-    return Ray(hit.position, reflection_direction + (1.0 - glossiness) * random_in_hemisphere(hit.normal));
+    return Ray(hit.position, reflection_direction);
 }
 
 Metal::Metal(double fuzz)
     :Material("metal"), fuzz{fuzz} {}
 
 Ray Metal::scatter(const Ray& ray, const Hit& hit) const {
-    return Ray(hit.position, reflect(ray.direction, hit.normal) + fuzz * random_in_hemisphere(hit.normal));
+    Vector3D direction = reflect(ray.direction, hit.normal) + fuzz * random_in_hemisphere(hit.normal);
+    return Ray(hit.position, unit(direction));
 }
 
 Glass::Glass(double index_ratio)
