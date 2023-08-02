@@ -28,14 +28,14 @@ plane (-16 -16 49.9999) (16 -16 49.9999) (16 16 49.9999) light light
 box (-7 10 15.0001) (14 14 30) (0 0 -15) glossy red
 #box (12 -15 6.0001) (12 12 12) (0 0 18) plain white
 #fog_sphere (12 -15 6.0001) 6 0.2 plain green
-sphere (12 -15 6.0001) 6 (1 1) gloss green
+sphere (12 -15 6.0001) 6 (1 1) (0 0 0) gloss green
 
 #fog_box (0 0 25) (50 200 50) (0 0 0) 0.01 plain green
 
-rays 10 500
+rays 10 10
 threads 7
-checkpoints 5
+checkpoints 0
 camera (0 -100 25) (0 -15 25) (0 0 1) 40
-lens 1 50
+lens 1 0
 pixels 1080 1080
 output test2.png

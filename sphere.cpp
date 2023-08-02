@@ -15,26 +15,28 @@ Sphere::Sphere(const Point3D& center, double radius, Vector2D tile, Vector3D rot
     }
 }
 
-std::optional<double> Sphere::intersect(const Ray& ray) const {
+void Sphere::intersect(const Ray& ray, std::optional<std::pair<const Shape*, double>>& intersected) const {
     // intersection of line and 3D sphere
     Vector3D oc = center - ray.origin;
     double R = dot(ray.direction, oc);
     double h2 = radius * radius - dot(oc, oc) + R * R;
     if (h2 < 0) {
-        return {};
+        return;
         // no hit, return {}; std::nullopt;
     }
     double h = std::sqrt(h2);
     if ((R - h) > Constants::Epsilon) {
         // intersection from outside => t = R - h is closer
-        return R - h;
+        intersected = std::make_pair(this, R - h);
+        return;
     }
     else if ((R + h) > Constants::Epsilon) {
         // intersection inside => t = R + h
-        return R + h;
+        intersected = std::make_pair(this, R + h);
+        return;
     }
     else { 
-        return {};
+        return;
     }
 }
 
@@ -66,4 +68,10 @@ Point2D Sphere::uv(const Hit* hit) const {
     double v = theta / Constants::Pi; // [0, 1] range along z axis
     Point2D uv{fmod(u * tile.x, 1.0), fmod(v * tile.y, 1.0)};
     return uv;
+}
+
+Bounds Sphere::bounding_box() const {
+    Vector3D tiny_vector{Constants::Epsilon, Constants::Epsilon, Constants::Epsilon};
+    return Bounds(center - Vector3D(radius, radius, radius) - tiny_vector,
+                    center + Vector3D(radius, radius, radius) + tiny_vector);
 }

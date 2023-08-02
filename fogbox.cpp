@@ -10,25 +10,27 @@
 
 FogBox::FogBox(const Point3D& center, const Vector3D& dimensions, const Vector3D& rotations, double density,
             std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
-    :Shape{property_map, normal_map}, neg_inv_density{-1/density} {
+    :Shape{property_map, normal_map}, neg_inv_density{-1/density}, center{center}, dimensions{dimensions} {
     create_box(center, dimensions, rotations, property_map, normal_map);
 }
 
-std::optional<double> FogBox::intersect(const Ray& ray) const {
-    Triangle *triangle;
+void FogBox::intersect(const Ray& ray, std::optional<std::pair<const Shape*, double>>& intersected) const {
     int found = 0;
     double min_t = 0;
     double max_t;
     for (auto t : triangles) {
-        triangle = t.get();
-        std::optional<double> time = triangle->intersect(ray);
-        if (time.has_value() && found == 0) {
-            found += 1;
-            min_t = time.value();
-        }
-        else if (time.has_value() && found == 1) {
-            found += 1;
-            max_t = time.value();
+        std::optional<std::pair<const Shape*, double>> tri_intersected;
+        t->intersect(ray, tri_intersected);
+        if (tri_intersected.has_value()) {
+            double time = tri_intersected.value().second;
+            if (found == 0) {
+                found += 1;
+                min_t = time;
+            }
+            else if (found == 1) {
+                found += 1;
+                max_t = time;
+            }
         }
     }
     if (found > 0) {
@@ -42,19 +44,16 @@ std::optional<double> FogBox::intersect(const Ray& ray) const {
 
         const auto distance = max_t - min_t;
         const auto hit_distance = neg_inv_density * log(random_double());
-        // std::cout << distance << " " << hit_distance << '\n';
 
         if (hit_distance > distance) {
-            return {};
+            return;
         }
 
-        // std::cerr << "hit_distance = " << hit_distance << '\n'
-        //           << "rec.t = " << min_t << '\n';
-
-        return min_t + hit_distance;
+        intersected = std::make_pair(this, min_t + hit_distance);
+        return;
     }
     else {
-        return {};
+        return;
     }
 }
 
@@ -106,4 +105,9 @@ void FogBox::create_box(const Vector3D& center, const Vector3D& extents, const V
         c3 += center;
         create_plane(c1, c2, c3, property_map, normal_map);
     }
+}
+
+Bounds FogBox::bounding_box() const {
+    Vector3D tiny_vector{Constants::Epsilon, Constants::Epsilon, Constants::Epsilon};
+    return Bounds(center - dimensions / 2.0 - tiny_vector, center + dimensions / 2.0 + tiny_vector);
 }

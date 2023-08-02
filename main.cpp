@@ -138,6 +138,7 @@ int main(int argc, char* argv[]) {
         const std::string scene_filename{argv[1]};
         Parser parser("files/scene_files/" + scene_filename);
         World world = parser.get_world();
+        world.construct_tree();
         Pixels pixels = parser.get_pixels();
         Camera camera = parser.get_camera();
         int depth = parser.bounces + 1;

@@ -12,13 +12,13 @@ FogSphere::FogSphere(const Point3D& center, double radius, double density,
             std::shared_ptr<PropertyMap> property_map, Normal* normal_map)
     :Shape{property_map, normal_map}, center{center}, radius{radius}, neg_inv_density{-1/density} {}
 
-std::optional<double> FogSphere::intersect(const Ray& ray) const {
+void FogSphere::intersect(const Ray& ray, std::optional<std::pair<const Shape*, double>>& intersected) const {
     // intersection of line and 3D sphere
     Vector3D oc = center - ray.origin;
     double R = dot(ray.direction, oc);
     double h2 = radius * radius - dot(oc, oc) + R * R;
     if (h2 < 0) {
-        return {};
+        return;
         // no hit, return {}; std::nullopt;
     }
     double h = std::sqrt(h2);
@@ -37,7 +37,7 @@ std::optional<double> FogSphere::intersect(const Ray& ray) const {
         found = 1;
     }
     else { 
-        return {};
+        return;
     }
 
     double min_t, max_t;
@@ -53,17 +53,18 @@ std::optional<double> FogSphere::intersect(const Ray& ray) const {
         max_t = in_t;
     }
     else {
-        return {};
+        return;
     }
     const auto distance = max_t - min_t;
     const auto hit_distance = neg_inv_density * log(random_double());
     // std::cout << distance << " " << hit_distance << '\n';
 
     if (hit_distance > distance) {
-        return {};
+        return;
     }
 
-    return min_t + hit_distance;
+    intersected = std::make_pair(this, min_t + hit_distance);
+    return;
 }
 
 Hit FogSphere::construct_hit(const Ray& ray, double time) const {
@@ -78,4 +79,10 @@ Hit FogSphere::construct_hit(const Ray& ray, double time) const {
 
 Point2D FogSphere::uv(const Hit*) const {
     return {0.0, 0.0};
+}
+
+Bounds FogSphere::bounding_box() const {
+    Vector3D tiny_vector{Constants::Epsilon, Constants::Epsilon, Constants::Epsilon};
+    return Bounds(center - Vector3D(radius, radius, radius) - tiny_vector,
+                    center + Vector3D(radius, radius, radius) + tiny_vector);
 }

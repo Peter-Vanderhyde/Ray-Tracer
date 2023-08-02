@@ -15,9 +15,10 @@ public:
             std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 
     // return the distance if ray intersects
-    std::optional<double> intersect(const Ray& ray) const override; // doesn't change the sphere
+    void intersect(const Ray& ray, std::optional<std::pair<const Shape*, double>>& intersected) const override; // doesn't change the sphere
     Hit construct_hit(const Ray& ray, double time) const override;
     Point2D uv(const Hit* hit) const override;
+    Bounds bounding_box() const override;
 
     Point3D center;
     double radius;

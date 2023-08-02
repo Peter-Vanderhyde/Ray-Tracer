@@ -8,9 +8,6 @@
 #include "texture.h"
 #include <optional>
 
-class Ray;
-class Hit;
-
 class TriangleObj : public Triangle {
 public:
     TriangleObj(const Point3D &vertex0, const Point3D &vertex1, const Point3D &vertex2,

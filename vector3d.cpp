@@ -74,6 +74,10 @@ void Vector3D::scale(const Vector3D& scales)
     }
 }
 
+std::vector<double> Vector3D::val_list() const {
+    return std::vector<double>{x, y, z};
+}
+
 bool almost_equal(double x, double y) {
     return std::abs(x - y) < Constants::Epsilon;
 }

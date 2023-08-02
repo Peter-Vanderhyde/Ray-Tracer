@@ -1,8 +1,8 @@
 # Materials
 material diff diffuse
-material light point_light
+material light light
 material metal metal 0.7
-material gloss gloss 0.9
+material gloss gloss 0.5
 material mirror specular
 
 # Textures
@@ -17,18 +17,17 @@ texture floor solid (0.05 0.05 0.05)
 
 # floor
 plane (-100 100 0) (-100 -100 0) (100 -100 0) diff floor
+sphere (0 0 10) 10 (1 1) (0 0 0) mirror red
 
-box (2 10 2) (4 4 4) (0 0 30) diff red
-sphere (-5 0 2) 2 (1 1) (0 0 0) metal blue
-sphere (-4 -16 2) 2 (1 1) (0 0 0) mirror green
-sphere (6 -8 2) 2 (1 1) (0 0 0) gloss white
+#obj (0 0 0) crate.obj -1 0.1 (90 0 0) diff red
 
 sky true
 sun (-20 20 -25) 20 (1 1 1) 10
 
-rays 10 100
+rays 10 10
 threads 7
-camera (0 -20 2) (0 -8 2) (0 0 1) 70
+checkpoints 0
+camera (5 -20 10) (0 0 2) (0 0 1) 50
 lens 1 0
 pixels 1280 720
 output test.png

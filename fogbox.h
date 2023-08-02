@@ -18,12 +18,15 @@ public:
         std::shared_ptr<PropertyMap> property_map, Normal* normal_map);
 
     // return the distance if ray intersects
-    std::optional<double> intersect(const Ray& ray) const; // doesn't change the sphere
-    Hit construct_hit(const Ray& ray, double time) const;
-    Point2D uv(const Hit* hit) const;
+    void intersect(const Ray& ray, std::optional<std::pair<const Shape*, double>>& intersected) const override; // doesn't change the sphere
+    Hit construct_hit(const Ray& ray, double time) const override;
+    Point2D uv(const Hit* hit) const override;
+    Bounds bounding_box() const override;
 
     double neg_inv_density;
     std::vector<std::shared_ptr<Triangle>> triangles;
+    const Point3D center;
+    const Vector3D dimensions;
 
 private:
     void create_plane(Point3D c1, Point3D c2, Point3D c3,

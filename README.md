@@ -20,6 +20,7 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 - Create a custom depth of field effect in renders.
 - Create mesh objects with custom specified mesh vertices.
 - Creates the resulting render as a PNG image with specified dimensions.
+- The resulting image also stores the contents of the TXT file used to create it in the bits of the image itself. These can be extracted with one of the programs in the project so you can always see how a specific render was made.
 
 ## Setting Up a Scene Text File
 *Keep in Mind*
@@ -76,7 +77,7 @@ specular <name> <specular_material> <specular_texture> <non_specular_material> <
 ```
 ### Creating `Basic Objects`
 ```
-sphere <center> <radius> <rotations> <material> <texture>
+sphere <center> <radius> <tile_XY> <rotations> <material> <texture>
 triangle <coord 1> <coord 2> <coord 3> <material> <texture>
 plane <topleft> <botleft> <botright> <material> <texture>
 box <position> <dimensions> <rotations> <material> <texture>
@@ -88,7 +89,6 @@ The basic sphere allows for an image texture to be used. The other shapes do not
 
 `Textured objects` allow image textures to be used
 ```
-textured_sphere <center> <radius> <tile_XY> <rotations> <material> <texture>
 textured_triangle <coord 1> <coord 2> <coord 3> <image coord 1> <image coord 2> <image coord 3> <material> <texture>
 textured_plane <topleft> <botleft> <botright> <tileXY> <material> <texture>
 textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
@@ -96,7 +96,7 @@ textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
 ---
 `Normal objects` allow normal maps to be used along with image textures
 ```
-normal_sphere <center> <radius> <tileXY> <material> <texture> <normal>
+normal_sphere <center> <radius> <tileXY> <rotations> <material> <texture> <normal>
 normal_specular_sphere <center> <radius> <specular_map> <normal> *
 normal_triangle <coord 1> <coord 2> <coord 3> <normal coord 1> <normal coord 2> <normal coord 3> <material> <texture> <normal>
 normal_plane <topleft> <botleft> <botright> <tileXY> <material> <texture> <normal>
@@ -107,8 +107,8 @@ normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <no
 ---
 `Specular objects` are used along with `Specular Maps` to apply multiple materials/textures to the same object
 ```
-specular_sphere <center> <radius> <specular_map>
-normal_specular_sphere <center> <radius> <specular_map> <normal_map>
+specular_sphere <center> <radius> <tile_XY> <rotations> <specular_map>
+normal_specular_sphere <center> <radius> <tile_XY> <rotations> <specular_map> <normal_map>
 ```
 ---
 `Billboards` only collide with rays on one side allowing things like the camera to look into enclosed spaces
@@ -153,7 +153,7 @@ mesh <position> <filename> <scale vector> <rotation> <material> <texture>
 ### Creating an Object From a `.obj File`
 This requires that you have an OBJ file in `/build/files/objs`.
 ```
-obj <position> <file name> <sections to render -1=all> <scale vector> <material name> <texture name>
+obj <position> <file name> <sections to render -1=all> <scale int> <rotations vector> <material name> <texture name>
 ```
 Often, OBJ files are broken up into sections, so the parameter to specify the number of sections to render can be used as a way to get an idea of what the object will look like without having to render the entire large object.
 ### Creating a Basic `Environment`

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 class Vector3D {
 public:
@@ -14,6 +15,7 @@ public:
   Vector3D& operator/=(const double scalar);
   void rotate(const Vector3D &rotations);
   void scale(const Vector3D& scales);
+  std::vector<double> val_list() const;
 
   double x, y, z;
 };
