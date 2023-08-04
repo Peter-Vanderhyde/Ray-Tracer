@@ -22,7 +22,7 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 - Creates the resulting render as a PNG image with specified dimensions.
 
 ## Setting Up a Scene Text File
-*Keep in Mind*
+***Keep in Mind***
 - Positive x is right, positive y is forward, and positive z is up
 - Color values are from 0.0 - 1.0, not 0-255.
 - `Comments` are made with the `#` symbol before a line
@@ -110,6 +110,8 @@ normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <no
 specular_sphere <center> <radius> <specular_map>
 normal_specular_sphere <center> <radius> <specular_map> <normal_map>
 ```
+\* See last section for `Normal Map` objects
+
 ---
 `Billboards` only collide with rays on one side allowing things like the camera to look into enclosed spaces
 ```
@@ -117,7 +119,7 @@ billboard_triangle <coord 1> <coord 2> <coord 3> <material> <texture>
 billboard_plane <topleft> <botleft> <botright> <material> <texture>
 ```
 ---
-`Fog` objects require that the fog material is used for them
+`Fog` objects require that the fog material is used
 ```
 fog_sphere <center> <radius> <density> <material> <texture>
 fog_box <position> <dimensions> <rotations> <density> <material> <texture>
@@ -157,6 +159,7 @@ obj <position> <file name> <sections to render -1=all> <scale vector> <material 
 ```
 Often, OBJ files are broken up into sections, so the parameter to specify the number of sections to render can be used as a way to get an idea of what the object will look like without having to render the entire large object.
 ### Creating a Basic `Environment`
+***All of these environment settings are optional***
 ```
 sun <direction vector> <color> <intensity double>
 sky <boolean>
@@ -165,22 +168,24 @@ skysphere <tile_XY> <texture_filename>
 ### Other `Scene Settings`
 ```
 rays <bounces> <num of rays per pixel>
-threads <num of threads>
-checkpoints <num of checkpoints>
+* threads <num of threads>
+* checkpoints <num of checkpoints>
 camera <position> <looking at vector> <up vector> <fov>
-lens <distance percentage> <blur amount>
+* lens <distance percentage> <blur amount>
 pixels <image width> <image height>
 output <file name>
+
+* Optional settings with default values
 ```
-- `Lens` takes two parameters. The first determines where the focus is. When set to 1.0, the focus will be directly at the `looking at` vector camera parameter. 0.5 would focus halfway between the camera position and it's "looking at" vector. The second argument is a double 0.0-inf determining blur amount. 0 makes everything in the scene fully focused.
-- `Checkpoints` will save the specified number of checkpoints throughout the render. A new image is created each time and placed in `/build/files/checkpoints`. Each time, all checkpoints so far are read and averaged to create a current progress image that is saved in the renders folder under the specified output name. Upon the user hitting `Ctrl-C` to cancel the render, the checkpoints will be averaged and saved in renders as "cancelled_render.png".
+- `Lens` takes two parameters. The first determines where the focus is. When set to 1, the focus will be directly at the `looking at` position of the camera. 0.5 would focus halfway between the camera position and it's `looking at` vector. The second argument is a double (0.0-inf) determining blur amount. 0 makes everything in the scene fully focused.
+- `Checkpoints` will save the specified number of checkpoints throughout the render. A new image is created each time and placed in `/build/files/checkpoints`. At each checkpoint, all checkpoints created so far are read and averaged to create a current progress image that is saved in the renders folder under the specified output name. Upon the user hitting `Ctrl-C` to cancel the render, the progress image will be saved in renders as "cancelled_render.png".
 
 ## Example Scene
 Scene TXT files must be placed in `/build/files/scene_files`.
 ```
 # Materials
 material diff diffuse
-material light point_light
+material light light
 material metal metal 0.7
 material gloss gloss 0.9
 material mirror specular
@@ -213,7 +218,7 @@ lens 1 0
 pixels 1280 720
 output test.png
 ```
-- **Results are placed in `/build/files/renders`.**
+Results are placed in `/build/files/renders`.
 
 ### Example Renders
 ![13](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4e301d58-7aac-4800-9862-6f92996c4b37)

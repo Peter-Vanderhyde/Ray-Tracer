@@ -28,45 +28,47 @@
 #include <filesystem>
 #include <csignal>
 
-// New Features:
-//  - Allows for a sun direction to provide scene-wide illumination at a specific angle
-//    (Use the vertex (3.14 1.59 2.65) to get a random sun angle)
-//  - Separated textures and materials so that each can be mixed and matched
-//  - Every rendered image saves the contents of the parser file used to create the scene in the image
-//     so it's easy to find out how the scene was made
-//  - Added Vector2D and Point2D objects
-//  - Implemented normal maps so they can be used
-//  - Can now create depth of field
 
 // Materials:
+//  - material > keyword for defining a material
+//
 //  - light > objects emit light
-//  - diffuse > objects scatter light in a random hemisphere
-//  - specular > has a range of properties from a mirror to totally diffuse with glossy or metalic in between
+//  - diffuse > objects scatter light in a random direction
+//  - specular > creates mirror effect
 //  - metal > like specular except with an extra argument of how fuzzy to make the reflection
 //  - glass > uses an index ratio argument to determine the amount of light refraction
 //  - gloss > creates a partially diffuse and partially specular object
-//  - foggy > creates a foggy material that just scatters light in a random direction
+//  - foggy > creates a foggy material for fog objects that just scatters light in a random direction
 //  - point_light > makes the object with this material invisible to the camera, but casts light into the scene
-//  - directional_light > (wip) casts light in a certain angle and not beyond that angle
-//  - fuzzy_gloss > mixes diffuse and metal. It takes a diffuse percent and metal fuzz amount
+//  - directional_light > (WIP) casts light in a certain angle and not beyond that angle
+//  - fuzzy_gloss > (Not great) mixes diffuse and metal. It takes a diffuse percent and metal fuzz amount
 
 // Textures:
+//  - texture > keyword for defining a texture
+//
 //  - solid > is one solid color
-//  - gradient > creates a gradient from bluish to pinkish
+//  - gradient > creates a gradient from top to bottom
 //  - swirl > creates swirls with the ability to determine the colors, number of swirls, and thickness of swirls
 //  - squares > creates squares of specified color with specified size
 //  - checkered > creates a checkered pattern of the specified colors
-//  - image > takes a png image and maps it to the uv coordinates of whatever object it's applied to
-//  - specular_texture > a texture used in conjunction with a specular material to create a specific look
+//  - image > takes a PNG image and maps it to the uv coordinates of whatever object it's applied to
 
 // Normals:
-//  - normal name filename (1 1 1) > creates a normal that can be used with the normal_sphere,
-//     normal_triangle, normal_plane or normal_box objects. The last argument is whether to invert that
-//     normal axis or not
+//  - normal <name> <filename> <normal_directions_vector> > creates a normal that can be used with the normal_sphere,
+//    normal_specular_sphere, normal_triangle, normal_plane or normal_box objects.
+//    The last argument is whether to invert that normal axis or not so bumps look like indents, etc.
+
+// Speculars:
+//  - specular <name> <material1> <texture1> <material2> <texture2> <filename> > applies a specular map PNG
+//    to a shape allowing for a material and texture to be applied separately to the white and black pieces
+//    of the specular map
 
 // Objects:
 //  - sphere > can use any texture
 //  - normal_sphere > sphere but with normal map
+//  - specular_sphere > sphere that uses a specular map
+//  - normal_specular_sphere > uses both specular map and normal map
+//  - fog_sphere > a sphere using the foggy material that creates a foggy sphere shape
 //  - triangle > cannot use image texture
 //  - textured_triangle > must use image texture by specifying the image coords on the triangle vecs
 //  - normal_triangle > uses a normal map and the image coords to create a normal texture
@@ -79,36 +81,40 @@
 //  - textured_box > must use image texture
 //  - normal_box > adds normal on each side (normals may not be correct on all sides yet)
 //  - fog_box > a box specifically for the foggy material to create fog of the given density
-//  - mesh > uses a text file to create triangles. cannot use image texture or normal
+//  - mesh > uses a mesh text file to create triangles. cannot use image texture or normal
 //  - obj > uses obj file to create object that can be scaled and rotated. can use the image texture, but it will not
 //     look right if it's not the texture used for the object. (seems to not be applied correctly anyway)
 
-// Other Parsing Keywords:
+// Other Scene Parsing Keywords:
 //  - camera > position and rotate a virtual camera with a given FOV
-//  - lens > Specifies the percentage toward the camera looking at vector and blur amount
-//  - pixels > specifies the images width and height
+//  - * lens > Specifies how to focus the camera depth of field (defaults to "lens 1 0")
+//  - pixels > specifies the result image's width and height
 //  - output > the filename of the output file
 //  - rays > specifies the number of bounces the rays can do and the number of rays per pixel
-//  - material > defines a material with the given name
-//  - texture > defines a texture with the given name
-//  - threads > specifies how many threads to use. loses effectiveness past the number of computer cores
-//  - sun > specifies which direction the sun is, so the scene is lit from that angle
-//  - sky > makes the background a blue sky and gray ground color instead of black. This will add blue color to the scene
-//  - checkpoints > tells how many times to create a new checkpoint image. Useful during long renders to see render progress
+//  - * threads > specifies how many threads to use. loses effectiveness past the number of computer cores (defaults to 1)
+//  - * sun > specifies the sun direction, color, and intensity (defaults to no sun)
+//  - * sky > makes the background a blue sky and gray horizon color instead of black (defaults to false)
+//  - * checkpoints > tells how many times to create a new checkpoint image (defaults to 0).
+//                    Useful during long renders to see render progress.
+//  - * skysphere > Uses a PNG texture image to create a skybox background for the image.
+//                  It is special because it is not a shape and does not block "sunlight".
+//                  It will not look right if the texture is not a sphere texture (defaults to using sky or black background).
+//
+//
+// * Optional scene settings that have default values
 
 
 /*
-Add specular map support
 Change specular to allow editing both specular color and gloss amount
 Bloom maybe
 multi-material objects
-Add sphere rotations so textures can be rotated
 Make obj textures line up correctly (normal map too?)
-Collision tree
+~~Collision tree~~ (Implementation working on other branch, but slows rendering enormously.
+                    Probably bad accessing of memory)
 Fix saving details
 Look into smoothing obj by interpolating normals between edges
-Fix normal on box
-Fix metal freaking out
+Fix normal on box/all tilted planes
+Change foggy material to just fog
 */
 
 namespace fs = std::filesystem;
