@@ -138,7 +138,6 @@ int main(int argc, char* argv[]) {
         const std::string scene_filename{argv[1]};
         Parser parser("files/scene_files/" + scene_filename);
         World world = parser.get_world();
-        world.construct_tree();
         Pixels pixels = parser.get_pixels();
         Camera camera = parser.get_camera();
         int depth = parser.bounces + 1;
@@ -228,6 +227,9 @@ int main(int argc, char* argv[]) {
 void render(Pixels& pixels, int rows, int columns, int samples,
             Camera camera, World world, int depth, std::optional<Sun> sun, bool sky,
             std::optional<Skysphere> skysphere) {
+    
+    world.construct_tree();
+
     const long long rays_total = rows * columns * static_cast<long long>(samples);
     long long ray_num = 0;
     if (std::this_thread::get_id() == (std::thread::id)1) {
