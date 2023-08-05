@@ -1,9 +1,9 @@
 # C++ Ray Tracer
-### Peter Vanderhyde *2022-Current*
-**Base code provided by Dr. Jeffrey Brown**
+***Peter Vanderhyde, 2022-Current***
+*Base code provided by Dr. Jeffrey Brown*
 
 ### Description
-A C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the ***Ray Tracing in One Weekend*** book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
+A C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the [***Ray Tracing in One Weekend***](https://raytracing.github.io/) book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
 
 ### Features
 - Creation of simple shapes such as spheres, planes, and boxes that can be positioned and rotated in the world.
@@ -11,10 +11,10 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 - Creation of simple fog volumes.
 - Multi-threaded ray tracing with a simple time completion estimation.
 - A checkpoint system to observe the progress of your render as a PNG image. (Also means that most progress can be saved if `Ctrl-C` is pressed)
-- A camera that can be moved and rotated with custom FOV.
+- A camera that can be moved and rotated within the scene with custom FOV.
 - Several lighting options including a light material for objects, point lights, and an optional sun effect through global directional light.
 - Apply colors or image textures to objects. (Can handle transparent image textures)
-- Create a skysphere using a PNG image texture, use built in simple sky background, or just leave it as default black.
+- Options to create a skysphere using a PNG image texture, use the built in simple sky background, or just leave the background as default black.
 - Apply normal map textures or specular map textures to objects.
 - Billboard planes that are only collidable from one side. Allows for see-through objects or light only shining one way.
 - Create a custom depth of field effect in renders.
@@ -30,14 +30,13 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 ### Parameter Guide
 A guide on what types are used for the various parameters within the scene txt file.
 
-- `Fuzziness` : This is a `float` value used in metal materials to determine how clear or "fuzzy" the reflectivity of the metal is.
 - `Index Ratio` : This is a `float` value which determines how light refracts through glass materials. 1.0 means the light does not refract at all.
 - `Color` : This is an RGB `tuple` of values.
 - `Coords` : This is a 3D `vector` represented as an (x y z) tuple.
 - `Name` : This is a simple `string`.
-- `File name` : This is a simple `string`.
+- `File Name` : This is a simple `string`.
 - `UV Coords` : This is a `tuple` of two values which represent the tiling of a shape's texture. By default, the values should be set to (1 1), however if you wanted an image to be tiled across the extend of a shape, the values should be set to the tiling amount horizontally and vertically respectively.
-- `Looking At` / `Up Direction` : These are both 3D `vectors`. The first represents the 3D position that the camera is looking at and the second is a vector pointing in the direction of up relative to the camera. ***Note that this direction cannot be the same vector as the direction that the camera is looking.***
+- `Looking At` / `Up Vector` : These are both 3D `vectors`. The first represents the 3D position that the camera is looking at and the second is a vector pointing in the direction of up relative to the camera. ***Note that this direction cannot be the same vector as the direction that the camera is looking.***
 
 ### Creating a `Material`
 ```
@@ -245,4 +244,5 @@ Results are placed in `/build/files/renders`.
 ![combined](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8542102a-62d6-4728-9ca9-1085d01f073b)
 ![coffee2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/23581cba-7f6b-4c1b-91c2-e7aa6248b0eb)
 ![room_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6b2778c3-ea04-46c5-bae5-babe65fd8d7b)
+![DOF](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/0e94eae6-6c12-49d0-a386-03f8e69d02ec)
 ![space6](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8df9eb56-e60a-42b8-84d4-e920bf732474)
