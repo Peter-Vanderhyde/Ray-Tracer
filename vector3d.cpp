@@ -151,7 +151,7 @@ Vector3D unit(const Vector3D& v) {
     // 0, then return a new, scaled Vector3D.
     double len{length(v)};
     if (len == 0) {
-        throw std::overflow_error("Tried to find the unit vector of a vector with no length!");
+        throw std::overflow_error("Tried to find the unit vector of a vector with no length! (Is the camera up vector the same as facing direction?)");
     }
     return Vector3D(v.x / len, v.y / len, v.z / len);
 }
