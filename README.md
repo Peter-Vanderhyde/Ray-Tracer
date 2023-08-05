@@ -2,13 +2,33 @@
 ***Peter Vanderhyde, 2022-Current***
 *Base code provided by Dr. Jeffrey Brown*
 
-### Description
+## Description
 This is a C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the [***Ray Tracing in One Weekend***](https://raytracing.github.io/) book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
 
-### Examples
+## Examples
 You can view example renders I have created under [Example Renders](#example-renders).
 
-### Features
+# Overview
+- [Features](#features)
+- [Running the Ray Tracer](#running-the-ray-tracer)
+- [Setting Up Scenes](#setting-up-a-scene-text-file)
+    - [Parameter Guide](#parameter-guide)
+    - [Materials](#creating-a-material)
+    - [Textures](#creating-a-texture)
+    - [Normal Maps](#creating-normals-using-normal-map-image-textures)
+    - [Specular Maps](#creating-specular-maps-using-specular-map-image-textures)
+    - [Basic Objects](#creating-basic-objects)
+    - [Advanced Objects](#more-advanced-objects)
+    - [Meshes](#creating-a-mesh)
+    - [OBJ Files](#creating-an-object-from-a-obj-file)
+    - [Basic Environment Settings](#creating-a-basic-environment)
+    - [Other Scene Settings](#other-scene-settings)
+- [Example Scene](#example-scene)
+- [Extracting Scenes From Renders](#extracting-scenes-from-renders)
+- [Example Renders](#example-renders)
+
+
+## Features
 - Creation of simple shapes such as spheres, planes, and boxes that can be positioned and rotated in the world.
 - Creation of shapes using .obj files.
 - Creation of simple fog volumes.
@@ -250,7 +270,7 @@ Every time a render is saved, the contents of the scene TXT file used to create 
 2. Enter `extract_details.exe <imageFilePath>/<imageFileName>.png <saveFileName>.txt`.
 3. Your new TXT file will be found in the build folder.
 
-*Most of the scene details of previous renders will not immediately work due to changes in syntax. Tweaks are likely required.*
+*Most of the scenes of previous renders will not immediately work due to changes in syntax. Tweaks are likely required.*
 
 ## Example Renders
 ![13](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4e301d58-7aac-4800-9862-6f92996c4b37)
