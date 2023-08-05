@@ -5,6 +5,9 @@
 ### Description
 This is a C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the [***Ray Tracing in One Weekend***](https://raytracing.github.io/) book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
 
+### Examples
+You can view example renders I have created under [Example Renders](#example-renders).
+
 ### Features
 - Creation of simple shapes such as spheres, planes, and boxes that can be positioned and rotated in the world.
 - Creation of shapes using .obj files.
