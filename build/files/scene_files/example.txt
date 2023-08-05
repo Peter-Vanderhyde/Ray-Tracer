@@ -1,6 +1,6 @@
 # Materials
 material diff diffuse
-material light point_light
+material light light
 material metal metal 0.7
 material gloss gloss 0.9
 material mirror specular
@@ -28,7 +28,7 @@ sun (-20 20 -25) 20 (1 1 1) 10
 
 rays 10 100
 threads 7
-camera (0 -20 2) (0 -8 2) (0 0 1) 70
+camera (0 -20 2) (0 0 2) (0 0 1) 70
 lens 1 0
-pixels 1280 720
+pixels 1920 1080
 output test.png

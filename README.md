@@ -43,42 +43,42 @@ A guide on what types are used for the various parameters within the scene txt f
 ```
 material <name> diffuse
 material <name> specular
-material <name> metal <fuzziness 0.0=mirror>
-material <name> glass <index ratio i.e. how much the light bends 1.0=none>  
+material <name> metal <fuzziness (0.0=mirror)>
+material <name> glass <indexRatio (i.e. how much the light refracts 1.0=none)>  
 material <name> light
-material <name> flat_glass <index ratio> <thickness>
+material <name> flat_glass <indexRatio> <thickness>
 material <name> gloss <roughness>
 material <name> metalic_gloss <roughness> <metalic>
 material <name> fog
 material <name> point_light
-material <name> directional_light <spread angle>
+material <name> directional_light <spreadAngle>
 ```
 ### Creating a `Texture`
 ```
 texture <name> solid <color>
-texture <name> gradient <primary color> <secondary color>
-texture <name> dots <color>
-texture <name> swirl <primary color> <secondary color> <num of stripes> <stripe width 0.0-1.0>
-texture <name> squares <primary color> <secondary color>
-texture <name> checkered <primary color> <secondary color>
-texture <name> image <file name>
+texture <name> gradient <primaryColor> <secondaryColor>
+texture <name> dots <color> ***Not working correctly***
+texture <name> swirl <primaryColor> <secondaryColor> <numOfStripes> <stripeWidth (0.0-1.0)>
+texture <name> squares <primaryColor> <secondaryColor>
+texture <name> checkered <primaryColor> <secondaryColor>
+texture <name> image <fileName>
 ```
 Using a PNG image as a texture requires that the image is placed in the `/build/files/images` folder.
 ### Creating `Normals` Using Normal Map Image Textures
 This requires that you have a normal map PNG image placed in `/build/files/normals`.
 ```
-normal <name> <filename> <flip normal axis direction vector>  # (1 -1 1) flips the y-axis normal direction
+normal <name> <fileName> <flipNormals>  # (1 -1 1) would flip the y-axis normal direction
 ```
 ### Creating `Specular Maps` Using Specular Map Image Textures
 This requires that you have a black and white PNG image to use as the specular map placed in `/build/files/speculars`.
 ```
-specular <name> <specular_material> <specular_texture> <non_specular_material> <non_specular_texture> <specular_map_filename>
+specular <name> <specularMaterial> <specularTexture> <nonSpecularMaterial> <nonSpecularTexture> <specularMapFileName>
 ```
 ### Creating `Basic Objects`
 ```
-sphere <center> <radius> <rotations> <material> <texture>
-triangle <coord 1> <coord 2> <coord 3> <material> <texture>
-plane <topleft> <botleft> <botright> <material> <texture>
+sphere <center> <radius> <tileXY> <rotations> <material> <texture>
+triangle <coord1> <coord2> <coord3> <material> <texture>
+plane <topLeft> <bottomLeft> <bottomRight> <material> <texture>
 box <position> <dimensions> <rotations> <material> <texture>
 ```
 The basic sphere allows for an image texture to be used. The other shapes do not by default.
@@ -88,18 +88,17 @@ The basic sphere allows for an image texture to be used. The other shapes do not
 
 `Textured objects` allow image textures to be used
 ```
-textured_sphere <center> <radius> <tile_XY> <rotations> <material> <texture>
-textured_triangle <coord 1> <coord 2> <coord 3> <image coord 1> <image coord 2> <image coord 3> <material> <texture>
-textured_plane <topleft> <botleft> <botright> <tileXY> <material> <texture>
+textured_triangle <coord1> <coord2> <coord3> <imageCoord1> <imageCoord2> <imageCoord3> <material> <texture>
+textured_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture>
 textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
 ```
 ---
 `Normal objects` allow normal maps to be used along with image textures
 ```
 normal_sphere <center> <radius> <tileXY> <material> <texture> <normal>
-normal_specular_sphere <center> <radius> <specular_map> <normal> *
-normal_triangle <coord 1> <coord 2> <coord 3> <normal coord 1> <normal coord 2> <normal coord 3> <material> <texture> <normal>
-normal_plane <topleft> <botleft> <botright> <tileXY> <material> <texture> <normal>
+* normal_specular_sphere <center> <radius> <specularMap> <normal>
+normal_triangle <coord1> <coord2> <coord3> <normalCoord1> <normalCoord2> <normalCoord3> <material> <texture> <normal>
+normal_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture> <normal>
 normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <normal>
 ```
 \* See the next section for `Specular Map` objects
@@ -107,16 +106,16 @@ normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <no
 ---
 `Specular objects` are used along with `Specular Maps` to apply multiple materials/textures to the same object
 ```
-specular_sphere <center> <radius> <specular_map>
-normal_specular_sphere <center> <radius> <specular_map> <normal_map>
+specular_sphere <center> <radius> <specularMap>
+* normal_specular_sphere <center> <radius> <specularMap> <normalMap>
 ```
 \* See last section for `Normal Map` objects
 
 ---
 `Billboards` only collide with rays on one side allowing things like the camera to look into enclosed spaces
 ```
-billboard_triangle <coord 1> <coord 2> <coord 3> <material> <texture>
-billboard_plane <topleft> <botleft> <botright> <material> <texture>
+billboard_triangle <coord1> <coord2> <coord3> <material> <texture>
+billboard_plane <topLeft> <botLeft> <bottomRight> <material> <texture>
 ```
 ---
 `Fog` objects require that the fog material is used
@@ -129,9 +128,9 @@ fog_box <position> <dimensions> <rotations> <density> <material> <texture>
 This feature requires that a mesh file has been created:
 1. Create a .txt file in `/build/files/meshes`.
 2. Write `vertices` on the first line.
-3. Each line after, create a position of a mesh vertex relative to (0 0 0).
+3. Each line after, set a position of a mesh vertex point relative to (0 0 0).
 4. Write `triangles` after the list of vertices.
-5. On each line after, write three numbers separated by a space that specify which vertices to connect together i.e. `0 1 2` would mean that the first, second, and third vertices that you defined should be used to create a triangle.  
+5. On each line after, write three numbers separated by spaces that specify which vertices to connect together i.e. `0 1 2` would create a triangle using the first, second, and third vertex points in the list of vertices.  
 
 Here is an example mesh file for a pyramid:
 ```
@@ -148,34 +147,35 @@ triangles
 2 3 4
 3 0 4
 ```
-Using the mesh file in the ray tracer:
+Using a mesh file in the ray tracer:
 ```
-mesh <position> <filename> <scale vector> <rotation> <material> <texture>
+mesh <position> <fileName> <scaleVector> <rotations> <material> <texture>
 ```
 ### Creating an Object From a `.obj File`
 This requires that you have an OBJ file in `/build/files/objs`.
 ```
-obj <position> <file name> <sections to render -1=all> <scale vector> <material name> <texture name>
+obj <position> <fileName> <sectionsToRender (-1=all)> <scale> <material> <texture>
 ```
 Often, OBJ files are broken up into sections, so the parameter to specify the number of sections to render can be used as a way to get an idea of what the object will look like without having to render the entire large object.
+
 ### Creating a Basic `Environment`
 ***All of these environment settings are optional***
 ```
-sun <direction vector> <color> <intensity double>
+sun <directionVector> <color> <intensityDouble> <size>
 sky <boolean>
-skysphere <tile_XY> <texture_filename>
+skysphere <tileXY> <textureFileName>
 ```
 ### Other `Scene Settings`
 ```
-rays <bounces> <num of rays per pixel>
-* threads <num of threads>
-* checkpoints <num of checkpoints>
-camera <position> <looking at vector> <up vector> <fov>
-* lens <distance percentage> <blur amount>
-pixels <image width> <image height>
-output <file name>
+rays <bounces> <numOfRaysPerPixel>
+* threads <numOfThreads>
+* checkpoints <numOfCheckpoints>
+camera <position> <lookingAtVector> <upVector> <FOV>
+* lens <distancePercentage> <blurAmount>
+pixels <imageWidth> <imageHeight>
+output <fileName>
 
-* Optional settings with default values
+* Optional settings
 ```
 - `Lens` takes two parameters. The first determines where the focus is. When set to 1, the focus will be directly at the `looking at` position of the camera. 0.5 would focus halfway between the camera position and it's `looking at` vector. The second argument is a double (0.0-inf) determining blur amount. 0 makes everything in the scene fully focused.
 - `Checkpoints` will save the specified number of checkpoints throughout the render. A new image is created each time and placed in `/build/files/checkpoints`. At each checkpoint, all checkpoints created so far are read and averaged to create a current progress image that is saved in the renders folder under the specified output name. Upon the user hitting `Ctrl-C` to cancel the render, the progress image will be saved in renders as "cancelled_render.png".

@@ -92,7 +92,7 @@
 //  - output > the filename of the output file
 //  - rays > specifies the number of bounces the rays can do and the number of rays per pixel
 //  - * threads > specifies how many threads to use. loses effectiveness past the number of computer cores (defaults to 1)
-//  - * sun > specifies the sun direction, color, and intensity (defaults to no sun)
+//  - * sun > specifies the sun direction, color, intensity, and size (defaults to no sun)
 //  - * sky > makes the background a blue sky and gray horizon color instead of black (defaults to false)
 //  - * checkpoints > tells how many times to create a new checkpoint image (defaults to 0).
 //                    Useful during long renders to see render progress.
@@ -114,7 +114,7 @@ Make obj textures line up correctly (normal map too?)
 Fix saving details
 Look into smoothing obj by interpolating normals between edges
 Fix normal on box/all tilted planes
-Change foggy material to just fog
+Allow screen segmented rendering (for fun and cause it would look cool :)
 */
 
 namespace fs = std::filesystem;
@@ -218,12 +218,18 @@ int main(int argc, char* argv[]) {
             std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
             save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename,
                             "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
+            
             output_filename = parser.get_output_filename();
+            if (checkpoints != 0) {
+                std::cout << "Combining checkpoints...\n";
+            }
             createAverageImage("files/checkpoints", "files/renders/" + output_filename);
-            std::cout << "\nWrote " << output_filename << '\n';
+            std::cout << "Wrote " << output_filename << '\n';
             save_details("files/renders/" + output_filename,
                             "files/scene_files/" + scene_filename, pixels.columns * pixels.rows * 4);
+            std::cout << std::endl;
         }
+        std::cout << "RENDER COMPLETE!\n";
     }
     catch (std::exception& err) {
         std::cout << err.what() << '\n';
