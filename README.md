@@ -14,12 +14,17 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 - A camera that can be moved and rotated within the scene with custom FOV.
 - Several lighting options including a light material for objects, point lights, and an optional sun effect through global directional light.
 - Apply colors or image textures to objects. (Can handle transparent image textures)
-- Options to create a skysphere using a PNG image texture, use the built in simple sky background, or just leave the background as default black.
+- Options to create a skysphere using a PNG image texture or color texture, use the built in simple sky background, or just leave the background as default black.
 - Apply normal map textures or specular map textures to objects.
 - Billboard planes that are only collidable from one side. Allows for see-through objects or light only shining one way.
 - Create a custom depth of field effect in renders.
 - Create mesh objects with custom specified mesh vertices.
 - Creates the resulting render as a PNG image with specified dimensions.
+- Every rendered image saves the contents of the scene TXT file in the bits of the image. This allows scenes to be recreated by looking at the TXT contents used to render an image.
+
+## Running the Ray Tracer
+1. Navigate into the build folder.
+2. Run `main.exe <sceneFileName>.txt`.
 
 ## Setting Up a Scene Text File
 ***Keep in Mind***
@@ -162,7 +167,7 @@ Often, OBJ files are broken up into sections, so the parameter to specify the nu
 ```
 sun <directionVector> <color> <intensityDouble> <size>
 sky <boolean>
-skysphere <tileXY> <textureFileName>
+skysphere <tileXY> <texture>
 ```
 ### Other `Scene Settings`
 ```
@@ -219,7 +224,21 @@ output test.png
 ```
 Results are placed in `/build/files/renders`.
 
-### Example Renders
+## Extracting Scenes From Renders
+Every time a render is saved, the contents of the scene TXT file used to create the render are stored in the bits of the render image itself. Perhaps you don't remember exactly how a scene was set up, or you just want to see how a render was created; you can use the included `extract_details.exe` executable to view or save these details.  
+
+**Viewing Scene Info**
+1. Navigate to the build folder.
+2. Enter `extract_details.exe <imageFilePath>/<imageFileName>.png`.
+
+**Saving Scene Info in TXT File**
+1. Navigate to the build folder.
+2. Enter `extract_details.exe <imageFilePath>/<imageFileName>.png <saveFileName>.txt`.
+3. Your new TXT file will be found in the build folder.
+
+*Most of the scene details of previous renders will not immediately work due to changes in syntax. Tweaks are likely required.*
+
+## Example Renders
 ![13](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4e301d58-7aac-4800-9862-6f92996c4b37)
 ![21](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/4ee1c515-2ee8-43d2-8894-94d5b0a52c9d)
 ![25](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/87d62489-9ec9-4a61-8b4e-f9df79952605)

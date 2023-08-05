@@ -59,10 +59,9 @@ void save_new_image(std::vector<unsigned char>& image, const std::vector<byte>& 
 }
 
 // Save the input values in the image itself so you know what values made the images
-void save_details(const std::string& image_file, const std::string& input_file, const int max_bits_possible) {
-	std::optional<std::vector<byte>> details{get_details(input_file, max_bits_possible)};
-	if (!details.has_value()) {
-		std::cout << "Unable to save details in image. Image not big enough." << '\n';
+void save_details(const std::string& image_file, const std::optional<std::vector<byte>>& scene_details) {
+	if (!scene_details.has_value()) {
+		std::cout << "Unable to save details in image. Image not big enough.\n";
 		return;
 	}
 
@@ -78,7 +77,7 @@ void save_details(const std::string& image_file, const std::string& input_file, 
 	}
 
 	std::vector<byte> colors{wipe_bits(image)};
-	set_colors(colors, details.value());
+	set_colors(colors, scene_details.value());
 	save_new_image(image, colors);
 	error = lodepng::encode(image_file, image, width, height);
 	if (error) {
@@ -87,7 +86,7 @@ void save_details(const std::string& image_file, const std::string& input_file, 
 	std::cout << "Successfully saved properties of image.\n";
 }
 
-void extract_details(const std::string& image_file) {
+std::vector<char> extract_details(const std::string& image_file) {
 	std::vector<unsigned char> image;
 	unsigned width, height;
 	unsigned error = lodepng::decode(image, width, height, image_file);
@@ -95,6 +94,7 @@ void extract_details(const std::string& image_file) {
 		std::cout << "Error: " + error;
 	}
 
+	std::vector<char> details;
 	byte c;
 	c.reset();
 	for (int i = 0; i < static_cast<int>(image.size()); ++i) {
@@ -103,7 +103,10 @@ void extract_details(const std::string& image_file) {
 			if (c.to_ulong() == 0) {
 				break;
 			}
-			std::cout << (char)c.to_ulong();
+
+			details.push_back(static_cast<char>(c.to_ulong()));
 		}
 	}
+
+	return details;
 }

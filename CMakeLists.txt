@@ -33,3 +33,7 @@ add_executable(main
 )
 target_compile_options(main PUBLIC -Wall -Wextra -Ofast -pedantic -ggdb -fno-omit-frame-pointer -std=c++17)
 target_link_libraries(main ${SOURCES})
+
+add_executable(extract_details extract_details.cpp save_details.cpp lodepng.cpp)
+target_compile_options(extract_details PUBLIC -std=c++17)
+target_link_libraries(extract_details ${SOURCES})

@@ -1,23 +1,25 @@
-texture red solid (0.5 0.1 0.1)
+texture red solid (0.8 0.1 0.1)
 texture green solid (0.1 0.5 0.1)
 texture blue solid (0.1 0.1 0.5)
 texture white solid (1 1 1)
 
 material diffuse diffuse
+material gloss gloss 0.9
 material light light
 
-plane (-10 10 0) (-10 -10 0) (10 -10 0) diffuse white
-sphere (0 0 1) 1 (1 1) diffuse red
-sphere (1 4 1) 1 (1 1) diffuse green
-sphere (-1 -4 1) 1 (1 1) diffuse blue
+plane (-10 10 0) (-10 -10 0) (10 -10 0) gloss white
+sphere (0 0 1) 1 (1 1) (0 0 0) gloss green
+sphere (1 4 1) 1 (1 1) (0 0 0) gloss red
+sphere (-1 -4 1) 1 (1 1) (0 0 0) gloss blue
 
 sky true
+sun (-0.2 0.3 -0.4) 30 (1 1 1) 5 
 
 camera (3 -15 3) (0 0 1) (0 0 1) 20
 lens 0.95 3
 
 rays 10 100
-checkpoints 0
+checkpoints 10
 threads 7
 pixels 1280 720
 output test.png
