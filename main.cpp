@@ -112,7 +112,6 @@ multi-material objects
 Make obj textures line up correctly (normal map too?)
 ~~Collision tree~~ (Implementation working on other branch, but slows rendering enormously.
                     Probably bad accessing of memory)
-Fix saving details
 Look into smoothing obj by interpolating normals between edges
 Fix normal on box/all tilted planes
 Allow screen segmented rendering (for fun and cause it would look cool :)
