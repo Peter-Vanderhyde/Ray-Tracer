@@ -3,7 +3,7 @@
 *Base code provided by Dr. Jeffrey Brown*
 
 ### Description
-A C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the [***Ray Tracing in One Weekend***](https://raytracing.github.io/) book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
+This is a C++ ray tracer created from scratch as a school project. This ray tracer is heavily based off of the [***Ray Tracing in One Weekend***](https://raytracing.github.io/) book series by Peter Shirley (https://raytracing.github.io/). I have added several personal features beyond the series and may update the project from time to time.
 
 ### Features
 - Creation of simple shapes such as spheres, planes, and boxes that can be positioned and rotated in the world.
@@ -23,6 +23,17 @@ A C++ ray tracer created from scratch as a school project. This ray tracer is he
 - Every rendered image saves the contents of the scene TXT file in the bits of the image. This allows scenes to be recreated by looking at the TXT contents used to render an image.
 
 ## Running the Ray Tracer
+Upon first set up, ensure that the project contains all of the following directories:
+- `/build/files/checkpoints`
+- `/build/files/images`
+- `/build/files/meshes`
+- `/build/files/normals`
+- `/build/files/objs`
+- `/build/files/renders`
+- `/build/files/scene_files`
+- `/build/files/speculars`
+
+To run the tracer:
 1. Navigate into the build folder.
 2. Run `main.exe <sceneFileName>.txt`.
 
