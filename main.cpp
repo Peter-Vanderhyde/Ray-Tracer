@@ -113,7 +113,6 @@ Make obj textures line up correctly (normal map too?)
 ~~Collision tree~~ (Implementation working on other branch, but slows rendering enormously.
                     Probably bad accessing of memory)
 Look into smoothing obj by interpolating normals between edges
-Fix normal on box/all tilted planes
 Allow screen segmented rendering (for fun and cause it would look cool :)
 */
 
@@ -331,6 +330,7 @@ Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_dep
 
     // Apply any normal maps to the shape normal
     Vector3D shape_normal = hit_value.shape->normal_map->get_vector(hit_uv, hit_value.normal);
+
     if (length(shape_normal) == 0) {
         // Something went wrong with the normal calculation
         return Red;

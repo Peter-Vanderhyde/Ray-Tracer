@@ -1,4 +1,5 @@
 texture white solid (1 1 1)
+texture green solid (0.3 0.6 0.3)
 texture light solid (0.6 0.4 0.4)
 texture tiles image TilesColor.png
 texture bg image field2.png
@@ -6,21 +7,21 @@ texture bg image field2.png
 material light light
 material diffuse diffuse
 material specular specular
-material gloss gloss 0.7
+material gloss gloss 0.5
 
 normal tiles TilesNormal.png (1 1 1)
 
-normal_plane (-8 8 0) (-8 -8 0) (8 -8 0) (3 3) gloss tiles tiles
-#normal_sphere (0 0 0) 2 (1 1) gloss tiles tiles
-#mesh (0 0 -2) tile.txt (8 8 1) (0 0 0) light light
-box (0 100 0) (100 1 100) (0 0 0) light white
-#sphere (0 0 0) 1000 (1 1) light bg
+normal_plane (-8 8 0) (-8 -8 0) (8 -8 0) (3 3) gloss green tiles
+#box (0 100 0) (100 1 100) (0 0 0) light red
+#normal_sphere (0 0 1) 1 (1 1) (0 0 0) gloss tiles tiles
+#normal_box (0 0 0.5) (1 1 1) (0 0 0) (0.3 0.3) gloss tiles tiles
 
-sky true
+sun (-1 1 -0.5) 20 (1 1 1) 10
+skysphere (1 1) bg
 
 pixels 1280 720
 rays 10 500
 threads 7
 checkpoints 10
-camera (0 -7 5) (0 3 0) (0 0 1) 70
+camera (0 -4 5) (0 0 0) (0 0 1) 70
 output test.png
