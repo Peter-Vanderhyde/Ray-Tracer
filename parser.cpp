@@ -439,8 +439,8 @@ std::vector<Point3D> Parser::parse_box(Vector3D center, Vector3D extents, Vector
     double half_y = extents.y / 2;
     double half_z = extents.z / 2;
     // front, left, back, right, top, bot
-    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
-    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1};
+    std::vector<int> x_signs{-1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1};
+    std::vector<int> y_signs{-1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, 1};
     std::vector<int> z_signs{1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1};
     Point3D c1, c2, c3;
     std::vector<Point3D> vertices;

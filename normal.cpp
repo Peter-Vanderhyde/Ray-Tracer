@@ -41,7 +41,7 @@ void NormalMap::adjust_normal(Vector3D& map_normal, const Vector3D& hit_normal) 
         // Conforming the normal map vector to the shape of the object
         Vector3D bitangent = cross(Vector3D{0, 0, 1}, hit_normal);
         bitangent = unit(bitangent);
-        Vector3D tangent = cross(bitangent, hit_normal);
+        Vector3D tangent = cross(hit_normal, bitangent);
         tangent = unit(tangent);
         map_normal = bitangent * map_normal.x + tangent * map_normal.y + hit_normal * map_normal.z;
         map_normal = unit(map_normal);
