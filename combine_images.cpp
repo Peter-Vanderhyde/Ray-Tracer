@@ -107,16 +107,3 @@ void createAverageImage(const string& directoryName, const string& fileName) {
 		cerr << "Error: Could not open directory \"" << directoryName << "\"" << endl;
 	}
 }
-
-// int main() {
-// 	string directoryName = "files/checkpoints";
-// 	string fileName = "files/renders/combined.png";
-// 	int width, height;
-// 	cout << "What is the width? ";
-// 	cin >> width;
-// 	cout << "What is the height? ";
-// 	cin >> height;
-// 	createAverageImage(directoryName, fileName, width, height);
-	
-// 	return 0;
-// }

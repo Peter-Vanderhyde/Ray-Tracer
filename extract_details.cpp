@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cout << "Missing image name.";
+        std::cout << "Missing image path.";
         return 0;
     }
 
@@ -17,8 +17,13 @@ int main(int argc, char* argv[]) {
 
     std::string image_name = argv[1];
 
-    std::vector<char> details;
-    details = extract_details(image_name);
+    auto result = extract_details(image_name);
+    if (!result.has_value()) {
+        return 0;
+    }
+
+    std::vector<char> details = result.value();
+
     if (scene_filename != "") {
         std::ofstream file{scene_filename};
         for (char c : details) {

@@ -86,12 +86,13 @@ void save_details(const std::string& image_file, const std::optional<std::vector
 	std::cout << "Successfully saved properties of image.\n";
 }
 
-std::vector<char> extract_details(const std::string& image_file) {
+std::optional<std::vector<char>> extract_details(const std::string& image_file) {
 	std::vector<unsigned char> image;
 	unsigned width, height;
 	unsigned error = lodepng::decode(image, width, height, image_file);
 	if (error) {
-		std::cout << "Error: " + error;
+		std::cout << "Error: Unable to read from file.\nMake sure the whole path was specified from the current directory.";
+		return {};
 	}
 
 	std::vector<char> details;
