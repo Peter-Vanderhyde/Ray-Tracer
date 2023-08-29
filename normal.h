@@ -31,6 +31,15 @@ public:
     unsigned width, height;
 };
 
+class SmoothObjNormal : public Normal {
+public:
+    SmoothObjNormal();
+    Vector3D get_vector(const Point2D &uv, const Vector3D& hit_normal) const override;
+    void set_vertex_normal(Vector3D normal, int vertex_index);
+
+    Vector3D normal1, normal2, normal3;
+};
+
 class Golfball : public Normal {
 public:
     Golfball(const Vector3D inverted);

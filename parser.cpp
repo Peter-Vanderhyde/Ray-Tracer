@@ -131,7 +131,7 @@ void Parser::parse(std::ifstream& input) {
             parse_mesh(ss);
         }
         else if (type == "obj") {
-            parse_obj(ss);
+            parse_obj(ss, true);
         }
         else if (type == "output") {
             parse_output(ss);
@@ -561,6 +561,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     }
 
     std::vector<Vector3D> vertices;
+    std::map<int, std::vector<std::pair<std::shared_ptr<TriangleObj>, int>>> tri_map;
     Vector3D min_coord{0, 0, 0}, max_coord{0, 0, 0};
     for (Vector3D vertex; input >> vertex;)
     {
@@ -596,11 +597,49 @@ void Parser::parse_mesh(std::stringstream& ss) {
 
     // read each triangle line
     for (int a, b, c; input >> a >> b >> c;) {
-        world.add(std::make_shared<Triangle>(vertices.at(a), vertices.at(b), vertices.at(c), property_map, normal));
+        std::string key = std::to_string(normals.size()) + "obj";
+        normals[key] = std::make_shared<SmoothObjNormal>();
+        std::shared_ptr<TriangleObj> triangle = std::make_shared<TriangleObj>(vertices.at(a), vertices.at(b), vertices.at(c), 
+                        Point2D{0, 0}, Point2D{1, 0}, Point2D{0, 1},
+                        property_map, get_normal(key));
+        world.add(triangle);
+        tri_map[a].push_back(std::make_pair(triangle, 0));
+        tri_map[b].push_back(std::make_pair(triangle, 1));
+        tri_map[c].push_back(std::make_pair(triangle, 2));
+    }
+
+    for (auto map_pair : tri_map) {
+        auto triangles = map_pair.second;
+        Vector3D average_normal{};
+        std::vector<Vector3D> normal_set;
+        for (auto tri_pair : triangles) {
+            auto triangle = tri_pair.first;
+            bool found = false;
+            for (auto vector : normal_set) {
+                if (vector == triangle.get()->normal) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                std::cout << triangle.get()->normal << '\n';
+                average_normal += triangle.get()->normal;
+                normal_set.push_back(triangle.get()->normal);
+            }
+        }
+
+        average_normal /= normal_set.size();
+        average_normal = unit(average_normal);
+        std::cout << std::to_string(map_pair.first) << ": " << average_normal << '\n';
+        for (auto tri_pair : triangles) {
+            auto triangle = tri_pair.first;
+            int index = tri_pair.second;
+            std::cout << index << '\n';
+            static_cast<SmoothObjNormal*>(triangle.get()->normal_map)->set_vertex_normal(average_normal, index);
+        }
     }
 }
 
-void Parser::parse_obj(std::stringstream& ss) {
+void Parser::parse_obj(std::stringstream& ss, bool smooth) {
     Vector3D position, rotations;
     double scale;
     std::string filename, material_name, texture_name;
@@ -610,7 +649,6 @@ void Parser::parse_obj(std::stringstream& ss) {
         throw std::runtime_error("Obj is malformed (position filename sections<-1=all> scale rotations material texture).");
     }
     std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
-    Normal *normal{get_normal("generic")};
 
     std::ifstream input{"files/objs/" + filename};
     if (!input) {
@@ -620,8 +658,12 @@ void Parser::parse_obj(std::stringstream& ss) {
     std::vector<Vector3D> vertices;
     Vector3D max_coord{0,0,0}, min_coord{0,0,0};
     std::vector<Vector2D> texture_vertices;
-    std::vector<std::vector<std::pair<int, int>>> faces;
-    std::vector<std::pair<int, int>> face;
+    std::vector<Vector3D> vertex_normals;
+
+    // Face class defined in .h file
+    std::vector<Face> faces;
+    std::vector<Vertex> face;
+    std::map<int, std::vector<std::pair<std::shared_ptr<TriangleObj>, int>>> vertex_face_map{};
     while (input >> temp)
     {
         if (temp == "o") {
@@ -667,23 +709,34 @@ void Parser::parse_obj(std::stringstream& ss) {
             Vector2D uv{x, y};
             texture_vertices.push_back(uv);
         }
+        else if (temp == "vn") {
+            double x, y, z;
+            input >> x >> y >> z;
+            Vector3D v_normal{x, y, z};
+            v_normal.rotate(rotations);
+            vertex_normals.push_back(unit(v_normal));
+        }
         else if (temp == "f") {
             if (face.size() != 0) {
-                faces.push_back(face);
+                faces.push_back(Face(face));
             }
             face = {};
         }
         else if (temp.find('/') != temp.npos) {
-            int vertex_id;
-            int vt_id = 0;
-            std::string first = temp.substr(0, temp.find('/'));
-            std::string second = temp.substr(temp.find('/') + 1);
-            second = second.substr(0, second.find('/'));
-            vertex_id = stoi(first);
-            if (second != "") {
-                vt_id = stoi(second);
+            Vertex vertex;
+            std::string vertex_string = temp.substr(0, temp.find('/'));
+            std::string rest = temp.substr(temp.find('/') + 1);
+            std::string texture_string = rest.substr(0, rest.find('/'));
+            std::string normal_string = rest.substr(rest.find('/') + 1);
+            // subtract 1 because their index starts at 1
+            vertex.vertex_index = stoi(vertex_string) - 1;
+            if (texture_string != "") {
+                vertex.texture_index = stoi(texture_string) - 1;
             }
-            face.push_back({vertex_id - 1, vt_id - 1}); // subtract because their index starts at 1
+            if (normal_string != "") {
+                vertex.normal_index = stoi(normal_string) - 1;
+            }
+            face.push_back(vertex);
         }
     }
 
@@ -697,30 +750,70 @@ void Parser::parse_obj(std::stringstream& ss) {
     int triangles = 0;
     for (size_t x = 0; x < faces.size(); ++x)
     {
-        triangles += faces[x].size() - 2;
-        std::vector<std::pair<int, int>> face = faces[x];
-        if (face.size() >= 3)
+        triangles += faces[x].vertices.size() - 2;
+        Face face = faces[x];
+        if (face.vertices.size() >= 3)
         {
-            for (size_t i = 0; i < face.size() - 2; ++i){
+            for (size_t i = 0; i < face.vertices.size() - 2; ++i){
                 try{
-                    if (face[0].second == -1){
-                        world.add(std::make_shared<Triangle>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
-                                                             property_map, normal));
+                    std::vector<Vertex> f_vertices = face.vertices;
+                    if (f_vertices[0].texture_index == -1){
+                        Normal *normal{get_normal("generic")};
+                        std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>(vertices.at(f_vertices[0].vertex_index),
+                                                        vertices.at(f_vertices[1 + i].vertex_index),
+                                                        vertices.at(f_vertices[2 + i].vertex_index), property_map, normal);
+                        world.add(triangle);
                     }
                     else {
-                        world.add(std::make_shared<TriangleObj>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
-                                                             texture_vertices.at(face[0].second), texture_vertices.at(face[i + 1].second), texture_vertices.at(face[i + 2].second),
-                                                             property_map, normal));
+                        std::string key{"generic"};
+                        if (smooth) {
+                            key = std::to_string(normals.size()) + "obj";
+                            normals[key] = std::make_shared<SmoothObjNormal>();
+                        }
+
+                        Normal* normal{get_normal(key)};
+
+                        std::shared_ptr<TriangleObj> triangle = std::make_shared<TriangleObj>(vertices.at(f_vertices[0].vertex_index),
+                                    vertices.at(f_vertices[1 + i].vertex_index), vertices.at(f_vertices[2 + i].vertex_index),
+                                    texture_vertices.at(f_vertices[0].texture_index), texture_vertices.at(f_vertices[i + 1].texture_index),
+                                    texture_vertices.at(f_vertices[i + 2].texture_index), property_map, normal);
+                        world.add(triangle);
+                        
+                        // Add triangle to map so vertex normals can be averaged and added to triangle normal map
+                        for (int index = 0; index < 3; index++) {
+                            vertex_face_map[f_vertices[index].vertex_index].push_back(std::make_pair(triangle, index));
+                        }
                     }
                 }
                 catch (const std::exception& e) {
-                    // std::cout << "Invalid " << vertices.at(face[0]) << vertices.at(face[1 + i]) << vertices.at(face[2 + i]) << '\n';
                     invalid_triangle_count += 1;
                 }
             }
         }
     }
     std::cout << invalid_triangle_count << '/' << triangles << " invalid triangles\n";
+    if (smooth) {
+        std::cout << "Smoothing OBJ normals...\n";
+
+        for (auto map_pair : vertex_face_map) {
+            auto triangles = map_pair.second;
+            Vector3D average_normal{};
+            for (auto tri_pair : triangles) {
+                auto triangle = tri_pair.first;
+                average_normal += triangle.get()->normal;
+            }
+
+            average_normal /= triangles.size();
+            average_normal = unit(average_normal);
+            // Apply the normal to the triangle's vertices
+            for (auto tri_pair : triangles) {
+                auto triangle = tri_pair.first;
+                int index = tri_pair.second;
+                SmoothObjNormal* normal_map = static_cast<SmoothObjNormal*>(triangle.get()->normal_map);
+                normal_map->set_vertex_normal(average_normal, index);
+            }
+        }
+    }
 }
 
 void Parser::parse_output(std::stringstream& ss) {
@@ -979,10 +1072,10 @@ void Parser::parse_threads(std::stringstream& ss) {
 
 void Parser::parse_sun(std::stringstream& ss) {
     Vector3D direction;
-    double size, intensity;
+    double intensity, size;
     Color color;
-    if (!(ss >> direction >> size >> color >> intensity)) {
-        throw std::runtime_error("Sun is malformed (direction size color intensity).");
+    if (!(ss >> direction >> intensity >> color >> size)) {
+        throw std::runtime_error("Sun is malformed (direction intensity color size).");
     }
 
     if (direction.x == 3.14 && direction.y == 1.59 && direction.z == 2.65) {
@@ -990,7 +1083,7 @@ void Parser::parse_sun(std::stringstream& ss) {
         std::cout << "\nThe sun's direction is " << direction << '\n';
     }
     
-    sun = Sun(direction, size, color, intensity);
+    sun = Sun(direction, intensity, color, size);
 }
 
 void Parser::parse_sky(std::stringstream& ss) {

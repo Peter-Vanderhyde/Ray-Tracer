@@ -63,6 +63,38 @@ void NormalMap::adjust_normal(Vector3D& map_normal, const Vector3D& hit_normal) 
     }
 }
 
+SmoothObjNormal::SmoothObjNormal()
+    : Normal{"obj_normal", Vector3D{1, 1, 1}} {}
+
+Vector3D SmoothObjNormal::get_vector(const Point2D &uv, const Vector3D& hit_normal) const {
+    Vector3D new_vector = (1.0 - uv.x - uv.y) * normal1 + uv.x * normal2 + uv.y * normal3;
+    double dotted = dot(new_vector, hit_normal);
+    if (dotted > 0) {
+        // Mirror over the surface plane
+        new_vector = unit(new_vector - 2 * (dotted * hit_normal));
+        // new_vector = unit(new_vector * (hit_normal * -1.0));
+    }
+    // std::cout << normal1 << " " << normal2 << " " << normal3 << '\n';
+    // std::cout << uv << '\n';
+    // std::cout << new_vector << " " << hit_normal << '\n';
+    return new_vector;
+}
+
+void SmoothObjNormal::set_vertex_normal(Vector3D normal, int vertex_index) {
+    if (vertex_index == 0) {
+        normal1 = normal;
+    }
+    else if (vertex_index == 1) {
+        normal2 = normal;
+    }
+    else if (vertex_index == 2) {
+        normal3 = normal;
+    }
+    else {
+        throw std::runtime_error("Attempt to set vertex normal of vertex " + std::to_string(vertex_index) + "!");
+    }
+}
+
 Golfball::Golfball(const Vector3D inverted)
     :Normal{"golf_ball", inverted} {}
 

@@ -91,7 +91,7 @@ private:
     void parse_fog_box(std::stringstream &ss);
     void parse_fog_sphere(std::stringstream &ss);
     void parse_mesh(std::stringstream &ss);
-    void parse_obj(std::stringstream& ss);
+    void parse_obj(std::stringstream& ss, bool smooth);
     void parse_output(std::stringstream &ss);
     void parse_rays(std::stringstream& ss);
     void parse_material(std::stringstream &ss);
@@ -108,6 +108,24 @@ private:
     Normal* get_normal(std::string name);
     std::shared_ptr<PropertyMap> get_specular(std::string name);
     std::shared_ptr<PropertyMap> get_properties(std::string material_name, std::string texture_name);
+};
+
+class Vertex{
+public:
+    Vertex() {}
+    Vertex(int vertex_index, int texture_index, int normal_index)
+        : vertex_index{vertex_index}, texture_index{texture_index}, normal_index{normal_index} {}
+    
+    int vertex_index, texture_index, normal_index;
+};
+
+class Face{
+public:
+    Face() {}
+    Face(std::vector<Vertex> vertices)
+        : vertices{vertices} {}
+
+    std::vector<Vertex> vertices{};
 };
 
 void remove_comment(std::string& line);
