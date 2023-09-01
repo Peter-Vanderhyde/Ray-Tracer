@@ -83,8 +83,8 @@
 //  - normal_box > adds normal on each side (normals may not be correct on all sides yet)
 //  - fog_box > a box specifically for the foggy material to create fog of the given density
 //  - mesh > uses a mesh text file to create triangles. cannot use image texture or normal
-//  - obj > uses obj file to create object that can be scaled and rotated. can use the image texture, but it will not
-//     look right if it's not the texture used for the object. (seems to not be applied correctly anyway)
+//  - obj > uses obj file to create object that can be scaled and rotated. can use the image texture, but it will only
+//     look right if it's the texture used for the object.
 
 // Other Scene Parsing Keywords:
 //  - camera > position and rotate a virtual camera with a given FOV
@@ -109,10 +109,10 @@
 Change specular to allow editing both specular color and gloss amount
 Bloom maybe
 multi-material objects
-Make obj textures line up correctly (normal map too?)
+Fix obj normals facing wrong way because triangle direction inconsistent
+Allow obj to use mtl file
 ~~Collision tree~~ (Implementation working on other branch, but slows rendering enormously.
                     Probably bad accessing of memory)
-Look into smoothing obj by interpolating normals between edges
 Allow screen segmented rendering (for fun and cause it would look cool :)
 */
 

@@ -632,7 +632,7 @@ void Parser::parse_obj(std::stringstream& ss) {
                 sections -= 1;
                 std::string section;
                 input >> section;
-                std::cout << "Parsing " << section << '\n';
+                std::cout << "Parsing section: " << section << '\n';
             }
         }
         else if (temp == "v") {
@@ -664,7 +664,7 @@ void Parser::parse_obj(std::stringstream& ss) {
         else if (temp == "vt") {
             double x, y;
             input >> x >> y;
-            Vector2D uv{x, y};
+            Vector2D uv{x, 1.0 - y};
             texture_vertices.push_back(uv);
         }
         else if (temp == "f") {
@@ -718,6 +718,35 @@ void Parser::parse_obj(std::stringstream& ss) {
                     invalid_triangle_count += 1;
                 }
             }
+            // EXPERIMENTAL
+            // for (size_t i = 0; i < face.size() - 2; ++i){
+            //     try{
+            //         if (face[0].second == -1){
+            //             world.add(std::make_shared<Triangle>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
+            //                                                  property_map, normal));
+            //         }
+            //         else {
+            //             Vector2D vec_1{texture_vertices.at(face[1 + i].second) - texture_vertices.at(face[0].second)};
+            //             Vector2D vec_2{texture_vertices.at(face[2 + i].second) - texture_vertices.at(face[1 + i].second)};
+            //             Vector3D side_1{vec_1.x, vec_1.y, 0};
+            //             Vector3D side_2{vec_2.x, vec_2.y, 0};
+            //             if (cross(side_1, side_2).z < 0) {
+            //                 world.add(std::make_shared<TriangleObj>(vertices.at(face[0].first), vertices.at(face[1 + i].first), vertices.at(face[2 + i].first),
+            //                                                  texture_vertices.at(face[0].second), texture_vertices.at(face[i + 1].second), texture_vertices.at(face[i + 2].second),
+            //                                                  property_map, normal));
+            //             }
+            //             else {
+            //                 world.add(std::make_shared<TriangleObj>(vertices.at(face[0].first), vertices.at(face[2 + i].first), vertices.at(face[1 + i].first),
+            //                                                  texture_vertices.at(face[0].second), texture_vertices.at(face[i + 2].second), texture_vertices.at(face[i + 1].second),
+            //                                                  property_map, normal));
+            //             }
+            //         }
+            //     }
+            //     catch (const std::exception& e) {
+            //         // std::cout << "Invalid " << vertices.at(face[0]) << vertices.at(face[1 + i]) << vertices.at(face[2 + i]) << '\n';
+            //         invalid_triangle_count += 1;
+            //     }
+            // }
         }
     }
     std::cout << invalid_triangle_count << '/' << triangles << " invalid triangles\n";

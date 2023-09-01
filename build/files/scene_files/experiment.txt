@@ -1,44 +1,23 @@
 texture white solid (1 1 1)
-texture gray solid (0.5 0.5 0.5)
-texture green solid (0.3 0.7 0.3)
-texture red solid (0.7 0.3 0.3)
-texture blue solid (0.3 0.3 0.7)
-texture earth image earth.png
-texture bg image field.png
-texture metal image Metal2Color.png
-texture painted_metal image PaintedMetal.png
-texture gradient gradient (0.008 0.667 0.69) (0 0.804 0.675)
-
-normal metal Metal2Normal.png (1 1 1)
-normal painted_metal PaintedMetalNormal.png (1 1 1)
-normal golf golf.png (1 1 1)
+texture green solid (0 1 0)
+texture floor solid (0.2 0.2 0.2)
+#texture log image log.png
 
 material light light
-material glass glass 1.5
-material gloss gloss 0.7
-material marble gloss 0.9
-material metal metal 0.1
 material diffuse diffuse
 material specular specular
-material metal2 metal 0.15
+material gloss gloss 0.95
 
-#sphere (0 0 0) 1000 (1 1) light bg
-fog_box (0 0 -0.5) (1 1 1) (0 0 0) 3 diffuse green
-#normal_box (0 0 -0.55) (1 1 0.1) (0 0 0) (1.5 1.5) glass white metal
-normal_sphere (0 0 0.2) 0.2 (1 1) glass gradient metal
-normal_box (0 0 -0.5) (1 1 1) (0 0 0) (1 1) glass white painted_metal
+plane (-10 10 0) (-10 -10 0) (10 -10 0) diffuse floor
+#obj (0 0 0) log.OBJ -1 1 (90 0 0) light log
+sphere (0 0 0.5) 0.5 (1 1) (0 0 0) light green
 
-box (0 0 1.5) (5 5 5) (0 0 0) diffuse white
-box (0 0 -1) (5 5 0.2) (0 0 0) diffuse gray
-box (0 2.5 0.5) (3 0.2 1) (0 0 0) light white
-#box (0 0 2.5) (1.5 1.5 0.1) (0 0 0) light white
-box (0 0 -0.5) (0.2 0.2 0.2) (0 0 0) light green
+sun (-0.8 0.7 -0.7) 20 (1 1 1) 10
+sky true
 
-#sun (0.8 0.7 -0.7) (1 1 1) 2.5
-#sky true
-
-rays 10 5000
+rays 10 7
 threads 7
-camera (0 -1.5 0.25) (0 0 0) (0 0 1) 70
+checkpoints 0
+camera (0 -5 1.5) (0 0 0.5) (0 0 1) 70
 pixels 1280 720
 output experiment.png
