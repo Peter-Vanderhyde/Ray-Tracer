@@ -166,6 +166,9 @@ void Parser::parse(std::ifstream& input) {
         else if (type == "checkpoints") {
             parse_checkpoints(ss);
         }
+        else if (type == "segments") {
+            parse_segments(ss);
+        }
         else {
             std::string msg{"Unrecognized type keyword in line: " + line};
             throw std::runtime_error(msg);
@@ -1046,6 +1049,19 @@ void Parser::parse_checkpoints(std::stringstream& ss) {
         }
     } else {
         throw std::runtime_error("Checkpoints is malformed (num_checkpoints).");
+    }
+}
+
+void Parser::parse_segments(std::stringstream& ss) {
+    int columns, rows;
+    if (ss >> columns >> rows) {
+        if (columns < 1 || rows < 1) {
+            throw std::runtime_error("Segment columns and rows must be positive integers.");
+        }
+
+        segments = std::make_pair(columns, rows);
+    } else {
+        throw std::runtime_error("Segments is malformed (render_columns render_rows).");
     }
 }
 

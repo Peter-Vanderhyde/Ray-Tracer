@@ -114,6 +114,10 @@ Allow obj to use mtl file
 ~~Collision tree~~ (Implementation working on other branch, but slows rendering enormously.
                     Probably bad accessing of memory)
 Allow screen segmented rendering (for fun and cause it would look cool :)
+Segment rendering does not work well with checkpoints. It only remembers the last render,
+    not the combined average of all the saved images.
+Allow an option for quick outline that runs one thread over every pixel and returns the color
+    of the first thing it hits to make a quick outline. (Persist during render?)
 */
 
 namespace fs = std::filesystem;
@@ -121,7 +125,7 @@ namespace fs = std::filesystem;
 void print_progress(long long ray_num, long long total_rays, std::chrono::seconds elapsed_time, int rays_done);
 Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_depth,
                 std::optional<Sun> opt_sun, bool sky, std::optional<Skysphere> skysphere);
-void render(Pixels &pixels, int rows, int columns, int samples, Camera camera,
+void render(Pixels &pixels, int rows, int columns, int start_x, int start_y, int seg_width, int seg_height, int samples, Camera camera,
             World world, int depth, std::optional<Sun> sun, bool sky, std::optional<Skysphere> skysphere);
 double angle(const Vector3D &v1, const Vector3D &v2);
 double clamp(double value, double min, double max);
@@ -152,6 +156,12 @@ int main(int argc, char* argv[]) {
         std::optional<Skysphere> skysphere = parser.skysphere;
         bool sky = parser.has_sky();
         int checkpoints = parser.get_checkpoints();
+        std::pair<int, int> segments = parser.segments;
+
+        // Decided to only allow segment rendering and checkpoints to be used exclusively of each other
+        if (checkpoints > 1 && (segments.first != 1 || segments.second != 1)) {
+            throw std::runtime_error("Cannot use checkpoints while using segmented rendering. Use one or the other.");
+        }
 
         int max_bits_possible = pixels.rows * pixels.columns * 4;
         auto scene_details{get_details("files/scene_files/" + scene_filename, max_bits_possible)};
@@ -170,64 +180,109 @@ int main(int argc, char* argv[]) {
             );
         }
 
-        std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
         delete_png_images("files/checkpoints");
+
+        std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
         // Handles Ctrl-C interrupt
         std::signal(SIGINT, signal_handler);
 
-        for (int checkpoint = 0; checkpoint < checkpoints; ++checkpoint) {
-            std::vector<std::thread> threads;
-            std::vector<Pixels> pixel_results;
+        int segment_width = pixels.columns / segments.first + 1;
+        int segment_height = pixels.rows / segments.second + 1;
 
-            for (int i = 0; i < thread_count; ++ i) {
-                pixel_results.push_back(Pixels(pixels.columns, pixels.rows));
-            }
+        for (int row = 0; row < segments.second; row++) {
+            for (int column = 0; column < segments.first; column++) {
 
-            int num_rays = static_cast<double>(samples_per_checkpoint) / thread_count;
+                std::cout << "Segment: " << row * segments.first + column + 1 << "/" << segments.first * segments.second << '\n';
+                
+                int curr_seg_width = segment_width;
+                if (segment_width * (column + 1) / pixels.columns >= 1 && pixels.columns % (segment_width * (column + 1)) >= 1) {
+                    if (column == 0) {
+                        curr_seg_width = pixels.columns;
+                    }
+                    else {
+                        curr_seg_width = pixels.columns % (segment_width * column);
+                    }
+                }
+                int curr_seg_height = segment_height;
+                if (segment_height * (row + 1) / pixels.rows >= 1 && pixels.rows % (segment_height * (row + 1)) >= 1) {
+                    if (row == 0) {
+                        curr_seg_height = pixels.rows;
+                    }
+                    else {
+                        curr_seg_height = pixels.rows % (segment_height * row);
+                    }
+                }
 
-            for (int i = 1; i < thread_count; ++i)
-            {
-                std::thread t{render, std::ref(pixel_results.at(i)), pixels.rows, pixels.columns,
-                                static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere};
-                threads.push_back(std::move(t));
-            }
-            
-            render(pixel_results.at(0), pixels.rows, pixels.columns,
-                static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere);
-            
-            for (auto& thread : threads) {
-                thread.join();
-            }
+                int start_x = segment_width * column;
+                int start_y = segment_height * row;
+                
+                for (int checkpoint = 0; checkpoint < checkpoints; ++checkpoint) {
+                    std::vector<std::thread> threads;
+                    std::vector<Pixels> pixel_results;
 
-            std::cout << "\nCombining threaded results...\n";
-            for (auto& p : pixel_results) {
-                for (int y = 0; y < pixels.rows; ++y)
-                {
-                    for (int x = 0; x < pixels.columns; ++x) {
-                        pixels(y, x) += p(y, x);
+                    for (int i = 0; i < thread_count; ++ i) {
+                        pixel_results.push_back(Pixels(pixels.columns, pixels.rows));
+                    }
+
+                    int num_rays = static_cast<double>(samples_per_checkpoint) / thread_count;
+
+                    for (int i = 1; i < thread_count; ++i)
+                    {
+                        std::thread t{render, std::ref(pixel_results.at(i)), pixels.rows, pixels.columns,
+                                        start_x, start_y, curr_seg_width, curr_seg_height,
+                                        static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere};
+                        threads.push_back(std::move(t));
+                    }
+                    
+                    render(pixel_results.at(0), pixels.rows, pixels.columns,
+                        start_x, start_y, curr_seg_width, curr_seg_height,
+                        static_cast<int>(num_rays), camera, world, depth, sun, sky, skysphere);
+                    
+                    for (auto& thread : threads) {
+                        thread.join();
+                    }
+
+                    std::cout << "\nCombining threaded results...\n";
+                    for (auto& p : pixel_results) {
+                        for (int y = 0; y < curr_seg_height; ++y)
+                        {
+                            for (int x = 0; x < curr_seg_width; ++x) {
+                                pixels(start_y + y, start_x + x) += p(start_y + y, start_x + x);
+                            }
+                        }
+                    }
+
+                    for (int y = 0; y < curr_seg_height; ++y) {
+                        for (int x = 0; x < curr_seg_width; ++x) {
+                            pixels(start_y + y, start_x + x) /= thread_count;
+                        }
+                    }
+
+                    std::string output_filename = parser.get_output_filename();
+                    
+                    output_filename = parser.get_output_filename();
+                    if (checkpoints != 1) {
+                        if (checkpoint == 0) {
+                            delete_png_images("files/checkpoints");
+                        }
+                        pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
+                        std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
+                        save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, scene_details);
+
+                        std::cout << "Combining checkpoints...\n";
+                        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
+                        std::cout << "Wrote " << output_filename << '\n';
+                        save_details("files/renders/" + output_filename, scene_details);
+                        std::cout << std::endl;
+                    }
+                    else {
+                        pixels.save_png("files/renders/" + output_filename);
+                        std::cout << "Wrote " << output_filename << '\n';
+                        save_details("files/renders/" + output_filename, scene_details);
+                        std::cout << std::endl;
                     }
                 }
             }
-
-            for (int y = 0; y < pixels.rows; ++y) {
-                for (int x = 0; x < pixels.columns; ++x) {
-                    pixels(y, x) /= thread_count;
-                }
-            }
-
-            std::string output_filename = parser.get_output_filename();
-            pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
-            std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
-            save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, scene_details);
-            
-            output_filename = parser.get_output_filename();
-            if (checkpoints != 0) {
-                std::cout << "Combining checkpoints...\n";
-            }
-            createAverageImage("files/checkpoints", "files/renders/" + output_filename);
-            std::cout << "Wrote " << output_filename << '\n';
-            save_details("files/renders/" + output_filename, scene_details);
-            std::cout << std::endl;
         }
         std::cout << "RENDER COMPLETE!\n";
     }
@@ -236,10 +291,10 @@ int main(int argc, char* argv[]) {
     }
 }
 
-void render(Pixels& pixels, int rows, int columns, int samples,
+void render(Pixels& pixels, int rows, int columns, int start_x, int start_y, int seg_width, int seg_height, int samples,
             Camera camera, World world, int depth, std::optional<Sun> sun, bool sky,
             std::optional<Skysphere> skysphere) {
-    const long long rays_total = rows * columns * static_cast<long long>(samples);
+    const long long rays_total = seg_height * seg_width * static_cast<long long>(samples);
     long long ray_num = 0;
     if (std::this_thread::get_id() == (std::thread::id)1) {
         std::chrono::minutes first_time{0};
@@ -249,12 +304,12 @@ void render(Pixels& pixels, int rows, int columns, int samples,
     auto last_time = std::chrono::high_resolution_clock::now();
     int last_rays_traced = 0;
 
-    for (auto i = 0; i < rows; ++i) {
-        for (auto j = 0; j < columns; ++j) {
+    for (auto i = 0; i < seg_height; ++i) {
+        for (auto j = 0; j < seg_width; ++j) {
             Color color{0, 0, 0};
             for (int s = 0; s < samples; ++s) {
-                double x = (j + random_double()) / (columns - 1);
-                double y = (i + random_double()) / (rows - 1);
+                double x = (start_x + j + random_double()) / (columns - 1);
+                double y = (start_y + i + random_double()) / (rows - 1);
                 Ray ray = camera.compute_ray(x, y);
                 color += trace_path(world, ray, depth, 0, sun, sky, skysphere);
                 ++ray_num;
@@ -271,7 +326,7 @@ void render(Pixels& pixels, int rows, int columns, int samples,
                     }
                 }
             }
-            pixels(i, j) = color / samples;
+            pixels(start_y + i, start_x + j) = color / samples;
         }
     }
 }
