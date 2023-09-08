@@ -97,6 +97,8 @@
 //  - * sky > makes the background a blue sky and gray horizon color instead of black (defaults to false)
 //  - * checkpoints > tells how many times to create a new checkpoint image (defaults to 0).
 //                    Useful during long renders to see render progress.
+//  - * segments > A cool visual rendering method making the tracer render the scene section by section in the specified
+//                    number of segments.
 //  - * skysphere > Uses a PNG texture image to create a skybox background for the image.
 //                  It is special because it is not a shape and does not block "sunlight".
 //                  It will not look right if the texture is not a sphere texture (defaults to using sky or black background).
