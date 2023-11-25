@@ -1,5 +1,5 @@
 # C++ Ray Tracer
-***Peter Vanderhyde, 2022-Current***
+***Peter Vanderhyde, 2022-Current***  
 *Base code provided by Dr. Jeffrey Brown*
 
 ## Description
@@ -296,6 +296,6 @@ Every time a render is saved, the contents of the scene TXT file used to create 
 ![gradient](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/efefb7f4-b3ac-4194-b5fe-f88a4597e280)
 ![combined](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8542102a-62d6-4728-9ca9-1085d01f073b)
 ![coffee2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/23581cba-7f6b-4c1b-91c2-e7aa6248b0eb)
-![room_dof](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/6b2778c3-ea04-46c5-bae5-babe65fd8d7b)
+![room_dof2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/705bce6f-fc0c-4b67-ac1a-9f836c25c57f)
 ![DOF](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/0e94eae6-6c12-49d0-a386-03f8e69d02ec)
 ![space6](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8df9eb56-e60a-42b8-84d4-e920bf732474)
