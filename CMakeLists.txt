@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
+set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
 project(raytracer)
 
 add_executable(main

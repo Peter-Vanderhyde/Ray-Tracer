@@ -74,7 +74,7 @@ A guide on what types are used for the various parameters within the scene txt f
 - `Coords` : This is a 3D `vector` represented as an (x y z) tuple.
 - `Name` : This is a simple `string`.
 - `File Name` : This is a simple `string`.
-- `UV Coords` : This is a `tuple` of two values which represent the tiling of a shape's texture. By default, the values should be set to (1 1), however if you wanted an image to be tiled across the extend of a shape, the values should be set to the tiling amount horizontally and vertically respectively.
+- `UV Coords` : This is a `tuple` of two values which represent the tiling of a shape's texture. By default, the values should be set to (1 1), however if you wanted an image to be tiled across the extent of a shape, the values should be set to the tiling amount horizontally and vertically respectively.
 - `Looking At` / `Up Vector` : These are both 3D `vectors`. The first represents the 3D position that the camera is looking at and the second is a vector pointing in the direction of up relative to the camera. ***Note that this direction cannot be the same vector as the direction that the camera is looking.***
 
 ### Creating a `Material`
@@ -105,7 +105,7 @@ Using a PNG image as a texture requires that the image is placed in the `/build/
 ### Creating `Normals` Using Normal Map Image Textures
 This requires that you have a normal map PNG image placed in `/build/files/normals`.
 ```
-normal <name> <fileName> <flipNormals>  # (1 -1 1) would flip the y-axis normal direction
+normal <name> <fileName> <flipNormals>  # entering (1 -1 1) would flip the y-axis normal direction
 ```
 ### Creating `Specular Maps` Using Specular Map Image Textures
 This requires that you have a black and white PNG image to use as the specular map placed in `/build/files/speculars`.
@@ -114,10 +114,10 @@ specular <name> <specularMaterial> <specularTexture> <nonSpecularMaterial> <nonS
 ```
 ### Creating `Basic Objects`
 ```
-sphere <center> <radius> <tileXY> <rotations> <material> <texture>
+sphere <center> <radius> <tileXY> <rotationXYZ> <material> <texture>
 triangle <coord1> <coord2> <coord3> <material> <texture>
 plane <topLeft> <bottomLeft> <bottomRight> <material> <texture>
-box <position> <dimensions> <rotations> <material> <texture>
+box <position> <dimensions> <rotationXYZ> <material> <texture>
 ```
 The basic sphere allows for an image texture to be used. The other shapes do not by default.
 
@@ -128,7 +128,7 @@ The basic sphere allows for an image texture to be used. The other shapes do not
 ```
 textured_triangle <coord1> <coord2> <coord3> <imageCoord1> <imageCoord2> <imageCoord3> <material> <texture>
 textured_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture>
-textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
+textured_box <position> <dimensions> <rotationXYZ> <tileXY> <material> <texture>
 ```
 ---
 `Normal objects` allow normal maps to be used along with image textures
@@ -137,7 +137,7 @@ normal_sphere <center> <radius> <tileXY> <material> <texture> <normal>
 * normal_specular_sphere <center> <radius> <specularMap> <normal>
 normal_triangle <coord1> <coord2> <coord3> <normalCoord1> <normalCoord2> <normalCoord3> <material> <texture> <normal>
 normal_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture> <normal>
-normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <normal>
+normal_box <position> <dimensions> <rotationXYZ> <tileXY> <material> <texture> <normal>
 ```
 \* See the next section for `Specular Map` objects
 
@@ -159,16 +159,16 @@ billboard_plane <topLeft> <botLeft> <bottomRight> <material> <texture>
 `Fog` objects require that the fog material is used
 ```
 fog_sphere <center> <radius> <density> <material> <texture>
-fog_box <position> <dimensions> <rotations> <density> <material> <texture>
+fog_box <position> <dimensions> <rotationXYZ> <density> <material> <texture>
 ```
 
 ### Creating a Mesh
 This feature requires that a mesh file has been created:
-1. Create a .txt file in `/build/files/meshes`.
+1. Create a .txt file in `build/files/meshes`.
 2. Write `vertices` on the first line.
 3. Each line after, set a position of a mesh vertex point relative to (0 0 0).
 4. Write `triangles` after the list of vertices.
-5. On each line after, write three numbers separated by spaces that specify which vertices to connect together i.e. `0 1 2` would create a triangle using the first, second, and third vertex points in the list of vertices.  
+5. On each line after, write three index numbers separated by spaces that specify which vertices to connect together i.e. `0 1 2` would create a triangle using the first, second, and third vertex points in the list of vertices.  
 
 Here is an example mesh file for a pyramid:
 ```
@@ -187,21 +187,21 @@ triangles
 ```
 Using a mesh file in the ray tracer:
 ```
-mesh <position> <fileName> <scaleVector> <rotations> <material> <texture>
+mesh <position> <fileName> <scaleVector> <rotationXYZ> <material> <texture>
 ```
 ### Creating an Object From a `.obj File`
 This requires that you have an OBJ file in `/build/files/objs`.
 ```
 obj <position> <fileName> <sectionsToRender (-1=all)> <scale> <material> <texture>
 ```
-Often, OBJ files are broken up into sections, so the parameter to specify the number of sections to render can be used as a way to get an idea of what the object will look like without having to render the entire large object.
+Often, OBJ files are broken up into sections such as "Wheel" or "Head" etc. The parameter to specify the number of sections to render can be used as a way to get an idea of what the object will look like without having to render the entire large object.
 
 ### Creating a Basic `Environment`
 ***All of these environment settings are optional***
 ```
-sun <directionVector> <color> <intensityDouble> <size>
+sun <directionVector> <size> <intensityDouble> <color>
 sky <boolean>
-skysphere <tileXY> <texture>
+skysphere <rotationXYZ> <tileXY> <texture>
 ```
 ### Other `Scene Settings`
 ```
@@ -280,6 +280,7 @@ Every time a render is saved, the contents of the scene TXT file used to create 
 ![30](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/b852210e-16ce-4c41-925e-b722322dca64)
 ![33](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/39ec069d-9561-4c89-8e38-f2240eea1d2d)
 ![32](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/9dd526e7-9b8b-4f69-8748-e148d6842f5c)
+![cornell slick](build/files/renders/cornell.png)
 ![38](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/30c22fd9-8394-4a5d-b427-dc6d2d536847)
 ![36](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/b3d5ac58-7ba2-4504-8712-add6ac29828b)
 ![40](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/541916bd-f4a8-4f49-bcbf-776d578a672c)
@@ -299,3 +300,5 @@ Every time a render is saved, the contents of the scene TXT file used to create 
 ![room_dof2](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/705bce6f-fc0c-4b67-ac1a-9f836c25c57f)
 ![DOF](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/0e94eae6-6c12-49d0-a386-03f8e69d02ec)
 ![space6](https://github.com/Peter-Vanderhyde/Ray-Tracer/assets/71889138/8df9eb56-e60a-42b8-84d4-e920bf732474)
+![dark earth](build/files/renders/dark_earth.png)
+![depth of field](build/files/renders/depth_of_field_2.png)

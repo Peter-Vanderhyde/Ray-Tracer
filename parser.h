@@ -34,6 +34,7 @@ public:
 
     int bounces, samples;
     int threads{1};
+    std::pair<int, int> segments = std::make_pair(1, 1);
     std::optional<Sun> sun = {};
     std::optional<Skysphere> skysphere = {};
 
@@ -103,6 +104,7 @@ private:
     void parse_sky(std::stringstream &ss);
     void parse_skysphere(std::stringstream &ss);
     void parse_checkpoints(std::stringstream &ss);
+    void parse_segments(std::stringstream& ss);
     Material *get_material(std::string name);
     Texture* get_texture(std::string name);
     Normal* get_normal(std::string name);

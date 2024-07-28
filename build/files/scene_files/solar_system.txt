@@ -1,10 +1,10 @@
-# materials
+# earth materials
 material light light
 material diffuse diffuse
 material water_material specular 0 0.75
 material land_material diffuse
 
-# textures
+# earth textures
 texture earth_day_texture image earth_day.png
 texture water_texture specular_texture water_material earth_day_texture
 texture earth_lights_texture image earth_lights.png

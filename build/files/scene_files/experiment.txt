@@ -1,44 +1,39 @@
+texture red solid (0.8 0.1 0.1)
+texture green solid (0.1 0.5 0.1)
+texture blue solid (0.1 0.1 0.5)
 texture white solid (1 1 1)
-texture gray solid (0.5 0.5 0.5)
-texture green solid (0.3 0.7 0.3)
-texture red solid (0.7 0.3 0.3)
-texture blue solid (0.3 0.3 0.7)
+texture black solid (0.01 0.01 0.01)
 texture earth image earth.png
-texture bg image field.png
-texture metal image Metal2Color.png
-texture painted_metal image PaintedMetal.png
-texture gradient gradient (0.008 0.667 0.69) (0 0.804 0.675)
+texture metal image metal.png
+texture tiles2 image square_tiles.png
+texture sky image sunset-4k.png
 
-normal metal Metal2Normal.png (1 1 1)
-normal painted_metal PaintedMetalNormal.png (1 1 1)
-normal golf golf.png (1 1 1)
-
-material light light
-material glass glass 1.5
-material gloss gloss 0.7
-material marble gloss 0.9
-material metal metal 0.1
 material diffuse diffuse
-material specular specular
-material metal2 metal 0.15
+material gloss gloss 0.5
+material light light
+material mirror specular
 
-#sphere (0 0 0) 1000 (1 1) light bg
-fog_box (0 0 -0.5) (1 1 1) (0 0 0) 3 diffuse green
-#normal_box (0 0 -0.55) (1 1 0.1) (0 0 0) (1.5 1.5) glass white metal
-normal_sphere (0 0 0.2) 0.2 (1 1) glass gradient metal
-normal_box (0 0 -0.5) (1 1 1) (0 0 0) (1 1) glass white painted_metal
+normal metal_normal metal.png (1 1 1)
+normal tile2_normal tiles2_norm.png (1 1 1)
 
-box (0 0 1.5) (5 5 5) (0 0 0) diffuse white
-box (0 0 -1) (5 5 0.2) (0 0 0) diffuse gray
-box (0 2.5 0.5) (3 0.2 1) (0 0 0) light white
-#box (0 0 2.5) (1.5 1.5 0.1) (0 0 0) light white
-box (0 0 -0.5) (0.2 0.2 0.2) (0 0 0) light green
+specular earth_spec mirror green gloss green earth_specular.png
 
-#sun (0.8 0.7 -0.7) (1 1 1) 2.5
-#sky true
+normal_plane (-10 10 0) (-10 -10 0) (10 -10 0) (3 3) gloss tiles2 tile2_normal
+#sphere (0 0 1) 1 (1 1) (0 0 0) mirror green
+#normal_sphere (0 0 1) 1 (5 5) (0 0 0) gloss metal metal_normal
+sphere (0 0 1) 1 (3 2) (0 0 0) mirror green
+sphere (1 4 1) 1 (1 1) (0 0 0) mirror red
+sphere (-1 -4 1) 1 (1 1) (0 0 0) mirror blue
+
+sky false
+skysphere (1 1) sky
+sun (-1 -0.7 -0.05) 3 (1 1 1) 8
+
+camera (3 -15 5) (0 0 1) (0 0 1) 20
+lens 0.9359 2
 
 rays 10 5000
+checkpoints 10
 threads 7
-camera (0 -1.5 0.25) (0 0 0) (0 0 1) 70
-pixels 1280 720
-output experiment.png
+pixels 1920 1080
+output test.png

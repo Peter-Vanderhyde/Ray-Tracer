@@ -5,8 +5,8 @@
 #include <iomanip>
 #include "point2d.h"
 
-Skysphere::Skysphere(Point2D tile, Texture* texture)
-    : tile{tile}, texture{texture} {}
+Skysphere::Skysphere(Vector3D rotations, Point2D tile, Texture* texture)
+    : rotations{rotations}, tile{tile}, texture{texture} {}
 
 std::optional<double> Skysphere::intersect(const Ray& ray) const {
     // intersection of line and 3D sphere
@@ -29,11 +29,15 @@ std::optional<double> Skysphere::intersect(const Ray& ray) const {
 
 Point2D Skysphere::uv(const Ray& ray, double time) const {
     Point3D point = ray.at(time);
-
-    // error handling
-
     // schaser method of calculating normals on sphere
     Vector3D normal = (point - center) / radius;
+
+    // Apply rotations to the normal vector of the copied hit object
+    if (rotations.x != 0 || rotations.y != 0 || rotations.z != 0) {
+        normal.rotate(rotations);
+    }
+
+    // error handling if you want
 
     double theta = std::acos(normal.z);
     double phi = std::atan2(normal.y, normal.x);
