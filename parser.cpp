@@ -1036,14 +1036,15 @@ void Parser::parse_sky(std::stringstream& ss) {
 }
 
 void Parser::parse_skysphere(std::stringstream& ss) {
+    Vector3D rotations;
     Point2D tile;
     std::string texture_name;
-    if (!(ss >> tile >> texture_name)) {
-        throw std::runtime_error("Skysphere is malformed (tile texture).");
+    if (!(ss >> rotations >> tile >> texture_name)) {
+        throw std::runtime_error("Skysphere is malformed (rotations tile texture).");
     }
 
     auto texture{get_texture(texture_name)};
-    skysphere = Skysphere(tile, texture);
+    skysphere = Skysphere(rotations, tile, texture);
 }
 
 void Parser::parse_checkpoints(std::stringstream& ss) {
