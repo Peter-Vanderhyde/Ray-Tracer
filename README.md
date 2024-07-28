@@ -114,10 +114,10 @@ specular <name> <specularMaterial> <specularTexture> <nonSpecularMaterial> <nonS
 ```
 ### Creating `Basic Objects`
 ```
-sphere <center> <radius> <tileXY> <rotations> <material> <texture>
+sphere <center> <radius> <tileXY> <rotationXYZ> <material> <texture>
 triangle <coord1> <coord2> <coord3> <material> <texture>
 plane <topLeft> <bottomLeft> <bottomRight> <material> <texture>
-box <position> <dimensions> <rotations> <material> <texture>
+box <position> <dimensions> <rotationXYZ> <material> <texture>
 ```
 The basic sphere allows for an image texture to be used. The other shapes do not by default.
 
@@ -128,7 +128,7 @@ The basic sphere allows for an image texture to be used. The other shapes do not
 ```
 textured_triangle <coord1> <coord2> <coord3> <imageCoord1> <imageCoord2> <imageCoord3> <material> <texture>
 textured_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture>
-textured_box <position> <dimensions> <rotations> <tileXY> <material> <texture>
+textured_box <position> <dimensions> <rotationXYZ> <tileXY> <material> <texture>
 ```
 ---
 `Normal objects` allow normal maps to be used along with image textures
@@ -137,7 +137,7 @@ normal_sphere <center> <radius> <tileXY> <material> <texture> <normal>
 * normal_specular_sphere <center> <radius> <specularMap> <normal>
 normal_triangle <coord1> <coord2> <coord3> <normalCoord1> <normalCoord2> <normalCoord3> <material> <texture> <normal>
 normal_plane <topLeft> <bottomLeft> <bottomRight> <tileXY> <material> <texture> <normal>
-normal_box <position> <dimensions> <rotations> <tileXY> <material> <texture> <normal>
+normal_box <position> <dimensions> <rotationXYZ> <tileXY> <material> <texture> <normal>
 ```
 \* See the next section for `Specular Map` objects
 
@@ -159,7 +159,7 @@ billboard_plane <topLeft> <botLeft> <bottomRight> <material> <texture>
 `Fog` objects require that the fog material is used
 ```
 fog_sphere <center> <radius> <density> <material> <texture>
-fog_box <position> <dimensions> <rotations> <density> <material> <texture>
+fog_box <position> <dimensions> <rotationXYZ> <density> <material> <texture>
 ```
 
 ### Creating a Mesh
@@ -187,7 +187,7 @@ triangles
 ```
 Using a mesh file in the ray tracer:
 ```
-mesh <position> <fileName> <scaleVector> <rotations> <material> <texture>
+mesh <position> <fileName> <scaleVector> <rotationXYZ> <material> <texture>
 ```
 ### Creating an Object From a `.obj File`
 This requires that you have an OBJ file in `/build/files/objs`.
@@ -201,7 +201,7 @@ Often, OBJ files are broken up into sections such as "Wheel" or "Head" etc. The 
 ```
 sun <directionVector> <size> <intensityDouble> <color>
 sky <boolean>
-skysphere <tileXY> <texture>
+skysphere <rotationXYZ> <tileXY> <texture>
 ```
 ### Other `Scene Settings`
 ```
