@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
         int checkpoints = parser.get_checkpoints();
         std::pair<int, int> segments = parser.segments;
 
-        // Decided to only allow segment rendering and checkpoints to be used exclusively of each other
+        // Decided to keep segment rendering and checkpoints exclusive of each other
         if (checkpoints > 1 && (segments.first != 1 || segments.second != 1)) {
             throw std::runtime_error("Cannot use checkpoints while using segmented rendering. Use one or the other.");
         }

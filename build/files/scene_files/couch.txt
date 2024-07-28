@@ -1,0 +1,29 @@
+# textures
+texture red solid (0.8 0.1 0.1)
+texture green solid (0.1 0.5 0.1)
+texture blue solid (0.1 0.1 0.5)
+texture white solid (1 1 1)
+texture gray solid (0.2 0.2 0.2)
+texture leather image leather.png
+
+# materials
+material diffuse diffuse
+material gloss gloss 0.9
+material light light
+material mirror specular
+
+# normal
+normal leather_normal leather_norm.png (1 1 1)
+
+# objs
+obj (0 0 0) couch.obj -1 0.1 (90 0 0) light blue true
+plane (-100 100 0) (-100 -100 0) (100 -100 0) mirror gray
+
+sky true
+
+camera (0 -30 20) (0 0 0) (0 0 1) 60
+
+rays 10 10
+threads 7
+pixels 1280 720
+output couch.png

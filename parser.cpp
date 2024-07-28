@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include <stdexcept>
 #include "material.h"
@@ -608,9 +609,10 @@ void Parser::parse_obj(std::stringstream& ss) {
     double scale;
     std::string filename, material_name, texture_name;
     int sections;
-    if (!(ss >> position >> filename >> sections >> scale >> rotations >> material_name >> texture_name))
+    bool show_log;
+    if (!(ss >> position >> filename >> sections >> scale >> rotations >> material_name >> texture_name >> std::boolalpha >> show_log))
     {
-        throw std::runtime_error("Obj is malformed (position filename sections<-1=all> scale rotations material texture).");
+        throw std::runtime_error("Obj is malformed (position filename sections<-1=all> scale rotations material texture show_log).");
     }
     std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
@@ -717,7 +719,9 @@ void Parser::parse_obj(std::stringstream& ss) {
                     }
                 }
                 catch (const std::exception& e) {
-                    // std::cout << "Invalid " << vertices.at(face[0]) << vertices.at(face[1 + i]) << vertices.at(face[2 + i]) << '\n';
+                    if (show_log) {
+                        std::cout << std::fixed << std::setprecision(5) << "Invalid " << vertices.at(face[0].first) << "/" << vertices.at(face[1 + i].first) << "/" << vertices.at(face[2 + i].first) << " Face: " << x << '\n';
+                    }
                     invalid_triangle_count += 1;
                 }
             }

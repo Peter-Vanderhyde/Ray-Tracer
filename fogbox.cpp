@@ -18,7 +18,7 @@ std::optional<double> FogBox::intersect(const Ray& ray) const {
     Triangle *triangle;
     int found = 0;
     double min_t = 0;
-    double max_t;
+    double max_t = 0;
     for (auto t : triangles) {
         triangle = t.get();
         std::optional<double> time = triangle->intersect(ray);
