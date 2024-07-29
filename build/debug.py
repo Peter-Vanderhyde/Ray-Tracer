@@ -1,3 +1,4 @@
+# This program is used to visualize the overlay of textures on obj models
 import pygame
 from pygame.locals import *
 from pygame.math import Vector3 as Vec3
@@ -61,11 +62,11 @@ def draw(screen, image, fs, vts):
 
 
 if __name__ == '__main__':
+    scale_factor = 0.1
     obj = "log"
     texture = "log"
     vts, fs = get_values(f"build/files/objs/{obj}.obj")
     image = pygame.image.load(f"build/files/images/{texture}.png")
-    scale_factor = 0.1
     image = pygame.transform.scale(image, (image.get_width() * scale_factor, image.get_height() * scale_factor))
     screen = pygame.display.set_mode(image.get_size())
     draw(screen, image, fs, vts)
