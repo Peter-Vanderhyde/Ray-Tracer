@@ -2,24 +2,41 @@ texture red solid (0.8 0.1 0.1)
 texture green solid (0.1 0.5 0.1)
 texture blue solid (0.1 0.1 0.5)
 texture white solid (1 1 1)
+texture black solid (0.01 0.01 0.01)
+texture earth image earth.png
+texture metal image metal.png
+texture tiles2 image square_tiles.png
+# texture sky image sunset-4k.png
 
 material diffuse diffuse
-material gloss gloss 0.9
+material gloss gloss 0.5
 material light light
+material mirror specular
 
-plane (-10 10 0) (-10 -10 0) (10 -10 0) gloss white
-sphere (0 0 1) 1 (1 1) (0 0 0) gloss green
-sphere (1 4 1) 1 (1 1) (0 0 0) gloss red
-sphere (-1 -4 1) 1 (1 1) (0 0 0) gloss blue
+normal metal_normal metal.png (1 1 1)
+normal tile2_normal tiles2_norm.png (1 1 1)
+
+specular earth_spec mirror green gloss green earth_specular.png
+
+normal_plane (-10 10 0) (-10 -10 0) (10 -10 0) (3 3) gloss tiles2 tile2_normal
+#sphere (0 0 1) 1 (1 1) (0 0 0) mirror green
+#normal_sphere (0 0 1) 1 (5 5) (0 0 0) gloss metal metal_normal
+sphere (0 0 1) 1 (3 2) (0 0 0) mirror green
+sphere (1 4 1) 1 (1 1) (0 0 0) mirror red
+sphere (-1 -4 1) 1 (1 1) (0 0 0) mirror blue
 
 sky true
-sun (-0.2 0.3 -0.4) 30 (1 1 1) 5 
+sun (-0.2 0.3 -0.4) 10 (1 1 1) 8
 
-camera (3 -15 3) (0 0 1) (0 0 1) 20
-lens 0.95 3
+# sky false
+# skysphere (1 1) sky
+# sun (-1 -0.7 -0.05) 3 (1 1 1) 8
 
-rays 10 100
-checkpoints 10
+camera (3 -15 5) (0 0 1) (0 0 1) 20
+lens 0.9359 2
+
+rays 10 10
+# checkpoints 10
 threads 7
-pixels 1280 720
+pixels 1920 1080
 output test.png

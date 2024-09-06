@@ -1,44 +1,43 @@
-# textures
-texture plain solid (1 1 1)
-texture tan_checkered checkered (1 0.75 0.5) (1 1 1)
-texture gradient gradient
-texture red_stripes swirl (0.8 0.2 0.2) (1 1 1) 30 0.75
-texture blue_stripes swirl (0.2 0.2 0.8) (0 0 0) 30 0.1
-texture blue_squares squares (0.2 0.2 0.8) (0 1 0.5)
-texture nebula image nebula.png
-texture world image  world.png
-texture blue solid (0.8 0.8 1)
-texture red solid (1 0.3 0.3)
-texture brown solid (0.7 0.4 0.1)
-texture floor solid (0.5 0.5 0.5)
-texture space image space.png
-texture space2 image space2.png
-
-# materials
-material glass glass 1.5
+# Materials
+material diff diffuse
 material light light
+material metal metal 0.7
+material gloss gloss 0.6
 material mirror specular
-material plain diffuse
-material gloss gloss 0.75
 
-# objects
-sphere (-3 0 1) 1 mirror red_stripes
-sphere (-1.5 -3 1) 1 light gradient
-#sphere (-1.5 -3 1) 1 plain space
-sphere (1.5 -3 1) 1 mirror blue_squares
-sphere (0 1 1) 1 light tan_checkered
-sphere (3 0 1) 1 plain nebula
-sphere (0 -1 0.7) 0.7 plain world
-sphere (-1.5 -3 1) 1 glass plain
+# Textures
+texture bright_white solid (4 4 4)
+texture white solid (1 1 1)
+texture red solid (0.6 0 0)
+texture blue solid (0.2 0.2 0.7)
+texture light_blue solid (0.5 0.7 1)
+texture grey solid (0.3 0.3 0.3)  # Darker grey for the floor
+texture floor solid (0.05 0.05 0.05)
+texture diamond image diamond_small.png
+texture grass image grass.png
+texture sky image minecraft_panorama.png
 
-#mesh (-1.5 -3 0) pyramid.txt 1 glass blue
-#mesh (-1.5 -3 1) diamond.txt 1 light red
-mesh (0 0 0) tile.txt (400 400 1) (0 0 0) plain plain
+# Normal
+normal diamond_normal diamond_normal.png (1 1 1)
 
-sun (1 0 -1)
+# Objects
 
-rays 10 50
+# floor
+#textured_plane (-100 100 0) (-100 -100 0) (100 -100 0) (50 50) diff grass
+
+# larger red cube on the floor
+normal_box (-2 -2 1) (4 4 4) (0 0 0) (1 1) gloss diamond diamond_normal
+#textured_box (-2 -2 1) (4 4 4) (0 0 0) (1 1) gloss diamond
+#box (-2 -2 0) (2 2 3) (0 0 3) diff red  # Enlarged cube
+
+sky false
+skysphere (0 0 0) (1 3) sky
+sun (-20 20 -25) 20 (1 1 1) 10
+
+rays 10 1000
+checkpoints 10
 threads 7
-camera (0 -10 5) (0 0 1) (0 0 1) 70
+camera (3.5 -8 3.5) (-1 0 2) (0 0 1) 50
+lens 0.8 1
 pixels 1280 720
-output test.png
+output scene.png

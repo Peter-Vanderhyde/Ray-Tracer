@@ -83,7 +83,7 @@ void save_details(const std::string& image_file, const std::optional<std::vector
 	if (error) {
 		throw std::runtime_error(lodepng_error_text(error));
 	}
-	std::cout << "Successfully saved properties of image.\n";
+	// std::cout << "Successfully saved properties of image.\n";
 }
 
 std::optional<std::vector<char>> extract_details(const std::string& image_file) {
