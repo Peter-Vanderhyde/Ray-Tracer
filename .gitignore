@@ -1,5 +1,5 @@
 build/*
 !build/debug.py
 !build/files
-/.vscode
 /build/files/checkpoints/*
+/.vscode/settings.json

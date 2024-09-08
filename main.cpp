@@ -124,6 +124,8 @@ Allow an option for quick outline that runs one thread over every pixel and retu
 
 namespace fs = std::filesystem;
 
+const std::string FILES_PATH = "../files";
+
 void print_progress(long long ray_num, long long total_rays, std::chrono::seconds elapsed_time, int rays_done);
 Color trace_path(const World& world, const Ray& ray, int max_depth, int curr_depth,
                 std::optional<Sun> opt_sun, bool sky, std::optional<Skysphere> skysphere);
@@ -147,7 +149,7 @@ int main(int argc, char* argv[]) {
     {
         std::cout << "Parsing text file...\n";
         const std::string scene_filename{argv[1]};
-        Parser parser("files/scene_files/" + scene_filename);
+        Parser parser(FILES_PATH + "/scene_files/" + scene_filename, FILES_PATH);
         World world = parser.get_world();
         Pixels pixels = parser.get_pixels();
         Camera camera = parser.get_camera();
@@ -166,7 +168,7 @@ int main(int argc, char* argv[]) {
         }
 
         int max_bits_possible = pixels.rows * pixels.columns * 4;
-        auto scene_details{get_details("files/scene_files/" + scene_filename, max_bits_possible)};
+        auto scene_details{get_details(FILES_PATH + "/scene_files/" + scene_filename, max_bits_possible)};
 
         int samples_per_checkpoint;
         if (checkpoints == 0) {
@@ -182,7 +184,7 @@ int main(int argc, char* argv[]) {
             );
         }
 
-        delete_png_images("files/checkpoints");
+        delete_png_images(FILES_PATH + "/checkpoints");
 
         std::cout << "RAYS PER CHECKPOINT: " << samples_per_checkpoint << "\n\n";
         // Handles Ctrl-C interrupt
@@ -265,22 +267,22 @@ int main(int argc, char* argv[]) {
                     output_filename = parser.get_output_filename();
                     if (checkpoints != 1) {
                         if (checkpoint == 0) {
-                            delete_png_images("files/checkpoints");
+                            delete_png_images(FILES_PATH + "/checkpoints");
                         }
-                        pixels.save_png("files/checkpoints/" + std::to_string(checkpoint) + output_filename);
+                        pixels.save_png(FILES_PATH + "/checkpoints/" + std::to_string(checkpoint) + output_filename);
                         std::cout << "Saved checkpoint " << checkpoint + 1 << " of " << checkpoints << ".\n";
-                        save_details("files/checkpoints/" + std::to_string(checkpoint) + output_filename, scene_details);
+                        save_details(FILES_PATH + "/checkpoints/" + std::to_string(checkpoint) + output_filename, scene_details);
 
                         std::cout << "Combining checkpoints...\n";
-                        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
+                        createAverageImage(FILES_PATH + "/checkpoints", FILES_PATH + "/renders/" + output_filename);
                         std::cout << "Wrote " << output_filename << '\n';
-                        save_details("files/renders/" + output_filename, scene_details);
+                        save_details(FILES_PATH + "/renders/" + output_filename, scene_details);
                         std::cout << std::endl;
                     }
                     else {
-                        pixels.save_png("files/renders/" + output_filename);
+                        pixels.save_png(FILES_PATH + "/renders/" + output_filename);
                         std::cout << "Wrote " << output_filename << '\n';
-                        save_details("files/renders/" + output_filename, scene_details);
+                        save_details(FILES_PATH + "/renders/" + output_filename, scene_details);
                         std::cout << std::endl;
                     }
                 }
@@ -481,7 +483,7 @@ void delete_png_images(const std::string& directoryPath) {
 void signal_handler(int signal) {
     if (signal == SIGINT) {
         std::string output_filename = "cancelled_render.png";
-        createAverageImage("files/checkpoints", "files/renders/" + output_filename);
+        createAverageImage(FILES_PATH + "/checkpoints", FILES_PATH + "/renders/" + output_filename);
         std::cout << "\nWrote " << output_filename << '\n';
 
         exit(signal);

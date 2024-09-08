@@ -24,7 +24,7 @@ using Speculars = std::map<std::string, std::shared_ptr<SpecularMap>>;
 
 class Parser {
 public:
-    Parser(const std::string& filename);
+    Parser(const std::string& filename, const std::string& files_path);
     Camera get_camera();
     World get_world();
     Pixels get_pixels();
@@ -40,6 +40,7 @@ public:
 
 private:
     std::string input_filename;
+    const std::string files_path;
     bool found_camera, found_pixels, found_output, found_rays;
     bool found_sky = false;
     Point3D camera_position, camera_target;

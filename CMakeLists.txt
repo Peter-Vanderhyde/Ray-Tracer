@@ -1,8 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
-set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
+
+# Automatically detect the correct GCC and G++ compilers from MSYS2 environment
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(CMAKE_C_COMPILER "gcc")
+    set(CMAKE_CXX_COMPILER "g++")
+endif()
+
+# Project definition
 project(raytracer)
 
+# Compiler flags for optimization and debugging
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Ofast -pedantic -ggdb -fno-omit-frame-pointer -std=c++17 -static-libgcc -static-libstdc++")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+
+# Source files for the main executable
 add_executable(main
   main.cpp
   color.cpp
@@ -33,9 +44,12 @@ add_executable(main
   skysphere.cpp
   property_map.cpp
 )
-target_compile_options(main PUBLIC -Wall -Wextra -Ofast -pedantic -ggdb -fno-omit-frame-pointer -std=c++17)
-target_link_libraries(main ${SOURCES})
 
+# Create a second executable for extract_details
 add_executable(extract_details extract_details.cpp save_details.cpp lodepng.cpp)
+
+# Apply the necessary compile options for extract_details
 target_compile_options(extract_details PUBLIC -std=c++17)
+
+# Linking the sources (if necessary, otherwise you can remove these)
 target_link_libraries(extract_details ${SOURCES})

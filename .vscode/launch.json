@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug C++",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/main.exe",
+      "args": ["${input:renderFilePath}"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Skip C++ Standard Library headers",
+          "text": "skip -gfi std::",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Skip char_traits.h and other common std library functions",
+          "text": "skip -gfi __gnu_cxx::__verbose_terminate_handler std::char_traits std::basic_string",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Build",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "renderFilePath",
+      "type": "promptString",
+      "description": "Enter the path to the text file to render",
+      "default": "file.txt"
+    }
+  ]
+}

@@ -22,8 +22,8 @@
 #include "random.h"
 #include "property_map.h"
 
-Parser::Parser(const std::string& filename)
-    :input_filename{filename}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
+Parser::Parser(const std::string& filename, const std::string& files_path)
+    :input_filename{filename}, files_path{files_path}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
     std::ifstream input{filename};
     if (!input) {
         throw std::runtime_error("Could not open " + filename);
@@ -554,7 +554,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
-    std::ifstream input{"files/meshes/" + filename};
+    std::ifstream input{files_path + "/meshes/" + filename};
     if (!input) {
         throw std::runtime_error("Cannot open mesh file: " + filename);
     }
@@ -617,7 +617,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     std::shared_ptr<PropertyMap> property_map{get_properties(material_name, texture_name)};
     Normal *normal{get_normal("generic")};
 
-    std::ifstream input{"files/objs/" + filename};
+    std::ifstream input{files_path + "/objs/" + filename};
     if (!input) {
         throw std::runtime_error("Cannot open obj file: " + filename);
     }
@@ -915,13 +915,13 @@ void Parser::parse_texture(std::stringstream& ss) {
         std::string image_file;
         if (ss >> image_file) {
             std::cout << "Parsing " + image_file + " texture...\n";
-            std::ifstream input("files/images/" + image_file);
+            std::ifstream input(files_path + "/images/" + image_file);
             if(!input) {
                 throw std::runtime_error("Cannot open image file: " + image_file);
             }
             std::vector<unsigned char> image;
             unsigned width, height;
-            unsigned error = lodepng::decode(image, width, height, "files/images/" + image_file);
+            unsigned error = lodepng::decode(image, width, height, files_path + "/images/" + image_file);
             if (error) {
                 std::cout << "Error: " + error;
             }
@@ -949,13 +949,13 @@ void Parser::parse_normal(std::stringstream& ss) {
     if (ss >> name >> image_file >> inverted)
     {
         std::cout << "Parsing " + image_file + " normal...\n";
-        std::ifstream input("files/normals/" + image_file);
+        std::ifstream input(files_path + "/normals/" + image_file);
         if(!input) {
             throw std::runtime_error("Cannot open image file: " + image_file);
         }
         std::vector<unsigned char> image;
         unsigned width, height;
-        unsigned error = lodepng::decode(image, width, height, "files/normals/" + image_file);
+        unsigned error = lodepng::decode(image, width, height, files_path + "/normals/" + image_file);
         if (error) {
             std::cout << "Error: " + error;
         }
@@ -978,13 +978,13 @@ void Parser::parse_specular(std::stringstream& ss) {
     if (ss >> name >> material1 >> texture1 >> material2 >> texture2 >> image_file)
     {
         std::cout << "Parsing " + image_file + " specular...\n";
-        std::ifstream input("files/speculars/" + image_file);
+        std::ifstream input(files_path + "/speculars/" + image_file);
         if(!input) {
             throw std::runtime_error("Cannot open image file: " + image_file);
         }
         std::vector<unsigned char> image;
         unsigned width, height;
-        unsigned error = lodepng::decode(image, width, height, "files/speculars/" + image_file);
+        unsigned error = lodepng::decode(image, width, height, files_path + "/speculars/" + image_file);
         if (error) {
             std::cout << "Error: " + error;
         }

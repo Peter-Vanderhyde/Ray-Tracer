@@ -1,0 +1,82 @@
+# textures
+texture plain solid (1 1 1)
+texture tan_checkered checkered (1 0.75 0.5) (1 1 1)
+texture red_swirl swirl (0.8 0.2 0.2) (1 1 1) 60 0.75
+texture gradient gradient (0.2 0.8 0.2) (0.2 0.2 0.8)
+texture blue_squares squares (0.2 0.2 0.8) (0 1 0.5)
+texture nebula image nebula.png
+texture earth image earth_day.png
+texture moon image moon.png
+texture blue solid (0.8 0.8 1)
+texture red solid (1 0.3 0.3)
+texture brown solid (0.7 0.4 0.1)
+texture floor solid (0.5 0.5 0.5)
+texture light solid (1.5 1.5 1.5)
+texture lilac solid (0.8537 0.6863 0.8765)
+
+# materials
+material glass glass 1.5
+material light light
+material mirror specular
+material plain diffuse
+material metal metal 0.15
+material metal2 metal 2
+material gloss gloss 0.5
+material matte gloss 0.25
+
+normal tile TilesNormal.png (1 1 1)
+
+# objects
+sphere (0 1 1) 1 (1 1) (0 0 0) gloss gradient
+normal_sphere (-1.5 -3 1) 1 (1 1) (0 0 0) matte brown tile
+sphere (1.5 -3 1) 1 (1 1) (0 0 0) glass lilac
+sphere (-3 0 1) 1 (1 1) (0 0 0) plain tan_checkered
+sphere (3 0 1) 1 (1 1) (0 0 0) plain nebula
+
+# EARTH
+# earth materials
+material water_material gloss 0.85
+material land_material light
+
+# earth textures
+texture earth_day_texture image earth_day.png
+texture earth_lights_texture image earth_lights.png
+texture clouds_texture image transparent_clouds.png
+
+# earth speculars
+specular earth_materials water_material earth_day_texture land_material earth_day_texture earth_specular.png
+
+# earth normals
+normal earth_normal earth_normal.png (1 1 1)
+
+# earth layers
+normal_sphere (0 -1 0.7) 0.70001 (1 1) (0 -23.5 -50) light earth_lights_texture earth_normal
+normal_sphere (0 -1 0.7) 0.7001 (1 1) (0 -23.5 -50) light clouds_texture earth_normal
+normal_specular_sphere (0 -1 0.7) 0.7 (1 1) (0 -23.5 -50) earth_materials earth_normal
+
+#sphere (0 -1 0.7) 0.7 (1 1) (0 0 0) plain earth
+
+texture moon image moon8k.png
+sphere (0.5 -1.5 0.1911) 0.1911 (1 1) (0 0 0) plain moon
+
+
+# Floor
+mesh (0 0 0) tile.txt (200 200 1) (0 0 0) plain plain
+# Light
+mesh (0 0 20) tile.txt (30 30 1) (0 0 0) light light
+#mesh (0 15 0) tile.txt (200 200 1) (90 0 0) plain plain
+#mesh (115 0 9) tile.txt (200 200 1) (0 0 0) plain plain
+#mesh (-115 0 9) tile.txt (200 200 1) (0 0 0) plain plain
+#mesh (15 0 24) tile.txt (30 30 1) (0 90 0) plain plain
+#mesh (-15 0 24) tile.txt (30 30 1) (0 90 0) plain plain
+
+#sun (1 0 -1)
+sky false
+
+rays 10 100
+threads 7
+checkpoints 10
+camera (0 -30 4) (0 -1.7 0.7) (0 0 1) 10
+lens 1 4
+pixels 1280 720
+output test.png
